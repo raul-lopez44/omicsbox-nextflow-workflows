@@ -3,8 +3,6 @@ nextflow.enable.dsl=2
 
 process FASTQC {
 
-    publishDir "${params.outputDir}/FASTQC", mode: 'copy'
-
     input:
     // Upstream cleaned reads (paths may be one file or a list; joined for OmicsBox).
     path reads

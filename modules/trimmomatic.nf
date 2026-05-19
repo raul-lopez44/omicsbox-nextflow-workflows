@@ -2,8 +2,6 @@
 nextflow.enable.dsl=2
 
 process TRIMMOMATIC {
-    
-    publishDir "${params.outputDir}/TRIMMOMATIC", mode: 'copy'
 
     input:
     // Simple path inputs. 'adapters' will be an empty list if not provided by user.
