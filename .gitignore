@@ -1,0 +1,8 @@
+# Nextflow temporary working directory
+work/
+
+# Nextflow hidden cache and history directory
+.nextflow/
+
+# Ignore all Nextflow hidden files and logs
+.nextflow*
