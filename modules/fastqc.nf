@@ -28,7 +28,7 @@ process FASTQC {
 
     """
     # Execute OmicsBox Engine (default FastQC OmicsBox outputs are written to the task work directory)
-    xvfb-run -a omicsbox fastqc \\
+    omicsbox fastqc \\
         $input_flag \\
         $adapters_flag \\
         $contaminants_flag \\

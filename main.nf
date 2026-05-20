@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 include { TRIMMOMATIC } from './modules/trimmomatic.nf'
 include { FASTQC } from './modules/fastqc.nf'
 
-workflow PRUEBA {
+workflow TEST {
 
     main:
     // 1. Safety Checks (Keep exclusivity to avoid core engine crash)

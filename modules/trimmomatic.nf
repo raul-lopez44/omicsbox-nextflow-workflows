@@ -43,7 +43,7 @@ process TRIMMOMATIC {
     mkdir -p ${folder_output_reads} ${folder_unpaired_reads}
 
     # Execute OmicsBox Engine
-    xvfb-run -a omicsbox preprocessing \\
+    omicsbox preprocessing \\
         $input_flag \\
         $adapter_flag \\
         $output_routing \\
