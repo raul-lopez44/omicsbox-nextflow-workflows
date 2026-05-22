@@ -43,7 +43,7 @@ workflow {
         : channel.value([])
 
     // 4. Execution
-    TRIMMOMATIC(ch_reads, ch_adapters)
+    TRIMMOMATIC(ch_reads, ch_adapters, params.trimmomatic.folder_output_reads, params.trimmomatic.folder_unpaired_reads)
     FASTQC(TRIMMOMATIC.out.output_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 }
 

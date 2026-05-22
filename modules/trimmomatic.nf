@@ -7,11 +7,13 @@ process TRIMMOMATIC {
     // Simple path inputs. 'adapters' will be an empty list if not provided by user.
     path reads 
     path adapters 
+    val out_reads_dir
+    val unpaired_dir 
 
     output:
     // Capturing files dynamically based on user config
-    path "${params.trimmomatic.folder_output_reads}/*.fastq.gz"   , emit: output_reads
-    path "${params.trimmomatic.folder_unpaired_reads}/*.fastq.gz", emit: unpaired_reads, optional: true
+    path "${out_reads_dir}/*.fastq.gz"   , emit: output_reads
+    path "${unpaired_dir}/*.fastq.gz", emit: unpaired_reads, optional: true
     path "*.box"                                                 , emit: project_report
 
     script:
@@ -30,8 +32,8 @@ process TRIMMOMATIC {
         : ""
 
     // 3. Output Folder Flags
-    def folder_output_reads = params.trimmomatic.folder_output_reads ?: 'Clean_Reads'
-    def folder_unpaired_reads = params.trimmomatic.folder_unpaired_reads ?: 'Unpaired_Reads'
+    def folder_output_reads = out_reads_dir ?: 'output_reads'
+    def folder_unpaired_reads = unpaired_dir ?: 'unpaired_reads'
     
     def output_routing = is_single_end
         ? "--o-choose-folder-preprocessing=\$PWD/${folder_output_reads}"
