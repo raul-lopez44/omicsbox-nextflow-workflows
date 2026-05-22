@@ -1,8 +1,8 @@
 // --- FILE: main.nf ---
 nextflow.enable.dsl=2
 
-include { TRIMMOMATIC } from '../modules/trimmomatic.nf'
-include { FASTQC } from '../modules/fastqc.nf'
+include { TRIMMOMATIC } from '../../modules/trimmomatic.nf'
+include { FASTQC } from '../../modules/fastqc.nf'
 
 workflow {
 
