@@ -1,10 +1,10 @@
 // --- FILE: main.nf ---
 nextflow.enable.dsl=2
 
-include { TRIMMOMATIC } from './modules/trimmomatic.nf'
-include { FASTQC } from './modules/fastqc.nf'
+include { TRIMMOMATIC } from '../modules/trimmomatic.nf'
+include { FASTQC } from '../modules/fastqc.nf'
 
-workflow TEST {
+workflow {
 
     main:
     // 1. Safety Checks (Keep exclusivity to avoid core engine crash)
@@ -45,6 +45,5 @@ workflow TEST {
     // 4. Execution
     TRIMMOMATIC(ch_reads, ch_adapters)
     FASTQC(TRIMMOMATIC.out.output_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
-
 }
 
