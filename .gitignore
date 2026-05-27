@@ -6,3 +6,6 @@ work/
 
 # Ignore all Nextflow hidden files and logs
 .nextflow*
+
+#Ignore windows zone identifier metadata
+*:Zone.Identifier
