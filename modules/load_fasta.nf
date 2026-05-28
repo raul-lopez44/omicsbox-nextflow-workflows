@@ -8,8 +8,8 @@ process LOAD_FASTA {
 
     output:
     // Busca dentro de la subcarpeta autogenerada por OmicsBox
-    path "*/*.box", emit: fasta_project
-
+    path "*/project", emit: fasta_project
+    
     script:
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
