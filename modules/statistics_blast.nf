@@ -8,16 +8,18 @@ process STATISTICS_BLAST {
     path blasted_project
 
     output:
-    path "*.box", emit: blast_charts
+    path "*/*.box", emit: blast_charts
 
     script:
     def args = task.ext.args ?: ''
+    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     # Generate BLAST statistics charts from an OmicsBox BLAST project
     omicsbox statistics-blast \\
-        --i-project=${blasted_project} \\
-        --o-blast-statistics-chart=${blasted_project.baseName}_chart.box \\
+        --i-project=\$PWD/${blasted_project.name} \\
+        --local-folder=\$PWD \\
+        $cloud_flag \\
         $args
     """
 }
