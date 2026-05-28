@@ -9,3 +9,6 @@ work/
 
 #Ignore windows zone identifier metadata
 *:Zone.Identifier
+
+#Ignore results folder
+results/

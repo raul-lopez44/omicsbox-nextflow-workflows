@@ -25,6 +25,6 @@ workflow {
 
     // 4. Execution
     LOAD_FASTA(ch_fasta)
-    DIAMOND_BLAST(LOAD_FASTA.out.omicsbox_project, ch_species)
+    DIAMOND_BLAST(LOAD_FASTA.out.fasta_project, ch_species)
     STATISTICS_BLAST(DIAMOND_BLAST.out.blasted_project)
 }

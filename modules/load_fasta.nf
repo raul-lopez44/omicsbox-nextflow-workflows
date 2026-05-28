@@ -4,20 +4,23 @@ nextflow.enable.dsl=2
 process LOAD_FASTA {
 
     input:
-    // Multi-FASTA input file staged into the task work directory.
     path fasta_file
 
     output:
-    path "*.box", emit: omicsbox_project
+    // Busca dentro de la subcarpeta autogenerada por OmicsBox
+    path "*/*.box", emit: fasta_project
 
     script:
     def args = task.ext.args ?: ''
+    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     # Load sequences into an OmicsBox Sequence Project (.box)
     omicsbox load-sequences \\
         --i-file=${fasta_file} \\
-        --o-project=${fasta_file.baseName}.box \\
+        --local-folder=\$PWD \\
+        --cloud-folder=${params.cloud_folder} \\
+        $cloud_flag \\
         $args
     """
 }
