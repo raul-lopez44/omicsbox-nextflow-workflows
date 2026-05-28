@@ -8,8 +8,8 @@ process LOAD_FASTA {
 
     output:
     // Busca dentro de la subcarpeta autogenerada por OmicsBox
-    path "*/project", emit: fasta_project
-    
+    path "*/*.box", emit: fasta_project
+
     script:
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
@@ -21,5 +21,9 @@ process LOAD_FASTA {
         --local-folder=\$PWD \\
         $cloud_flag \\
         $args
+    FILE_PATH=\$(ls */project)
+    DIR_PATH=\$(dirname "\$FILE_PATH")
+    
+    mv "\$FILE_PATH" "\$DIR_PATH/${fasta_file.baseName}.box"
     """
 }
