@@ -17,9 +17,8 @@ process LOAD_FASTA {
     """
     # Load sequences into an OmicsBox Sequence Project (.box)
     omicsbox load-sequences \\
-        --i-file=${fasta_file} \\
+        --i-file=\$PWD/${fasta_file.name} \\
         --local-folder=\$PWD \\
-        --cloud-folder=${params.cloud_folder} \\
         $cloud_flag \\
         $args
     """
