@@ -21,5 +21,8 @@ process STATISTICS_BLAST {
         --local-folder=\$PWD \\
         $cloud_flag \\
         $args
+    FILE_PATH=\$(ls */project)
+    DIR_PATH=\$(dirname "\$FILE_PATH")
+    mv "\$FILE_PATH" "\$DIR_PATH/${blasted_project.baseName}_blast_stats.box"
     """
 }
