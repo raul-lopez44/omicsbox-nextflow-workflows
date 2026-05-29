@@ -8,6 +8,15 @@ include { STATISTICS_BLAST  } from '../../modules/statistics_blast.nf'
 workflow {
 
     main:
+    // === MODO DEBUG: Comprobar lectura de configuraciones ===
+    log.info """
+    =======================================================
+    ⚙️  DEBUGGING NEXTFLOW CONFIGURATION
+    =======================================================
+    omicsboxImage (desde raíz) : ${params.omicsboxImage}
+    local_folder  (fusionado)  : ${params.local_folder}
+    =======================================================
+    """.stripIndent()
     // 1. Safety Checks
     if (!params.input_fasta) {
         exit 1, """ERROR: You must provide a path to a FASTA input file
