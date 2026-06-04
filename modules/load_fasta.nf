@@ -7,23 +7,16 @@ process LOAD_FASTA {
     path fasta_file
 
     output:
-    // Busca dentro de la subcarpeta autogenerada por OmicsBox
-    path "*/*.box", emit: fasta_project
+    path "load_fasta/*.box", emit: fasta_project
 
     script:
     def args = task.ext.args ?: ''
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
-    # Load sequences into an OmicsBox Sequence Project (.box)
+    mkdir -p load_fasta
     omicsbox load-sequences \\
         --i-file=\$PWD/${fasta_file.name} \\
-        --local-folder=\$PWD \\
-        $cloud_flag \\
+        --local-folder=\$PWD/load_fasta \\
         $args
-    FILE_PATH=\$(ls */project)
-    DIR_PATH=\$(dirname "\$FILE_PATH")
-    
-    mv "\$FILE_PATH" "\$DIR_PATH/${fasta_file.baseName}.box"
     """
 }

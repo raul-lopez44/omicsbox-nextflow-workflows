@@ -1,24 +1,24 @@
-// --- FILE: modules/diamond_blast.nf ---
+// --- FILE: modules/ips.nf ---
 nextflow.enable.dsl=2
 
-process DIAMOND_BLAST {
+process INTERPROSCAN {
 
     input:
     // OmicsBox Sequence Project (.box) emitted by the upstream LOAD_FASTA step.
     path omicsbox_project
 
     output:
-    path "diamond_blast/*.box", emit: blasted_project
+    path "interproscan/*.box", emit: ips_project
 
     script:
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
-    mkdir -p diamond_blast
-    omicsbox diamond \\
-        --i-input-fasta=\$PWD/${omicsbox_project.name} \\
-        --local-folder=\$PWD/diamond_blast \\
+    mkdir -p interproscan
+    omicsbox ips \\
+        --i-project=\$PWD/${omicsbox_project.name} \\
+        --local-folder=\$PWD/interproscan \\
         $cloud_flag \\
         $args
     """
