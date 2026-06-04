@@ -19,7 +19,7 @@ include { VALIDATE_GO_ANNOTATION      } from '../../modules/validate_go_annotati
 include { PROJECT_CHARTS              } from '../../modules/project_charts.nf'
 include { COMBINED_GO_GRAPH           } from '../../modules/combined_go_graph.nf'
 
-workflow functional_annotation {
+workflow {
 
     main:
     // === MODO DEBUG: Comprobar lectura de configuraciones ===
