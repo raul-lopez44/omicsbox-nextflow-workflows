@@ -16,7 +16,7 @@ process GO_MAPPING {
     """
     mkdir -p go_mapping
     omicsbox mapping-cloud \\
-        --i-input-project=\$PWD/${blasted_project.name} \\
+        --i-project=\$PWD/${blasted_project.name} \\
         --local-folder=\$PWD/go_mapping \\
         $args
     """

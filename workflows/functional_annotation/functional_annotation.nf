@@ -86,7 +86,7 @@ workflow {
     PROJECT_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
     COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
     EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
-    GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
+    // GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
     // GO_SLIM branch: generate annotation summary charts for the slim ontology project
-    GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
+    // GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
 }

@@ -16,7 +16,7 @@ process EC_CODE_MAPPING {
     """
     mkdir -p ec_code_mapping
     omicsbox enzymecode-run \\
-        --i-input-project=\$PWD/${validated_project.name} \\
+        --i-project=\$PWD/${validated_project.name} \\
         --local-folder=\$PWD/ec_code_mapping \\
         $args
     """

@@ -16,7 +16,7 @@ process PROJECT_CHARTS {
     """
     mkdir -p project_charts
     omicsbox statistics-project \\
-        --i-input-project=\$PWD/${validated_project.name} \\
+        --i-project=\$PWD/${validated_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/project_charts \\
         $args

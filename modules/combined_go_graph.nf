@@ -16,7 +16,7 @@ process COMBINED_GO_GRAPH {
     """
     mkdir -p combined_go_graph
     omicsbox graph-combined-make \\
-        --i-input-project=\$PWD/${validated_project.name} \\
+        --i-project=\$PWD/${validated_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/combined_go_graph \\
         $args

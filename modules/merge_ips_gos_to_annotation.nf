@@ -17,7 +17,7 @@ process MERGE_IPS_GOS_TO_ANNOTATION {
     """
     mkdir -p merge_ips_gos_to_annotation
     omicsbox interproscan-join \\
-        --i-input-project=\$PWD/${combined_project.name} \\
+        --i-project=\$PWD/${combined_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/merge_ips_gos_to_annotation \\
         $args

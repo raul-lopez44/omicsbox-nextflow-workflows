@@ -16,7 +16,7 @@ process GO_ANNOTATION_CHARTS {
     """
     mkdir -p go_annotation_charts
     omicsbox statistics-annotation \\
-        --i-input-project=\$PWD/${annotated_project.name} \\
+        --i-project=\$PWD/${annotated_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/go_annotation_charts \\
         $args
