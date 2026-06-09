@@ -8,7 +8,8 @@ process INTERPROSCAN {
     path omicsbox_project
 
     output:
-    path "${task.ext.outdir}/*", emit: ips_project
+    path "${task.ext.outdir}/*.box", emit: ips_project
+    path "${task.ext.outdir}/*.{xml,json,gff3,tsv}", emit: export_files, optional: true
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
