@@ -1,24 +1,23 @@
-// --- FILE: modules/project_charts.nf ---
+// --- FILE: modules/ec_code_mapping.nf ---
 nextflow.enable.dsl=2
 
-process PROJECT_CHARTS {
+process EC_CODE_MAPPING {
 
     input:
     // Validated OmicsBox project (.box) emitted by the upstream VALIDATE_GO_ANNOTATION step.
     path validated_project
 
     output:
-    path "project_charts/*.${params.chart_format}", emit: project_charts
+    path "ec_code_mapping/*.box", emit: ec_mapped_project
 
     script:
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p project_charts
-    omicsbox statistics-project \\
+    mkdir -p ec_code_mapping
+    omicsbox enzymecode-run \\
         --i-input-project=\$PWD/${validated_project.name} \\
-        --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/project_charts \\
+        --local-folder=\$PWD/ec_code_mapping \\
         $args
     """
 }

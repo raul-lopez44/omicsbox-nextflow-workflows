@@ -18,7 +18,7 @@ process MERGE_EGGNOG_5_GOS {
     """
     mkdir -p merge_eggnog_5_gos
     omicsbox emapper-mergeemapper5annotationswfaction \\
-        --i-project=\$PWD/${integrated_project.name} \\
+        --i-input-project=\$PWD/${integrated_project.name} \\
         --i-EggNOG_Annotations=\$PWD/${eggnog_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/merge_eggnog_5_gos \\

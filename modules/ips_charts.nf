@@ -16,7 +16,7 @@ process IPS_CHARTS {
     """
     mkdir -p ips_charts
     omicsbox statistics-interpro \\
-        --i-project=\$PWD/${ips_project.name} \\
+        --i-input-project=\$PWD/${ips_project.name} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/ips_charts \\
         $args

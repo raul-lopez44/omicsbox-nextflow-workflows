@@ -16,8 +16,12 @@ include { COMBINE_PROJECTS  } from '../../modules/combine_projects.nf'
 include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/merge_ips_gos_to_annotation.nf'
 include { MERGE_EGGNOG_5_GOS          } from '../../modules/merge_eggnog_5_gos.nf'
 include { VALIDATE_GO_ANNOTATION      } from '../../modules/validate_go_annotation.nf'
+include { EC_CODE_MAPPING             } from '../../modules/ec_code_mapping.nf'
 include { PROJECT_CHARTS              } from '../../modules/project_charts.nf'
 include { COMBINED_GO_GRAPH           } from '../../modules/combined_go_graph.nf'
+include { EXPORT_GENE_SETS            } from '../../modules/export_genesets.nf'
+include { GO_SLIM                     } from '../../modules/go_slim.nf'
+include { GO_ANNOTATION_CHARTS as GOSLIM_ANNOTATION_CHARTS } from '../../modules/go_annotation_charts.nf'
 
 workflow {
 
@@ -72,11 +76,17 @@ workflow {
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional annotations into the unified project
     // MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
-    // PHASE 6: FINAL CURATION, VALIDATION & REPORTING
+    // PHASE 6: FINAL CURATION, EC MAPPING & REPORTING
     // VALIDATE_GO_ANNOTATION removes redundant GO terms based on the True-Path-Rule
     VALIDATE_GO_ANNOTATION(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project)
-    FINAL_ANNOTATION_CHARTS(VALIDATE_GO_ANNOTATION.out.validated_project)
-    // PROJECT_CHARTS and COMBINED_GO_GRAPH run in parallel on the validated project
-    PROJECT_CHARTS(VALIDATE_GO_ANNOTATION.out.validated_project)
-    COMBINED_GO_GRAPH(VALIDATE_GO_ANNOTATION.out.validated_project)
+    // EC_CODE_MAPPING derives Enzyme Commission codes from the validated GO annotations
+    EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
+    // All downstream processes run in parallel from the EC-mapped master project
+    FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
+    PROJECT_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
+    COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
+    EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
+    GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
+    // GO_SLIM branch: generate annotation summary charts for the slim ontology project
+    GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
 }

@@ -17,7 +17,7 @@ process DIAMOND_BLAST {
     """
     mkdir -p diamond_blast
     omicsbox diamond \\
-        --i-input-fasta=\$PWD/${omicsbox_project.name} \\
+        --i-input-project=\$PWD/${omicsbox_project.name} \\
         --local-folder=\$PWD/diamond_blast \\
         $cloud_flag \\
         $args
