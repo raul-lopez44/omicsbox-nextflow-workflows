@@ -17,7 +17,7 @@ process INTERPROSCAN {
     """
     mkdir -p interproscan
     omicsbox ips \\
-        --i-project=\$PWD/${omicsbox_project.name} \\
+        --i-input-project=\$PWD/${omicsbox_project.name} \\
         --local-folder=\$PWD/interproscan \\
         $cloud_flag \\
         $args
