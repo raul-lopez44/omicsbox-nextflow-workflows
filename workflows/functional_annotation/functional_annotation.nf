@@ -59,7 +59,7 @@ workflow {
 
     // PHASE 4: PARALLEL DOMAIN & ORTHOLOGY PREDICTION
     // EGGNOG_MAPPER runs in parallel with LOAD_FASTA, consuming the raw FASTA directly
-    EGGNOG_MAPPER(ch_fasta)
+    // EGGNOG_MAPPER(ch_fasta)
     // INTERPROSCAN runs in parallel with DIAMOND_BLAST, both consuming LOAD_FASTA output
     INTERPROSCAN(LOAD_FASTA.out.fasta_project)
     IPS_CHARTS(INTERPROSCAN.out.ips_project)
@@ -70,11 +70,11 @@ workflow {
     // MERGE_IPS_GOS_TO_ANNOTATION merges IPS domain annotations into the combined project
     MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional annotations into the unified project
-    MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
+    // MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
     // PHASE 6: FINAL CURATION, VALIDATION & REPORTING
     // VALIDATE_GO_ANNOTATION removes redundant GO terms based on the True-Path-Rule
-    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
+    VALIDATE_GO_ANNOTATION(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project)
     FINAL_ANNOTATION_CHARTS(VALIDATE_GO_ANNOTATION.out.validated_project)
     // PROJECT_CHARTS and COMBINED_GO_GRAPH run in parallel on the validated project
     PROJECT_CHARTS(VALIDATE_GO_ANNOTATION.out.validated_project)
