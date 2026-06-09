@@ -8,18 +8,19 @@ process MERGE_IPS_GOS_TO_ANNOTATION {
     path combined_project
 
     output:
-    path "merge_ips_gos_to_annotation/output-merge-interpro-annotation-results.box",                   emit: integrated_project
-    path "merge_ips_gos_to_annotation/merge-interpro-annotation-results.${params.chart_format}",       emit: merge_chart
+    path "${task.ext.outdir}/project.box",               emit: integrated_project
+    path "${task.ext.outdir}/merge-interpro-annotation-results.${params.chart_format}",   emit: merge_chart
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p merge_ips_gos_to_annotation
+    mkdir -p ${outdir}
     omicsbox interproscan-join \\
         --i-project=\$PWD/${combined_project.name} \\
         --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/merge_ips_gos_to_annotation \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

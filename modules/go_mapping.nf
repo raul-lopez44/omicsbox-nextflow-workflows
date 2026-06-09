@@ -8,16 +8,17 @@ process GO_MAPPING {
     path blasted_project
 
     output:
-    path "go_mapping/*.box", emit: mapped_project
+    path "${task.ext.outdir}/*", emit: mapped_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p go_mapping
+    mkdir -p ${outdir}
     omicsbox mapping-cloud \\
         --i-project=\$PWD/${blasted_project.name} \\
-        --local-folder=\$PWD/go_mapping \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

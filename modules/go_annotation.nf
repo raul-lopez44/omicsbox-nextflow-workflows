@@ -8,16 +8,17 @@ process GO_ANNOTATION {
     path mapped_project
 
     output:
-    path "go_annotation/*.box", emit: annotated_project
+    path "${task.ext.outdir}/*", emit: annotated_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p go_annotation
+    mkdir -p ${outdir}
     omicsbox annotation-run \\
         --i-project=\$PWD/${mapped_project.name} \\
-        --local-folder=\$PWD/go_annotation \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

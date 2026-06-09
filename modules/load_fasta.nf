@@ -7,16 +7,17 @@ process LOAD_FASTA {
     path fasta_file
 
     output:
-    path "load_fasta/*.box", emit: fasta_project
+    path "${task.ext.outdir}/*", emit: fasta_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p load_fasta
+    mkdir -p ${outdir}
     omicsbox load-sequences \\
         --i-file=\$PWD/${fasta_file.name} \\
-        --local-folder=\$PWD/load_fasta \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

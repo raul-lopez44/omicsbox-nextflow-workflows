@@ -8,16 +8,17 @@ process GO_SLIM {
     path project_file
 
     output:
-    path "go_slim/*.box", emit: goslim_project
+    path "${task.ext.outdir}/*", emit: goslim_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p go_slim
+    mkdir -p ${outdir}
     omicsbox goslim \\
         --i-project=\$PWD/${project_file.name} \\
-        --local-folder=\$PWD/go_slim \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

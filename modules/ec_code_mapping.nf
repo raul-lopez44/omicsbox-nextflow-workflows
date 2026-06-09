@@ -8,16 +8,17 @@ process EC_CODE_MAPPING {
     path validated_project
 
     output:
-    path "ec_code_mapping/*.box", emit: ec_mapped_project
+    path "${task.ext.outdir}/*", emit: ec_mapped_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p ec_code_mapping
+    mkdir -p ${outdir}
     omicsbox enzymecode-run \\
         --i-project=\$PWD/${validated_project.name} \\
-        --local-folder=\$PWD/ec_code_mapping \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

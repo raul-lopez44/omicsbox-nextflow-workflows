@@ -8,17 +8,18 @@ process GO_MAPPING_CHARTS {
     path mapped_project
 
     output:
-    path "go_mapping_charts/*.${params.chart_format}", emit: mapping_charts
+    path "${task.ext.outdir}/*", emit: mapping_charts
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p go_mapping_charts
+    mkdir -p ${outdir}
     omicsbox statistics-mapping \\
         --i-project=\$PWD/${mapped_project.name} \\
         --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/go_mapping_charts \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

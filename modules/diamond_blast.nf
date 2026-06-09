@@ -8,17 +8,18 @@ process DIAMOND_BLAST {
     path omicsbox_project
 
     output:
-    path "diamond_blast/*.box", emit: blasted_project
+    path "${task.ext.outdir}/*", emit: blasted_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
-    mkdir -p diamond_blast
+    mkdir -p ${outdir}
     omicsbox diamond \\
         --i-input-project=\$PWD/${omicsbox_project.name} \\
-        --local-folder=\$PWD/diamond_blast \\
+        --local-folder=\$PWD/${outdir} \\
         $cloud_flag \\
         $args
     """

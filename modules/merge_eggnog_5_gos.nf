@@ -9,19 +9,20 @@ process MERGE_EGGNOG_5_GOS {
     path eggnog_project
 
     output:
-    path "merge_eggnog_5_gos/merge-output-orthology-groups-go-annotation.box",             emit: final_project
-    path "merge_eggnog_5_gos/merge-orthology-groups-go-annotation.${params.chart_format}", emit: merge_eggnog_chart
+    path "${task.ext.outdir}/project.box",             emit: final_project
+    path "${task.ext.outdir}/merge-orthology-groups-go-annotation.${params.chart_format}", emit: merge_eggnog_chart
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p merge_eggnog_5_gos
+    mkdir -p ${outdir}
     omicsbox emapper-mergeemapper5annotationswfaction \\
         --i-project=\$PWD/${integrated_project.name} \\
         --i-egg-nog-annotations=\$PWD/${eggnog_project.name} \\
         --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/merge_eggnog_5_gos \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

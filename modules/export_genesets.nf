@@ -8,16 +8,17 @@ process EXPORT_GENE_SETS {
     path project_file
 
     output:
-    path "export_genesets/*", emit: genesets_file
+    path "${task.ext.outdir}/*", emit: genesets_file
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p export_genesets
+    mkdir -p ${outdir}
     omicsbox export-genesets \\
         --i-project=\$PWD/${project_file.name} \\
-        --o-file=\$PWD/export_genesets/gene_sets.txt \\
+        --o-file=\$PWD/${outdir}/gene_sets.txt \\
         $args
     """
 }

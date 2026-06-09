@@ -8,17 +8,18 @@ process INTERPROSCAN {
     path omicsbox_project
 
     output:
-    path "interproscan/*.box", emit: ips_project
+    path "${task.ext.outdir}/*", emit: ips_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
-    mkdir -p interproscan
+    mkdir -p ${outdir}
     omicsbox ips \\
         --i-input-project=\$PWD/${omicsbox_project.name} \\
-        --local-folder=\$PWD/interproscan \\
+        --local-folder=\$PWD/${outdir} \\
         $cloud_flag \\
         $args
     """

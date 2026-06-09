@@ -8,17 +8,18 @@ process GO_ANNOTATION_CHARTS {
     path annotated_project
 
     output:
-    path "go_annotation_charts/*.${params.chart_format}", emit: annotation_charts
+    path "${task.ext.outdir}/*", emit: annotation_charts
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p go_annotation_charts
+    mkdir -p ${outdir}
     omicsbox statistics-annotation \\
         --i-project=\$PWD/${annotated_project.name} \\
         --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/go_annotation_charts \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

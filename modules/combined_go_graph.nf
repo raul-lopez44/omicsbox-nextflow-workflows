@@ -4,21 +4,22 @@ nextflow.enable.dsl=2
 process COMBINED_GO_GRAPH {
 
     input:
-    // Validated OmicsBox project (.box) emitted by the upstream VALIDATE_GO_ANNOTATION step.
+    // OmicsBox EC-mapped project (.box) emitted by the upstream EC_CODE_MAPPING step.
     path validated_project
 
     output:
-    path "combined_go_graph/*.${params.chart_format}", emit: combined_graph
+    path "${task.ext.outdir}/*", emit: combined_graph
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p combined_go_graph
+    mkdir -p ${outdir}
     omicsbox graph-combined-make \\
         --i-project=\$PWD/${validated_project.name} \\
         --chart-format=${params.chart_format} \\
-        --local-folder=\$PWD/combined_go_graph \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }

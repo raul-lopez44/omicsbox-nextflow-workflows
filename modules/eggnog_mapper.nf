@@ -8,18 +8,19 @@ process EGGNOG_MAPPER {
     path fasta_file
 
     output:
-    path "eggnog_mapper/output_eggnog_*.box",        emit: eggnog_project
-    path "eggnog_mapper/eggnog_mapper_report_*.box", emit: eggnog_report
+    path "${task.ext.outdir}/output_eggnog_*.box",        emit: eggnog_project
+    path "${task.ext.outdir}/eggnog_mapper_report_*.box", emit: eggnog_report
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
-    mkdir -p eggnog_mapper
+    mkdir -p ${outdir}
     omicsbox eggnog-mapper \\
         --i-input-project=\$PWD/${fasta_file.name} \\
-        --local-folder=\$PWD/eggnog_mapper \\
+        --local-folder=\$PWD/${outdir} \\
         $cloud_flag \\
         $args
     """

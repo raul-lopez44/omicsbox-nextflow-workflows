@@ -4,20 +4,21 @@ nextflow.enable.dsl=2
 process VALIDATE_GO_ANNOTATION {
 
     input:
-    // Final consolidated OmicsBox project (.box) emitted by the upstream MERGE_EGGNOG_5_GOS step.
+    // Integrated OmicsBox project (.box) emitted by the upstream MERGE_IPS_GOS_TO_ANNOTATION step.
     path final_project
 
     output:
-    path "validate_go_annotation/*.box", emit: validated_project
+    path "${task.ext.outdir}/*", emit: validated_project
 
     script:
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
     """
-    mkdir -p validate_go_annotation
+    mkdir -p ${outdir}
     omicsbox annotation-validate \\
         --i-project=\$PWD/${final_project.name} \\
-        --local-folder=\$PWD/validate_go_annotation \\
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }
