@@ -15,8 +15,8 @@ process GO_ANNOTATION {
 
     """
     mkdir -p go_annotation
-    omicsbox annotation \\
-        --i-project=\$PWD/${mapped_project.name} \\
+    omicsbox annotation-run \\
+        --i-input-project=\$PWD/${mapped_project.name} \\
         --local-folder=\$PWD/go_annotation \\
         $args
     """

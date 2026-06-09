@@ -15,8 +15,8 @@ process VALIDATE_GO_ANNOTATION {
 
     """
     mkdir -p validate_go_annotation
-    omicsbox validate-annotation \\
-        --i-project=\$PWD/${final_project.name} \\
+    omicsbox annotation-validate \\
+        --i-input-project=\$PWD/${final_project.name} \\
         --local-folder=\$PWD/validate_go_annotation \\
         $args
     """
