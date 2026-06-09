@@ -17,8 +17,8 @@ process EXPORT_GENE_SETS {
     """
     mkdir -p ${outdir}
     omicsbox export-genesets \\
-        --i-project=\$PWD/${project_file.name} \\
-        --o-file=\$PWD/${outdir}/gene_sets.txt \\
+        --i-project=\$PWD/${project_file.name} \\ 
+        --local-folder=\$PWD/${outdir} \\
         $args
     """
 }
