@@ -19,7 +19,7 @@ process EGGNOG_MAPPER {
     """
     mkdir -p ${outdir}
     omicsbox eggnog-mapper \\
-        --i-input-project=\$PWD/${fasta_file.name} \\
+        --i-sequences=\$PWD/${fasta_file.name} \\
         --local-folder=\$PWD/${outdir} \\
         $cloud_flag \\
         $args
