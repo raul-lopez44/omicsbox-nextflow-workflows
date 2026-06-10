@@ -18,7 +18,7 @@ process DIAMOND_BLAST {
     """
     mkdir -p ${outdir}
     omicsbox diamond \\
-        --i-input-project=\$PWD/${omicsbox_project.name} \\
+        --i-local-project=\$PWD/${omicsbox_project.name} \\
         --local-folder=\$PWD/${outdir} \\
         $cloud_flag \\
         $args
