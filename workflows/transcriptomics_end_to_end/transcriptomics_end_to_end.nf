@@ -17,20 +17,18 @@ workflow {
                 Paired-End reads in the same run."""            
     }
 
-    if (params.trimmomatic.folder_output_reads == params.trimmomatic.folder_unpaired_reads) {
-        exit 1, """ERROR: The parameters 'folder_output_reads' and 'folder_unpaired_reads' 
-                cannot have the exact same name. Please assign different 
-                names to these folders in your nextflow.config."""
-    }
-
     // 2. Data Channels (Simplified to fromPath for both PE and SE)
+    // ARCHITECTURAL NOTE: We use .collect() to gather all reads into a single List object.
+    // By passing the entire list at once, we spawn only ONE Nextflow task/Docker container.
+    // The OmicsBox engine is heavily optimized to handle the parallelization of these files internally.
+    // Without .collect(), Nextflow would spawn a separate container for every single file.
     def ch_reads = params.input_single_end
         ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
     // 3. Optional File Channels
     // If null, we pass an empty list [] so the process doesn't wait indefinitely
-    def ch_adapters = params.trimmomatic.adapters 
+    def ch_trimmomatic_adapters = params.trimmomatic.adapters 
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
 
@@ -43,7 +41,7 @@ workflow {
         : channel.value([])
 
     // 4. Execution
-    TRIMMOMATIC(ch_reads, ch_adapters, params.trimmomatic.folder_output_reads, params.trimmomatic.folder_unpaired_reads)
+    TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
     FASTQC(TRIMMOMATIC.out.output_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 }
 
