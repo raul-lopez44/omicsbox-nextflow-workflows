@@ -51,7 +51,7 @@ workflow {
 
     // PHASE 2: SEQUENCE HOMOLOGY & GO MAPPING
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
-    BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
+    //BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
     // GO_MAPPING runs in parallel with BLAST_CHARTS, both consuming DIAMOND_BLAST output
     GO_MAPPING(DIAMOND_BLAST.out.blasted_project)
     GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
