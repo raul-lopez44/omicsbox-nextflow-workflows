@@ -78,7 +78,7 @@ workflow {
 
     // PHASE 6: FINAL CURATION, EC MAPPING & REPORTING
     // VALIDATE_GO_ANNOTATION removes redundant GO terms based on the True-Path-Rule
-    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.integrated_project)
+    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
     // EC_CODE_MAPPING derives Enzyme Commission codes from the validated GO annotations
     EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
     // All downstream processes run in parallel from the EC-mapped master project
