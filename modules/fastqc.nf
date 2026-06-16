@@ -10,7 +10,7 @@ process FASTQC {
     path contaminants
 
     output:
-    path "${task.ext.outDir}/*.box", emit: fastqc_output
+    path "${task.ext.outdir}/*.box", emit: fastqc_output
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -19,7 +19,10 @@ process FASTQC {
     // and comma-separated inputs. We enforce comma separation (.join(',')) to bundle all files 
     // into a single, unbreakable argument. This prevents PicoCLI's greedy parser from 
     // accidentally swallowing adjacent flags.
-    def fastq_list = reads instanceof List ? reads.join(',') : reads.toString()
+    def fastq_list = reads instanceof List 
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',') 
+        : "\$PWD/${reads}"
+
     def input_flag = "--i-fastq-files=${fastq_list}"
 
     def adapters_flag = (adapters.name != '[]')
