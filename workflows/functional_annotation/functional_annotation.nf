@@ -54,19 +54,19 @@ workflow {
     // BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
     // GO_MAPPING runs in parallel with BLAST_CHARTS, both consuming DIAMOND_BLAST output
     GO_MAPPING(DIAMOND_BLAST.out.blasted_project)
-    GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
+    //GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
 
     // PHASE 3: INITIAL TRANSCRIPTOME ANNOTATION
     // GO_ANNOTATION runs in parallel with GO_MAPPING_CHARTS, both consuming GO_MAPPING output
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
-    BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
+    //BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
 
     // PHASE 4: PARALLEL DOMAIN & ORTHOLOGY PREDICTION
     // EGGNOG_MAPPER runs in parallel with LOAD_FASTA, consuming the raw FASTA directly
     EGGNOG_MAPPER(ch_fasta)
     // INTERPROSCAN runs in parallel with DIAMOND_BLAST, both consuming LOAD_FASTA output
     INTERPROSCAN(LOAD_FASTA.out.fasta_project)
-    IPS_CHARTS(INTERPROSCAN.out.ips_project)
+    //IPS_CHARTS(INTERPROSCAN.out.ips_project)
 
     // PHASE 5: MULTI-OMICS PROJECT MERGING & CONSOLIDATION
     // COMBINE_PROJECTS synchronizes the IPS and GO Annotation branches into one final project
