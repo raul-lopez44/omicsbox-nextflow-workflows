@@ -18,8 +18,8 @@ process COMBINE_PROJECTS {
     """
     mkdir -p ${outdir}
     omicsbox combine-projects \\
-        --i-project1=\$PWD/${ips_project.name} \\
-        --i-project2=\$PWD/${annotated_project.name} \\
+        --i-project1=\$PWD/${ips_project} \\
+        --i-project2=\$PWD/${annotated_project} \\
         --local-folder=\$PWD/${outdir} \\
         $args
     """

@@ -17,7 +17,7 @@ process GO_SLIM {
     """
     mkdir -p ${outdir}
     omicsbox goslim \\
-        --i-project=\$PWD/${project_file.name} \\
+        --i-project=\$PWD/${project_file} \\
         --local-folder=\$PWD/${outdir} \\
         $args
     """

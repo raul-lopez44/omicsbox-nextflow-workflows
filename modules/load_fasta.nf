@@ -16,7 +16,7 @@ process LOAD_FASTA {
     """
     mkdir -p ${outdir}
     omicsbox load-sequences \\
-        --i-file=\$PWD/${fasta_file.name} \\
+        --i-file=\$PWD/${fasta_file} \\
         --local-folder=\$PWD/${outdir} \\
         $args
     """
