@@ -72,13 +72,13 @@ workflow {
     // COMBINE_PROJECTS synchronizes the IPS and GO Annotation branches into one final project
     COMBINE_PROJECTS(INTERPROSCAN.out.ips_project, DIAMOND_BLAST.out.blasted_project)
     // MERGE_IPS_GOS_TO_ANNOTATION merges IPS domain annotations into the combined project
-    MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
+    // MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional annotations into the unified project
-    MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
+    // MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
     // PHASE 6: FINAL CURATION, EC MAPPING & REPORTING
     // VALIDATE_GO_ANNOTATION removes redundant GO terms based on the True-Path-Rule
-    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
+    VALIDATE_GO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
     // EC_CODE_MAPPING derives Enzyme Commission codes from the validated GO annotations
     EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
     // All downstream processes run in parallel from the EC-mapped master project
