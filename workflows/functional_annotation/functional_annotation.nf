@@ -70,7 +70,7 @@ workflow {
 
     // PHASE 5: MULTI-OMICS PROJECT MERGING & CONSOLIDATION
     // COMBINE_PROJECTS synchronizes the IPS and GO Annotation branches into one final project
-    COMBINE_PROJECTS(INTERPROSCAN.out.ips_project, DIAMOND_BLAST.out.blasted_project)
+    COMBINE_PROJECTS(GO_ANNOTATION.out.annotated_project, INTERPROSCAN.out.ips_project)
     // MERGE_IPS_GOS_TO_ANNOTATION merges IPS domain annotations into the combined project
     // MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional annotations into the unified project
