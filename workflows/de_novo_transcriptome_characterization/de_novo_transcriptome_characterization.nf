@@ -13,6 +13,7 @@ include { LOAD_FASTA              } from '../../modules/load_fasta.nf'
 include { DIAMOND_BLAST           } from '../../modules/diamond_blast.nf'
 include { BLAST_CHARTS            } from '../../modules/blast_charts.nf'
 include { INTERPROSCAN            } from '../../modules/ips.nf'
+include { IPS_CHARTS               } from '../../modules/ips_charts.nf'
 include { EGGNOG_MAPPER           } from '../../modules/eggnog_mapper.nf'
 include { COMBINE_PROJECTS        } from '../../modules/combine_projects.nf'
 include { MERGE_EGGNOG_5_GOS      } from '../../modules/merge_eggnog_5_gos.nf'
@@ -80,7 +81,7 @@ workflow {
     CDHIT(TRINITY.out.assembly)
 
     // -------------------------------------------------------------------------
-    // 06 — Assembly completeness assessment  (terminal)
+    // 06 — Assembly completeness assessment  
     // -------------------------------------------------------------------------
     BUSCO(CDHIT.out.clustered_fasta)
 
@@ -103,6 +104,7 @@ workflow {
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
     BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
     INTERPROSCAN(LOAD_FASTA.out.fasta_project)
+    IPS_CHARTS(INTERPROSCAN.out.ips_project)
     EGGNOG_MAPPER(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
