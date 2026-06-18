@@ -42,38 +42,38 @@ workflow {
 
     // PHASE 2: SEQUENCE HOMOLOGY & GO MAPPING
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
-    // BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
+    BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
     // GO_MAPPING runs in parallel with BLAST_CHARTS, both consuming DIAMOND_BLAST output
     GO_MAPPING(DIAMOND_BLAST.out.blasted_project)
-    //GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
+    GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
 
     // PHASE 3: INITIAL TRANSCRIPTOME ANNOTATION
     // GO_ANNOTATION runs in parallel with GO_MAPPING_CHARTS, both consuming GO_MAPPING output
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
-    //BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
+    BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
 
     // PHASE 4: PARALLEL DOMAIN & ORTHOLOGY PREDICTION
     // EGGNOG_MAPPER runs in parallel with LOAD_FASTA, consuming the raw FASTA directly
     EGGNOG_MAPPER(ch_fasta)
     // INTERPROSCAN runs in parallel with DIAMOND_BLAST, both consuming LOAD_FASTA output
     INTERPROSCAN(LOAD_FASTA.out.fasta_project)
-    //IPS_CHARTS(INTERPROSCAN.out.ips_project)
+    IPS_CHARTS(INTERPROSCAN.out.ips_project)
 
     // PHASE 5: MULTI-OMICS PROJECT MERGING & CONSOLIDATION
     // COMBINE_PROJECTS synchronizes the IPS and GO Annotation branches into one final project
     COMBINE_PROJECTS(GO_ANNOTATION.out.annotated_project, INTERPROSCAN.out.ips_project)
     // MERGE_IPS_GOS_TO_ANNOTATION merges IPS domain annotations into the combined project
-    // MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
+    MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional annotations into the unified project
-    // MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
+    MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
     // PHASE 6: FINAL CURATION, EC MAPPING & REPORTING
     // VALIDATE_GO_ANNOTATION removes redundant GO terms based on the True-Path-Rule
-    VALIDATE_GO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
+    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
     // EC_CODE_MAPPING derives Enzyme Commission codes from the validated GO annotations
     EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
     // All downstream processes run in parallel from the EC-mapped master project
-    //FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
+    FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
     //PROJECT_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
     COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
     EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
