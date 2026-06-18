@@ -40,16 +40,16 @@ workflow {
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
     // Optional file inputs — channel.value([]) acts as a safe empty placeholder
-    def ch_trimmomatic_adapters = params.trimmomatic_adapters
-        ? channel.fromPath(params.trimmomatic_adapters, checkIfExists: true)
+    def ch_trimmomatic_adapters = params.trimmomatic.adapters
+        ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
 
-    def ch_fastqc_adapters = params.fastqc_adapters
-        ? channel.fromPath(params.fastqc_adapters, checkIfExists: true)
+    def ch_fastqc_adapters = params.fastqc.adapters
+        ? channel.fromPath(params.fastqc.adapters, checkIfExists: true)
         : channel.value([])
 
-    def ch_fastqc_contaminants = params.fastqc_contaminants
-        ? channel.fromPath(params.fastqc_contaminants, checkIfExists: true)
+    def ch_fastqc_contaminants = params.fastqc.contaminants
+        ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
 
     // -------------------------------------------------------------------------
