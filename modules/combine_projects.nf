@@ -1,4 +1,6 @@
 // --- FILE: modules/combine_projects.nf ---
+// Wraps: omicsbox combine-projects  |  backend: LEGACY_SYNC
+// Merges multiple OmicsBox projects into one
 nextflow.enable.dsl=2
 
 process COMBINE_PROJECTS {

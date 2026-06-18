@@ -1,4 +1,6 @@
 // --- FILE: modules/validate_go_annotation.nf ---
+// Wraps: omicsbox annotation-validate  |  backend: LEGACY_SYNC
+// Validates GO annotations using True-Path-Rule
 nextflow.enable.dsl=2
 
 process VALIDATE_GO_ANNOTATION {

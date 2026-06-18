@@ -1,7 +1,6 @@
 // --- FILE: modules/trinity.nf ---
 // Wraps: omicsbox trinity  |  backend: WJOB_ASYNC
-// De-novo RNA-Seq assembly. Outputs Trinity.fasta (→ RSEM, CDHIT) and
-// Trinity.fasta.gene_trans_map (→ RSEM as transcript-to-gene mapping).
+// De-novo RNA-Seq assembly. 
 nextflow.enable.dsl=2
 
 process TRINITY {
@@ -21,12 +20,10 @@ process TRINITY {
     def args          = task.ext.args   ?: ''
     def is_single_end = params.input_single_end ? true : false
 
-    // PicoCLI greedy parser: comma-separated list
     def reads_list = reads instanceof List 
         ? reads.collect { file -> "\$PWD/${file}" }.join(',') 
         : "\$PWD/${reads}"
-
-    // Trinity uses "Single" / "Paired" (capital first letter) for --sequencing
+        
     def input_flag = is_single_end ? "--sequencing=Single" : "--sequencing=Paired"
 
     def pattern_flags = ""

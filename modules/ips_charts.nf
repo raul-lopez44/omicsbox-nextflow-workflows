@@ -1,4 +1,6 @@
 // --- FILE: modules/ips_charts.nf ---
+// Wraps: omicsbox statistics-interpro  |  backend: LEGACY_SYNC
+// Generates InterProScan domain distribution charts
 nextflow.enable.dsl=2
 
 process IPS_CHARTS {

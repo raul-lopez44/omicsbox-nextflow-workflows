@@ -1,19 +1,22 @@
 // --- FILE: modules/eggnog_mapper.nf ---
+// Wraps: omicsbox eggnog-mapper  |  backend: WJOB_ASYNC
+// Functional annotation via EggNOG ortholog mapping.
 nextflow.enable.dsl=2
 
 process EGGNOG_MAPPER {
 
     input:
-    // Raw FASTA file provided directly via ch_fasta channel.
-    path fasta_file
+    path fasta_file     // Input FASTA file (protein or nucleotide sequences)
 
     output:
-    path "${task.ext.outdir}/output_eggnog_*.box",        emit: eggnog_project
-    path "${task.ext.outdir}/eggnog_mapper_report_*.box", emit: eggnog_report
+    path "${task.ext.outdir}/output_eggnog_*.box", emit: eggnog_project           // EggNOG-annotated OmicsBox project
+    path "${task.ext.outdir}/eggnog_mapper_report_*.box", emit: eggnog_report     // EggNOG analysis report
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
+
+    // WJOB_ASYNC
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """

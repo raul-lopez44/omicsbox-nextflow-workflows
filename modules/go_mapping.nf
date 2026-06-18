@@ -1,4 +1,6 @@
 // --- FILE: modules/go_mapping.nf ---
+// Wraps: omicsbox mapping-cloud  |  backend: WJOB_ASYNC
+// Maps sequences to Gene Ontology terms
 nextflow.enable.dsl=2
 
 process GO_MAPPING {

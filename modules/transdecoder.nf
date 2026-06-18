@@ -1,7 +1,6 @@
 // --- FILE: modules/transdecoder.nf ---
 // Wraps: omicsbox transdecoder  |  backend: WJOB_ASYNC
 // Predicts protein-coding regions (ORFs) from assembled transcripts.
-// Outputs protein sequences and report; used for protein-level annotation (DIAMOND, IPS, EGGNOG).
 nextflow.enable.dsl=2
 
 process TRANSDECODER {

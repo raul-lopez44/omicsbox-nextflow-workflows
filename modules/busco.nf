@@ -1,7 +1,6 @@
 // --- FILE: modules/busco.nf ---
 // Wraps: omicsbox busco  |  backend: WJOB_ASYNC
 // Assesses assembly completeness against a BUSCO lineage database.
-// Terminal step in the clustering branch — outputs are not connected further.
 nextflow.enable.dsl=2
 
 process BUSCO {

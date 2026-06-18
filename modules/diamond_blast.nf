@@ -1,18 +1,21 @@
 // --- FILE: modules/diamond_blast.nf ---
+// Wraps: omicsbox diamond  |  backend: WJOB_ASYNC
+// Sequence similarity search via DIAMOND BLAST.
 nextflow.enable.dsl=2
 
 process DIAMOND_BLAST {
 
     input:
-    // OmicsBox Sequence Project (.box) emitted by the upstream LOAD_FASTA step.
-    path omicsbox_project
+    path omicsbox_project   // OmicsBox Sequence Project (.box) from LOAD_FASTA
 
     output:
-    path "${task.ext.outdir}/*", emit: blasted_project
+    path "${task.ext.outdir}/*", emit: blasted_project  // BLAST-annotated OmicsBox project
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
+
+    // WJOB_ASYNC
     def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """

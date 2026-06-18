@@ -1,4 +1,6 @@
 // --- FILE: modules/combined_go_graph.nf ---
+// Wraps: omicsbox graph-combined-make  |  backend: LEGACY_SYNC
+// Generates combined GO graph visualization
 nextflow.enable.dsl=2
 
 process COMBINED_GO_GRAPH {

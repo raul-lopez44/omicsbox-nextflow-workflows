@@ -1,4 +1,6 @@
 // --- FILE: modules/go_slim.nf ---
+// Wraps: omicsbox goslim  |  backend: LEGACY_SYNC
+// Generates GO Slim subset annotation
 nextflow.enable.dsl=2
 
 process GO_SLIM {
