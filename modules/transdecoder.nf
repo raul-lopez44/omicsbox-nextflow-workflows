@@ -27,8 +27,8 @@ process TRANSDECODER {
     """
     mkdir -p ${outdir}
     omicsbox transdecoder \\
-        --i-input=\$PWD/${input_fasta} \\
-        --i-gene-trans-map=\$PWD/${gene_trans_map} \\
+        --i-input=${input_fasta} \\
+        --i-gene-trans-map=${gene_trans_map} \\
         --provide-gene-trans-map=true \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

@@ -17,7 +17,7 @@ process VALIDATE_GO_ANNOTATION {
     """
     mkdir -p ${outdir}
     omicsbox annotation-validate \\
-        --i-project=\$PWD/${final_project} \\
+        --i-project=${final_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
     """
