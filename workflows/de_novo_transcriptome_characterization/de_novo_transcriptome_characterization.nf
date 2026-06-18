@@ -93,8 +93,8 @@ workflow {
     // -------------------------------------------------------------------------
     // 08-10 — Functional annotation (parallel, all from same LOAD_FASTA project)
     // -------------------------------------------------------------------------
-    DIAMOND_BLAST(LOAD_FASTA.out.project)
-    INTERPROSCAN(LOAD_FASTA.out.project)
+    DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
+    INTERPROSCAN(LOAD_FASTA.out.fasta_project)
     EGGNOG_MAPPER(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
@@ -105,5 +105,5 @@ workflow {
     // -------------------------------------------------------------------------
     // 12 — Final integrated functional annotation (Diamond + InterPro + EggNOG)
     // -------------------------------------------------------------------------
-    MERGE_EGGNOG_5_GOS(COMBINE_PROJECTS.out.project, EGGNOG_MAPPER.out.eggnog_project)
+    MERGE_EGGNOG_5_GOS(COMBINE_PROJECTS.out.combined_project, EGGNOG_MAPPER.out.eggnog_project)
 }
