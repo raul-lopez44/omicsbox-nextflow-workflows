@@ -34,7 +34,7 @@ process TRIMMOMATIC {
         pattern_flags = "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
     }
     
-    def adapter_flag = (adapters.name != '[]') 
+    def adapter_flag = (!(adapters instanceof List) || !adapters.isEmpty())
         ? "--i-adapter-file=\$PWD/${adapters}" 
         : ""
 
