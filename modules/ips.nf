@@ -21,7 +21,7 @@ process INTERPROSCAN {
     omicsbox ips \\
         --i-local-project=\$PWD/${omicsbox_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $cloud_flag \\
-        $args
+        ${cloud_flag} \\
+        ${args}
     """
 }

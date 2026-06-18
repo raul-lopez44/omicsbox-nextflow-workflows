@@ -20,6 +20,6 @@ process GO_ANNOTATION_CHARTS {
         --i-project=\$PWD/${annotated_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

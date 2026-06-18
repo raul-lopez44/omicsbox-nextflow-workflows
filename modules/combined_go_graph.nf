@@ -19,6 +19,6 @@ process COMBINED_GO_GRAPH {
     omicsbox graph-combined-make \\
         --i-project=\$PWD/${validated_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

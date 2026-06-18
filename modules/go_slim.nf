@@ -19,6 +19,6 @@ process GO_SLIM {
     omicsbox goslim \\
         --i-project=\$PWD/${project_file} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

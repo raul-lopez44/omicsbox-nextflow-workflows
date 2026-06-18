@@ -19,6 +19,6 @@ process EC_CODE_MAPPING {
     omicsbox enzymecode-run \\
         --i-project=\$PWD/${validated_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

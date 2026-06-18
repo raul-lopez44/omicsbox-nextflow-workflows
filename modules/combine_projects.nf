@@ -21,6 +21,6 @@ process COMBINE_PROJECTS {
         --i-project1=\$PWD/${ips_project} \\
         --i-project2=\$PWD/${annotated_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

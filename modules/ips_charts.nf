@@ -20,6 +20,6 @@ process IPS_CHARTS {
         --i-project=\$PWD/${ips_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

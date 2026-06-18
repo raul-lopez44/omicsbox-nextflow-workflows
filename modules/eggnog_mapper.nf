@@ -21,7 +21,7 @@ process EGGNOG_MAPPER {
     omicsbox eggnog-mapper \\
         --i-sequences=\$PWD/${fasta_file} \\
         --local-folder=\$PWD/${outdir} \\
-        $cloud_flag \\
-        $args
+        ${cloud_flag} \\
+        ${args}
     """
 }

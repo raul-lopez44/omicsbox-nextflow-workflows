@@ -20,6 +20,6 @@ process GO_MAPPING_CHARTS {
         --i-project=\$PWD/${mapped_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

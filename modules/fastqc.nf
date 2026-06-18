@@ -38,11 +38,11 @@ process FASTQC {
     """
     mkdir -p ${outdir}
     omicsbox fastqc \\
-        $input_flag \\
-        $adapters_flag \\
-        $contaminants_flag \\
+        ${input_flag} \\
+        ${adapters_flag} \\
+        ${contaminants_flag} \\
         --local-folder=\$PWD/${outdir} \\
-        $cloud_flag \\
-        $args
+        ${cloud_flag} \\
+        ${args}
     """
 }

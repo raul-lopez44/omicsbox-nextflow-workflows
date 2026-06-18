@@ -26,15 +26,6 @@ include { GO_ANNOTATION_CHARTS as GOSLIM_ANNOTATION_CHARTS } from '../../modules
 workflow {
 
     main:
-    // === MODO DEBUG: Comprobar lectura de configuraciones ===
-    log.info """
-    =======================================================
-    ⚙️  DEBUGGING NEXTFLOW CONFIGURATION
-    =======================================================
-    omicsboxImage (desde raíz) : ${params.omicsboxImage}
-    local_folder  (fusionado)  : ${params.local_folder}
-    =======================================================
-    """.stripIndent()
     // 1. Safety Checks
     if (!params.input_fasta) {
         exit 1, """ERROR: You must provide a path to a FASTA input file

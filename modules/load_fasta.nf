@@ -18,6 +18,6 @@ process LOAD_FASTA {
     omicsbox load-sequences \\
         --i-file=\$PWD/${fasta_file} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

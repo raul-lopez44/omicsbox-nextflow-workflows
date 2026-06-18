@@ -19,6 +19,6 @@ process GO_MAPPING {
     omicsbox mapping-cloud \\
         --i-project=\$PWD/${blasted_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

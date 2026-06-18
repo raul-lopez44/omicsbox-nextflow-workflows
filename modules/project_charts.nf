@@ -20,6 +20,6 @@ process PROJECT_CHARTS {
         --i-project=\$PWD/${validated_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

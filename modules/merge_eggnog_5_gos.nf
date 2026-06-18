@@ -23,6 +23,6 @@ process MERGE_EGGNOG_5_GOS {
         --i-egg-nog-annotations=\$PWD/${eggnog_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

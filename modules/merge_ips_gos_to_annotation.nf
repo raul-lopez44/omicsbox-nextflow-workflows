@@ -21,6 +21,6 @@ process MERGE_IPS_GOS_TO_ANNOTATION {
         --i-project=\$PWD/${combined_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }

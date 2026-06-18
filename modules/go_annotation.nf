@@ -19,6 +19,6 @@ process GO_ANNOTATION {
     omicsbox annotation-run \\
         --i-project=\$PWD/${mapped_project} \\
         --local-folder=\$PWD/${outdir} \\
-        $args
+        ${args}
     """
 }
