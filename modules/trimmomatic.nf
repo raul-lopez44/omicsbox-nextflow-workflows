@@ -27,10 +27,10 @@ process TRIMMOMATIC {
         : "--i-input-sequencing-data-furi-paired-end=${reads_list}"
 
     def pattern_flags = ""
-    def up_pat = params.get('upstream_pattern') ?: '_1'
-    def down_pat = params.get('downstream_pattern') ?: '_2'
 
     if (!is_single_end) {
+        def up_pat = params.keySet().contains('upstream_pattern') ? params.upstream_pattern : '_1'
+        def down_pat = params.keySet().contains('downstream_pattern') ? params.downstream_pattern : '_2'
         pattern_flags = "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
     }
     
@@ -43,7 +43,7 @@ process TRIMMOMATIC {
     """
     mkdir -p ${outdir}
 
-    omicsbox preprocessing \\
+    omicsbox trimmomatic \\
         ${input_flag} \\
         ${pattern_flags} \\
         ${adapter_flag} \\

@@ -30,14 +30,12 @@ process TRINITY {
     def input_flag = is_single_end ? "--sequencing=Single" : "--sequencing=Paired"
 
     def pattern_flags = ""
-    
-    // Extract variables safely. 
-    def up_pat = params.get('upstream_pattern') ?: '_1'
-    def down_pat = params.get('downstream_pattern') ?: '_2'
 
     // Check if the input is Paired-End 
     if (!is_single_end) {
-        pattern_flags = "--upstream-pattern-assembly=${up_pat} --downstream-pattern-assembly=${down_pat}"
+        def up_pat = params.keySet().contains('upstream_pattern') ? params.upstream_pattern : '_1'
+        def down_pat = params.keySet().contains('downstream_pattern') ? params.downstream_pattern : '_2'
+        pattern_flags = "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
     }
 
     // WJOB_ASYNC
