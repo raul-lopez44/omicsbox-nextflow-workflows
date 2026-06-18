@@ -7,9 +7,11 @@ include { FASTQC as FASTQC_POST   } from '../../modules/fastqc.nf'
 include { TRIMMOMATIC             } from '../../modules/trimmomatic.nf'
 include { TRINITY                 } from '../../modules/trinity.nf'
 include { CDHIT                   } from '../../modules/cdhit.nf'
+include { BUSCO                   } from '../../modules/busco.nf'
 include { TRANSDECODER            } from '../../modules/transdecoder.nf'
 include { LOAD_FASTA              } from '../../modules/load_fasta.nf'
 include { DIAMOND_BLAST           } from '../../modules/diamond_blast.nf'
+include { BLAST_CHARTS            } from '../../modules/blast_charts.nf'
 include { INTERPROSCAN            } from '../../modules/ips.nf'
 include { EGGNOG_MAPPER           } from '../../modules/eggnog_mapper.nf'
 include { COMBINE_PROJECTS        } from '../../modules/combine_projects.nf'
@@ -78,7 +80,12 @@ workflow {
     CDHIT(TRINITY.out.assembly)
 
     // -------------------------------------------------------------------------
-    // 06 — Predict protein-coding regions (ORFs) from clustered transcripts
+    // 06 — Assembly completeness assessment  (terminal)
+    // -------------------------------------------------------------------------
+    BUSCO(CDHIT.out.clustered_fasta)
+
+    // -------------------------------------------------------------------------
+    // 07 — Predict protein-coding regions (ORFs) from clustered transcripts
     // CRITICAL: TRANSDECODER requires TWO inputs:
     //   - Input 1: Clustered FASTA from CDHIT
     //   - Input 2: Gene-to-transcript mapping from TRINITY
@@ -86,24 +93,25 @@ workflow {
     TRANSDECODER(CDHIT.out.clustered_fasta, TRINITY.out.gene_trans_map)
 
     // -------------------------------------------------------------------------
-    // 07 — Load predicted protein sequences into OmicsBox project for annotation
+    // 08 — Load predicted protein sequences into OmicsBox project for annotation
     // -------------------------------------------------------------------------
     LOAD_FASTA(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
-    // 08-10 — Functional annotation (parallel, all from same LOAD_FASTA project)
+    // 09-11 — Functional annotation 
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
+    BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
     INTERPROSCAN(LOAD_FASTA.out.fasta_project)
     EGGNOG_MAPPER(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
-    // 11 — Merge Diamond and InterProScan results
+    // 12 — Merge Diamond and InterProScan results
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 12 — Final integrated functional annotation (Diamond + InterPro + EggNOG)
+    // 13 — Final integrated functional annotation (Diamond + InterPro + EggNOG)
     // -------------------------------------------------------------------------
     MERGE_EGGNOG_5_GOS(COMBINE_PROJECTS.out.combined_project, EGGNOG_MAPPER.out.eggnog_project)
 }
