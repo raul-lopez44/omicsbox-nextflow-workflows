@@ -2,7 +2,7 @@
 // FILE: functional_annotation.nf
 nextflow.enable.dsl=2
 
-include { LOAD_FASTA                                        } from '../../modules/load_fasta.nf'
+include { LOAD_FASTA                                       } from '../../modules/load_fasta.nf'
 include { DIAMOND_BLAST                                    } from '../../modules/diamond_blast.nf'
 include { BLAST_CHARTS                                     } from '../../modules/blast_charts.nf'
 include { GO_MAPPING                                       } from '../../modules/go_mapping.nf'

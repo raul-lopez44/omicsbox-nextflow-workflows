@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 process DIAMOND_BLAST {
 
     input:
-    path omicsbox_project   // OmicsBox Sequence Project (.box) from LOAD_FASTA
+    path omicsbox_project   // OmicsBox Sequence Project (.box) 
 
     output:
     path "${task.ext.outdir}/*", emit: blasted_project  // BLAST-annotated OmicsBox project

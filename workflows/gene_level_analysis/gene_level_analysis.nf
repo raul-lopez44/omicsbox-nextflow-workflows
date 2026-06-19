@@ -1,0 +1,104 @@
+// =============================================================================
+// FILE: gene_level_analysis.nf
+// Gene-Level RNA-Seq Analysis Pipeline: Read alignment (STAR) → quantification (HTSEQ) → differential expression
+// =============================================================================
+nextflow.enable.dsl=2
+
+include { FASTQC as FASTQC_RAW   } from '../../modules/fastqc.nf'
+include { TRIMMOMATIC            } from '../../modules/trimmomatic.nf'
+include { FASTQC as FASTQC_POST  } from '../../modules/fastqc.nf'
+include { STAR                   } from '../../modules/star.nf'
+include { HTSEQ                  } from '../../modules/htseq.nf'
+include { COUNTS_PCA             } from '../../modules/counts_pca.nf'
+include { EDGER                  } from '../../modules/edger.nf'
+
+// =============================================================================
+workflow {
+
+    main:
+
+    // -------------------------------------------------------------------------
+    // Safety checks — all 4 critical inputs
+    // -------------------------------------------------------------------------
+    if (!params.input_paired_end && !params.input_single_end) {
+        exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
+    }
+    if (params.input_paired_end && params.input_single_end) {
+        exit 1, "ERROR: Provide either --input_paired_end or --input_single_end, not both."
+    }
+    if (!params.input_fasta) {
+        exit 1, "ERROR: You must provide a reference genome FASTA via --input_fasta."
+    }
+    if (!params.input_gff) {
+        exit 1, "ERROR: You must provide a genome annotation file (GTF/GFF) via --input_gff."
+    }
+    if (!params.experimental_design) {
+        exit 1, "ERROR: You must provide an experimental design file via --experimental_design."
+    }
+
+    // -------------------------------------------------------------------------
+    // Channel creation
+    // ARCHITECTURAL NOTE: .collect() gathers all reads into a single List so that
+    // only ONE OmicsBox task is spawned. OmicsBox parallelises internally over samples.
+    // -------------------------------------------------------------------------
+    def ch_reads = params.input_single_end
+        ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
+        : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
+
+    def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
+    def ch_gff = channel.fromPath(params.input_gff, checkIfExists: true)
+    def ch_design = channel.fromPath(params.experimental_design, checkIfExists: true)
+
+    // Optional file inputs — channel.value([]) acts as a safe empty placeholder
+    def ch_trimmomatic_adapters = params.trimmomatic.adapters
+        ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
+        : channel.value([])
+
+    def ch_fastqc_adapters = params.fastqc.adapters
+        ? channel.fromPath(params.fastqc.adapters, checkIfExists: true)
+        : channel.value([])
+
+    def ch_fastqc_contaminants = params.fastqc.contaminants
+        ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
+        : channel.value([])
+
+    // -------------------------------------------------------------------------
+    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // -------------------------------------------------------------------------
+    FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
+
+    // -------------------------------------------------------------------------
+    // 02 — Preprocessing & adapter removal
+    // -------------------------------------------------------------------------
+    TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
+
+    // -------------------------------------------------------------------------
+    // 03 — Quality assessment (post-trimming)
+    // -------------------------------------------------------------------------
+    FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
+
+    // -------------------------------------------------------------------------
+    // 04 — Read alignment to reference genome
+    // CRITICAL: STAR requires THREE inputs:
+    //   - Input 1: Trimmed FASTQ reads from TRIMMOMATIC
+    //   - Input 2: Reference genome FASTA file
+    //   - Input 3: Genome annotation (GTF/GFF) for splice junction detection
+    // -------------------------------------------------------------------------
+    STAR(TRIMMOMATIC.out.trimmed_reads, ch_fasta, ch_gff)
+
+    // -------------------------------------------------------------------------
+    // 05 — Gene-level quantification from aligned reads
+    // CRITICAL: HTSEQ requires TWO inputs:
+    //   - Input 1: BAM alignment files from STAR
+    //   - Input 2: Genome annotation (GTF/GFF) for feature assignment
+    // -------------------------------------------------------------------------
+    HTSEQ(STAR.out.bam_sorted, ch_gff)
+
+    // -------------------------------------------------------------------------
+    // 06-07 — Parallel statistical analysis
+    // Both PCA and edgeR consume the count table from HTSEQ and the experimental design
+    // -------------------------------------------------------------------------
+    COUNTS_PCA(HTSEQ.out.count_table, ch_design)
+    EDGER(HTSEQ.out.count_table, ch_design)
+
+}
