@@ -40,27 +40,27 @@ process AUGUSTUS {
     def has_rna_ds = hint_rna_ds ? hint_rna_ds.toString() != '[]' : false
 
     def est_flag = has_est
-        ? "--i-hint-files-est=${hint_est instanceof List ? hint_est.join(',') : hint_est}"
+        ? "--i-hint-files-est=${hint_est instanceof List ? hint_est.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_est}"}"
         : ""
     def protein_flag = has_protein
-        ? "--i-hint-files-protein=${hint_protein instanceof List ? hint_protein.join(',') : hint_protein}"
+        ? "--i-hint-files-protein=${hint_protein instanceof List ? hint_protein.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_protein}"}"
         : ""
     def isoseq_flag = has_isoseq
-        ? "--i-hint-files-isoseq=${hint_isoseq instanceof List ? hint_isoseq.join(',') : hint_isoseq}"
+        ? "--i-hint-files-isoseq=${hint_isoseq instanceof List ? hint_isoseq.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_isoseq}"}"
         : ""
     def rna_se_flag = has_rna_se
-        ? "--i-hint-files-rna-seq-u=${hint_rna_se instanceof List ? hint_rna_se.join(',') : hint_rna_se}"
+        ? "--i-hint-files-rna-seq-u=${hint_rna_se instanceof List ? hint_rna_se.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_rna_se}"}"
         : ""
     def rna_ds_flag = has_rna_ds
-        ? "--i-hint-files-rna-seq-d=${hint_rna_ds instanceof List ? hint_rna_ds.join(',') : hint_rna_ds}"
+        ? "--i-hint-files-rna-seq-d=${hint_rna_ds instanceof List ? hint_rna_ds.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_rna_ds}"}"
         : ""
 
-    // LEGACY_SYNC 
+    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}
     omicsbox genefinding-eukaryotic \\
-        --i-input-sequences=${fasta} \\
+        --i-input-sequences=\$PWD/${fasta} \\
         ${mode_flag} \\
         ${est_flag} \\
         ${protein_flag} \\

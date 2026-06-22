@@ -19,7 +19,7 @@ process BLAST_CHARTS {
     """
     mkdir -p ${outdir}
     omicsbox statistics-blast \\
-        --i-project=${blasted_project} \\
+        --i-project=\$PWD/${blasted_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}

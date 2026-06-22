@@ -19,7 +19,7 @@ process COMBINED_GO_GRAPH {
     """
     mkdir -p ${outdir}
     omicsbox graph-combined-make \\
-        --i-project=${validated_project} \\
+        --i-project=\$PWD/${validated_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
     """

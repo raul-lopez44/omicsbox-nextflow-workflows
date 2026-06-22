@@ -24,8 +24,8 @@ process QUAST {
     """
     mkdir -p ${outdir}
     omicsbox quast \\
-        --i-assemblies=${assembly instanceof List ? assembly.join(',') : assembly} \\
-        --i-reference=${reference} \\
+        --i-assemblies=${assembly instanceof List ? assembly.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${assembly}"} \\
+        --i-reference=\$PWD/${reference} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\
         ${args}

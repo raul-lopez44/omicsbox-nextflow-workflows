@@ -23,8 +23,8 @@ process EDGER {
     """
     mkdir -p ${outdir}
     omicsbox edger \\
-        --i-count-table=${count_table_project} \\
-        --i-file-design-table=${design_file} \\
+        --i-count-table=\$PWD/${count_table_project} \\
+        --i-file-design-table=\$PWD/${design_file} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\
         ${args}

@@ -22,7 +22,7 @@ process INTERPROSCAN {
     """
     mkdir -p ${outdir}
     omicsbox ips \\
-        --i-local-project=${omicsbox_project} \\
+        --i-local-project=\$PWD/${omicsbox_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\
         ${args}

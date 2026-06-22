@@ -27,9 +27,12 @@ process ABYSS {
     def is_single_end = params.input_single_end ? true : false
 
     // Single-End vs Paired-End input flag
+    def reads_list = reads instanceof List
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
+        : "\$PWD/${reads}"
     def input_flag = is_single_end
-        ? "--i-input-sequencing-data-abyss-single-end=${reads instanceof List ? reads.join(',') : reads}"
-        : "--i-input-sequencing-data-abyss-paired-end=${reads instanceof List ? reads.join(',') : reads}"
+        ? "--i-input-sequencing-data-abyss-single-end=${reads_list}"
+        : "--i-input-sequencing-data-abyss-paired-end=${reads_list}"
 
     // Paired-end pattern flags
     def pattern_flags = ""
@@ -48,16 +51,16 @@ process ABYSS {
     def use_opt_flag = has_any_opt ? "--use-additional-data=true" : ""
 
     def linked_flag = has_linked
-        ? "--i-optional-data-abyss-linked-reads=${opt_linked_reads instanceof List ? opt_linked_reads.join(',') : opt_linked_reads}"
+        ? "--i-optional-data-abyss-linked-reads=${opt_linked_reads instanceof List ? opt_linked_reads.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_linked_reads}"}"
         : ""
     def add_pe_flag = has_add_pe
-        ? "--i-optional-data-abyss-add-paired-end=${opt_add_paired_end instanceof List ? opt_add_paired_end.join(',') : opt_add_paired_end}"
+        ? "--i-optional-data-abyss-add-paired-end=${opt_add_paired_end instanceof List ? opt_add_paired_end.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_add_paired_end}"}"
         : ""
     def mp_flag = has_mp
-        ? "--i-optional-data-abyss-mate-pair=${opt_mate_pair instanceof List ? opt_mate_pair.join(',') : opt_mate_pair}"
+        ? "--i-optional-data-abyss-mate-pair=${opt_mate_pair instanceof List ? opt_mate_pair.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_mate_pair}"}"
         : ""
     def long_flag = has_long
-        ? "--i-optional-data-abyss-long-sequences=${opt_long_seqs instanceof List ? opt_long_seqs.join(',') : opt_long_seqs}"
+        ? "--i-optional-data-abyss-long-sequences=${opt_long_seqs instanceof List ? opt_long_seqs.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_long_seqs}"}"
         : ""
 
     // WJOB_ASYNC

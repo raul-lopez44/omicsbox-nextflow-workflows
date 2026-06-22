@@ -36,14 +36,14 @@ process REPEATMASKER {
     // Database file only required for RMBlast with RepBase or Custom databases
     // =====================================================================
     def has_db = database ? database.toString() != '[]' : false
-    def db_file_flag = has_db ? "--i-database-file=${database}" : ""
+    def db_file_flag = has_db ? "--i-database-file=\$PWD/${database}" : ""
 
     // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}
     omicsbox repeatmasker \\
-        --i-fasta-file-repeats=${fasta} \\
+        --i-fasta-file-repeats=\$PWD/${fasta} \\
         ${engine_flag} \\
         ${db_type_flag} \\
         ${db_file_flag} \\

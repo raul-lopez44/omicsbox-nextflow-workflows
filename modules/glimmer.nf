@@ -26,14 +26,14 @@ process GLIMMER {
     // =====================================================================
     def has_icm = icm_model ? icm_model.toString() != '[]' : false
     def use_icm_flag = has_icm ? "--use-icm=existing" : "--use-icm=create"
-    def icm_file_flag = has_icm ? "--i-existing-icmodel=${icm_model}" : ""
+    def icm_file_flag = has_icm ? "--i-existing-icmodel=\$PWD/${icm_model}" : ""
 
     // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}
     omicsbox runglimmer \\
-        --i-fastafile2=${fasta} \\
+        --i-fastafile2=\$PWD/${fasta} \\
         ${use_icm_flag} \\
         ${icm_file_flag} \\
         --local-folder=\$PWD/${outdir} \\

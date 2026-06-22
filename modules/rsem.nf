@@ -21,9 +21,12 @@ process RSEM {
     def is_single_end = params.input_single_end ? true : false
 
     // Single-End vs Paired-End input flag
+    def reads_list = reads instanceof List
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
+        : "\$PWD/${reads}"
     def input_flag = is_single_end
-        ? "--i-input-sequencing-data-furi-single-end=${reads.join(',')}"
-        : "--i-input-sequencing-data-furi-paired-end=${reads.join(',')}"
+        ? "--i-input-sequencing-data-furi-single-end=${reads_list}"
+        : "--i-input-sequencing-data-furi-paired-end=${reads_list}"
 
     def up_pat   = params.get('upstream_pattern')
     def down_pat = params.get('downstream_pattern')
@@ -32,7 +35,7 @@ process RSEM {
         : ""
 
     def genes_trans_map_flag = (!(gene_trans_map instanceof List) || !gene_trans_map.isEmpty())
-        ? "--i-transcript-to-gene-file=${gene_trans_map}"
+        ? "--i-transcript-to-gene-file=\$PWD/${gene_trans_map}"
         : ""
 
     // WJOB_ASYNC
@@ -41,7 +44,7 @@ process RSEM {
     """
     mkdir -p ${outdir}
     omicsbox rsem \\
-        --i-fasta-file=${assembly} \\
+        --i-fasta-file=\$PWD/${assembly} \\
         ${genes_trans_map_flag} \\
         ${input_flag} \\
         ${pattern_flags} \\

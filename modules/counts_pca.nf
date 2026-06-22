@@ -18,13 +18,13 @@ process COUNTS_PCA {
 
     // Experimental design file is optional for PCA; only inject flag when provided
     def design_flag = (design_file.name != '[]')
-        ? "--i-experimental-design=${design_file} --design=true"
+        ? "--i-experimental-design=\$PWD/${design_file} --design=true"
         : ""
 
     """
     mkdir -p ${outdir}
     omicsbox counts-pca \\
-        --i-count-table=${count_table_project} \\
+        --i-count-table=\$PWD/${count_table_project} \\
         ${design_flag} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

@@ -22,17 +22,17 @@ process FASTQC {
     // into a single, unbreakable argument. This prevents PicoCLI's greedy parser from
     // accidentally swallowing adjacent flags.
     def fastq_list = reads instanceof List
-        ? reads.collect { file -> "${file}" }.join(',')
-        : "${reads}"
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
+        : "\$PWD/${reads}"
 
     def input_flag = "--i-fastq-files=${fastq_list}"
 
     def adapters_flag = (adapters.name != '[]')
-        ? "--provide-adapters=true --i-adapters=${adapters}"
+        ? "--provide-adapters=true --i-adapters=\$PWD/${adapters}"
         : ""
 
     def contaminants_flag = (contaminants.name != '[]')
-        ? "--provide-contaminants=true --i-contaminants=${contaminants}"
+        ? "--provide-contaminants=true --i-contaminants=\$PWD/${contaminants}"
         : ""
 
     // WJOB_ASYNC

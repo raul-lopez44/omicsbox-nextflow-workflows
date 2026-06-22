@@ -1,0 +1,204 @@
+// =============================================================================
+// FILE: long_reads_eukaryotic_genome_analysis.nf
+// Long-Read Eukaryotic Genome Analysis Pipeline: QC → Assembly → Polish → Annotation → Functional Analysis
+// =============================================================================
+nextflow.enable.dsl=2
+
+include { LONGQC                       } from '../../modules/longqc.nf'
+include { FLYE                         } from '../../modules/flye.nf'
+include { QUAST                        } from '../../modules/quast.nf'
+include { BWA                          } from '../../modules/bwa.nf'
+include { PILON                        } from '../../modules/pilon.nf'
+include { BUSCO                        } from '../../modules/busco.nf'
+include { REPEATMASKER                 } from '../../modules/repeatmasker.nf'
+include { AUGUSTUS                     } from '../../modules/augustus.nf'
+include { DIAMOND_BLAST                } from '../../modules/diamond_blast.nf'
+include { INTERPROSCAN                 } from '../../modules/ips.nf'
+include { COMBINE_PROJECTS             } from '../../modules/combine_projects.nf'
+include { GO_MAPPING                   } from '../../modules/go_mapping.nf'
+include { GO_ANNOTATION                } from '../../modules/go_annotation.nf'
+include { MERGE_IPS_GOS_TO_ANNOTATION  } from '../../modules/merge_ips_gos_to_annotation.nf'
+
+// =============================================================================
+workflow {
+
+    main:
+
+    // -------------------------------------------------------------------------
+    // Safety checks — critical inputs for long-read eukaryotic pipeline
+    // -------------------------------------------------------------------------
+    if (!params.input_long_reads) {
+        exit 1, "ERROR: You must provide long reads via --input_long_reads."
+    }
+
+    if (!params.flye.library_type) {
+        exit 1, "ERROR: You must provide Flye library type via --flye.library_type (options: pacbio_raw, pacbio_corr, nano_raw, nano_corr)."
+    }
+
+    if (!['pacbio_raw', 'pacbio_corr', 'nano_raw', 'nano_corr'].contains(params.flye.library_type)) {
+        exit 1, "ERROR: Flye library_type must be one of: pacbio_raw, pacbio_corr, nano_raw, nano_corr. Got: ${params.flye.library_type}"
+    }
+
+    if (!params.input_single_end && !params.input_paired_end) {
+        exit 1, "ERROR: You must provide short reads via --input_single_end or --input_paired_end for BWA polishing."
+    }
+
+    if (params.input_single_end && params.input_paired_end) {
+        exit 1, "ERROR: Provide either --input_single_end or --input_paired_end, not both."
+    }
+
+    // -------------------------------------------------------------------------
+    // STRICT VALIDATION: RepeatMasker File Logic
+    // -------------------------------------------------------------------------
+    def rm_engine = params.repeatmasker.search_engine
+    def rm_db_type = params.repeatmasker.database_type
+    def rm_db_file = params.repeatmasker.database_file
+
+    if (rm_engine == 'rmblast' && (rm_db_type == 'repbase' || rm_db_type == 'custom')) {
+        if (!rm_db_file) {
+            exit 1, "ERROR: RepeatMasker requires a database file via params.repeatmasker.database_file when search_engine is 'rmblast' and database_type is '${rm_db_type}'."
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // STRICT VALIDATION: Augustus Gene Finding Mode
+    // -------------------------------------------------------------------------
+    if (params.augustus.gene_finding_mode == 'ee') {
+        def has_any_hint = params.augustus.est_hints || params.augustus.protein_hints || params.augustus.isoseq_hints || params.augustus.rna_seq_se_hints || params.augustus.rna_seq_pe_hints
+        if (!has_any_hint) {
+            exit 1, "ERROR: When Augustus gene_finding_mode is 'ee' (Extrinsic Evidence), you must provide at least one hint file (est_hints, protein_hints, isoseq_hints, rna_seq_se_hints, or rna_seq_pe_hints)."
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Channel creation
+    // ARCHITECTURAL NOTE: .collect() gathers all reads into a single List so that
+    // only ONE OmicsBox task is spawned. OmicsBox parallelises internally over samples.
+    // -------------------------------------------------------------------------
+    def ch_long_reads = channel.fromPath(params.input_long_reads, checkIfExists: true).collect()
+
+    def ch_short_reads = params.input_single_end
+        ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
+        : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
+
+    def ch_repeat_db = params.repeatmasker.database_file
+        ? channel.fromPath(params.repeatmasker.database_file, checkIfExists: true)
+        : channel.value([])
+
+    def ch_quast_ref = params.quast.reference_genome
+        ? channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+        : channel.value([])
+
+    // Optional AUGUSTUS evidence hints
+    def ch_aug_est = params.augustus.est_hints
+        ? channel.fromPath(params.augustus.est_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_protein = params.augustus.protein_hints
+        ? channel.fromPath(params.augustus.protein_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_isoseq = params.augustus.isoseq_hints
+        ? channel.fromPath(params.augustus.isoseq_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_rna_se = params.augustus.rna_seq_se_hints
+        ? channel.fromPath(params.augustus.rna_seq_se_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_rna_ds = params.augustus.rna_seq_pe_hints
+        ? channel.fromPath(params.augustus.rna_seq_pe_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    // -------------------------------------------------------------------------
+    // 01 — Long-read quality control & trimming
+    // -------------------------------------------------------------------------
+    LONGQC(ch_long_reads)
+
+    // -------------------------------------------------------------------------
+    // 02 — De novo long-read assembly using Flye
+    // Takes trimmed reads from LONGQC.
+    // -------------------------------------------------------------------------
+    FLYE(LONGQC.out.trimmed_reads)
+
+    // -------------------------------------------------------------------------
+    // 03 — Assembly quality assessment (QUAST)
+    // Evaluates the unpolished Flye assembly.
+    // -------------------------------------------------------------------------
+    QUAST(FLYE.out.assembly, ch_quast_ref)
+
+    // -------------------------------------------------------------------------
+    // 04 — Short-read alignment to long-read assembly (BWA)
+    // Maps short reads to Flye assembly for polishing.
+    // -------------------------------------------------------------------------
+    BWA(FLYE.out.assembly, ch_short_reads)
+
+    // -------------------------------------------------------------------------
+    // 05 — Hybrid assembly polishing (PILON)
+    // Polishes Flye assembly using short-read alignments from BWA.
+    // -------------------------------------------------------------------------
+    PILON(FLYE.out.assembly, BWA.out.sorted_bam)
+
+    // -------------------------------------------------------------------------
+    // 06 — Assembly completeness assessment (BUSCO)
+    // Evaluates the polished assembly.
+    // -------------------------------------------------------------------------
+    BUSCO(PILON.out.polished_assembly)
+
+    // -------------------------------------------------------------------------
+    // 07 — Repeat masking for eukaryotic genome
+    // Takes the polished assembly from Pilon.
+    // Produces soft-masked FASTA with repeats in lowercase.
+    // -------------------------------------------------------------------------
+    REPEATMASKER(PILON.out.polished_assembly, ch_repeat_db)
+
+    // -------------------------------------------------------------------------
+    // 08 — Eukaryotic gene finding with AUGUSTUS
+    // Takes soft-masked FASTA from RepeatMasker.
+    // Optional evidence hints improve prediction accuracy.
+    // -------------------------------------------------------------------------
+    AUGUSTUS(
+        REPEATMASKER.out.masked_fasta,
+        ch_aug_est,
+        ch_aug_protein,
+        ch_aug_isoseq,
+        ch_aug_rna_se,
+        ch_aug_rna_ds
+    )
+
+    // -------------------------------------------------------------------------
+    // 09a-09b — Parallel functional annotation branching
+    // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
+    // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
+    // INTERPROSCAN: Domain/motif-based annotation via InterPro
+    // -------------------------------------------------------------------------
+    DIAMOND_BLAST(AUGUSTUS.out.project)
+    INTERPROSCAN(AUGUSTUS.out.project)
+
+    // -------------------------------------------------------------------------
+    // 10 — Combine Diamond and InterProScan annotations
+    // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
+    // InterProScan project (with domain/motif annotations) and merges them
+    // into a single unified project.
+    // -------------------------------------------------------------------------
+    COMBINE_PROJECTS(DIAMOND_BLAST.out.annotated_project, INTERPROSCAN.out.annotated_project)
+
+    // -------------------------------------------------------------------------
+    // 11 — Gene Ontology mapping
+    // Takes the combined/unified project and maps functional terms to Gene Ontology.
+    // -------------------------------------------------------------------------
+    GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
+
+    // -------------------------------------------------------------------------
+    // 12 — BLAST2GO functional annotation
+    // Applies BLAST2GO algorithm for comprehensive functional annotation.
+    // -------------------------------------------------------------------------
+    GO_ANNOTATION(GO_MAPPING.out.go_mapped_project)
+
+    // -------------------------------------------------------------------------
+    // 13 — Final merge: InterProScan + GO-annotated genes
+    // Converges all annotation branches into a final unified project.
+    // -------------------------------------------------------------------------
+    MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)
+
+}

@@ -20,8 +20,8 @@ process TRIMMOMATIC {
     def is_single_end = params.input_single_end ? true : false
 
     def reads_list = reads instanceof List
-        ? reads.collect { file -> "${file}" }.join(',')
-        : "${reads}"
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
+        : "\$PWD/${reads}"
 
     def input_flag = is_single_end
         ? "--i-input-sequencing-data-furi-single-end=${reads_list}"
@@ -36,7 +36,7 @@ process TRIMMOMATIC {
     }
 
     def adapter_flag = (!(adapters instanceof List) || !adapters.isEmpty())
-        ? "--i-adapter-file=${adapters}"
+        ? "--i-adapter-file=\$PWD/${adapters}"
         : ""
 
     // WJOB_ASYNC

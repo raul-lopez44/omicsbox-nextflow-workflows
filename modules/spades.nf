@@ -33,9 +33,12 @@ process SPADES {
     // MAIN READS LOGIC (from Trimmomatic)
     // =====================================================================
     def library_type = params.spades.paired_end_library_type
+    def reads_list = reads instanceof List
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
+        : "\$PWD/${reads}"
     def input_flag = is_single_end
-        ? "--i-input-sequencing-data-spades-single-end=${reads instanceof List ? reads.join(',') : reads}"
-        : "--i-input-sequencing-data-spades-${library_type}=${reads instanceof List ? reads.join(',') : reads}"
+        ? "--i-input-sequencing-data-spades-single-end=${reads_list}"
+        : "--i-input-sequencing-data-spades-${library_type}=${reads_list}"
 
     // =====================================================================
     // PAIRED-END PATTERN LOGIC (Robust Fallback)
@@ -57,13 +60,13 @@ process SPADES {
     def use_mp_flag = has_any_mp ? "--use-mp-optional-data=true" : ""
 
     def mp_fr_flag = has_mp_fr
-        ? "--i-mp-optional-data-spades-mate-pair-fr=${opt_mp_fr instanceof List ? opt_mp_fr.join(',') : opt_mp_fr}"
+        ? "--i-mp-optional-data-spades-mate-pair-fr=${opt_mp_fr instanceof List ? opt_mp_fr.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_mp_fr}"}"
         : ""
     def mp_rf_flag = has_mp_rf
-        ? "--i-mp-optional-data-spades-mate-pair-rf=${opt_mp_rf instanceof List ? opt_mp_rf.join(',') : opt_mp_rf}"
+        ? "--i-mp-optional-data-spades-mate-pair-rf=${opt_mp_rf instanceof List ? opt_mp_rf.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_mp_rf}"}"
         : ""
     def mp_ff_flag = has_mp_ff
-        ? "--i-mp-optional-data-spades-mate-pair-ff=${opt_mp_ff instanceof List ? opt_mp_ff.join(',') : opt_mp_ff}"
+        ? "--i-mp-optional-data-spades-mate-pair-ff=${opt_mp_ff instanceof List ? opt_mp_ff.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_mp_ff}"}"
         : ""
 
     // =====================================================================
@@ -78,19 +81,19 @@ process SPADES {
     def use_hybrid_flag = is_hybrid ? "--use-data-for-hybrid-assembly=true" : ""
 
     def sanger_flag = has_sanger
-        ? "--i-data-for-hybrid-assembly-spades-sanger=${sanger_reads instanceof List ? sanger_reads.join(',') : sanger_reads}"
+        ? "--i-data-for-hybrid-assembly-spades-sanger=${sanger_reads instanceof List ? sanger_reads.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${sanger_reads}"}"
         : ""
     def pacbio_flag = has_pacbio
-        ? "--i-data-for-hybrid-assembly-spades-pacbio=${pacbio_reads instanceof List ? pacbio_reads.join(',') : pacbio_reads}"
+        ? "--i-data-for-hybrid-assembly-spades-pacbio=${pacbio_reads instanceof List ? pacbio_reads.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${pacbio_reads}"}"
         : ""
     def nanopore_flag = has_nanopore
-        ? "--i-data-for-hybrid-assembly-spades-nanopore=${nanopore_reads instanceof List ? nanopore_reads.join(',') : nanopore_reads}"
+        ? "--i-data-for-hybrid-assembly-spades-nanopore=${nanopore_reads instanceof List ? nanopore_reads.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${nanopore_reads}"}"
         : ""
     def trusted_flag = has_trusted
-        ? "--i-data-for-hybrid-assembly-spades-trusted-contigs=${trusted_contigs instanceof List ? trusted_contigs.join(',') : trusted_contigs}"
+        ? "--i-data-for-hybrid-assembly-spades-trusted-contigs=${trusted_contigs instanceof List ? trusted_contigs.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${trusted_contigs}"}"
         : ""
     def untrusted_flag = has_untrusted
-        ? "--i-data-for-hybrid-assembly-spades-untrusted-contigs=${untrusted_contigs instanceof List ? untrusted_contigs.join(',') : untrusted_contigs}"
+        ? "--i-data-for-hybrid-assembly-spades-untrusted-contigs=${untrusted_contigs instanceof List ? untrusted_contigs.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${untrusted_contigs}"}"
         : ""
 
     // WJOB_ASYNC: --cloud-folder required for cloud-backed runs
