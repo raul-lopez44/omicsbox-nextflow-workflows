@@ -15,7 +15,7 @@ process GLIMMER {
     output:
     path "${task.ext.outdir}/*.gff", emit: gff_genes             // Predicted genes in GFF format
     path "${task.ext.outdir}/*project*", emit: project           // OmicsBox sequence project
-    path "${task.ext.outdir}/*report*.box", emit: report         // OmicsBox HTML report
+    path "${task.ext.outdir}/*report*.box", emit: report         // OmicsBox report
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -21,7 +21,7 @@ process SPADES {
     output:
     path "${task.ext.outdir}/*contigs*.fasta", emit: contigs             // Assembled contigs FASTA file
     path "${task.ext.outdir}/*scaffolds*.fasta", emit: scaffolds         // Assembled scaffolds FASTA file
-    path "${task.ext.outdir}/*report*.box", emit: report                // OmicsBox HTML report
+    path "${task.ext.outdir}/*report*.box", emit: report                // OmicsBox report
     path "${task.ext.outdir}/*Nx_plot*", emit: nx_plot, optional: true  // Nx plot chart
 
     script:

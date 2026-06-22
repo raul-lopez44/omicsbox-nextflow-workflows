@@ -11,7 +11,7 @@ process EDGER {
 
     output:
     path "${task.ext.outdir}/*output*.box",  emit: results  // EdgeRObject project containing pairwise analysis results
-    path "${task.ext.outdir}/*report*.box", emit: report   // HTML report
+    path "${task.ext.outdir}/*report*.box", emit: report   //  Report
 
     script:
     def outdir     = task.ext.outdir ?: task.process.toLowerCase()

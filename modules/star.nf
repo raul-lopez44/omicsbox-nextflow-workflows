@@ -14,7 +14,7 @@ process STAR {
     path "${task.ext.outdir}/*.bam", emit: bam_sorted             // Coordinate-sorted BAM alignment file(s)
     path "${task.ext.outdir}/*.bam.bai", emit: bam_index, optional: true  // BAM index files
     path "${task.ext.outdir}/*SJ.out.tab", emit: splice_junctions, optional: true  // Splice junction coordinates
-    path "${task.ext.outdir}/*report*.box", emit: report          // OmicsBox HTML report
+    path "${task.ext.outdir}/*report*.box", emit: report          // OmicsBox report
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()

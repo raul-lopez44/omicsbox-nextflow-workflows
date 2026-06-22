@@ -1,0 +1,219 @@
+// =============================================================================
+// FILE: eukaryotic_genome_analysis.nf
+// Eukaryotic Genome Analysis Pipeline: Preprocessing → Assembly → Annotation → Functional Analysis
+// =============================================================================
+nextflow.enable.dsl=2
+
+include { FASTQC as FASTQC_RAW   } from '../../modules/fastqc.nf'
+include { TRIMMOMATIC            } from '../../modules/trimmomatic.nf'
+include { FASTQC as FASTQC_POST  } from '../../modules/fastqc.nf'
+include { ABYSS                  } from '../../modules/abyss.nf'
+include { QUAST                  } from '../../modules/quast.nf'
+include { BUSCO                  } from '../../modules/busco.nf'
+include { REPEATMASKER           } from '../../modules/repeatmasker.nf'
+include { AUGUSTUS               } from '../../modules/augustus.nf'
+include { DIAMOND_BLAST          } from '../../modules/diamond_blast.nf'
+include { INTERPROSCAN           } from '../../modules/ips.nf'
+include { COMBINE_PROJECTS       } from '../../modules/combine_projects.nf'
+include { GO_MAPPING             } from '../../modules/go_mapping.nf'
+include { GO_ANNOTATION          } from '../../modules/go_annotation.nf'
+include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/merge_ips_gos_to_annotation.nf'
+
+// =============================================================================
+workflow {
+
+    main:
+
+    // -------------------------------------------------------------------------
+    // Safety checks — critical inputs for eukaryotic pipeline
+    // -------------------------------------------------------------------------
+    if (!params.input_paired_end && !params.input_single_end) {
+        exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
+    }
+    if (params.input_paired_end && params.input_single_end) {
+        exit 1, "ERROR: Provide either --input_paired_end or --input_single_end, not both."
+    }
+    // -------------------------------------------------------------------------
+    // STRICT VALIDATION: RepeatMasker File Logic 
+    // -------------------------------------------------------------------------
+    def rm_engine = params.repeatmasker.search_engine
+    def rm_db_type = params.repeatmasker.database_type
+    def rm_db_file = params.repeatmasker.database_file
+
+    if (rm_engine == 'rmblast' && (rm_db_type == 'repbase' || rm_db_type == 'custom')) {
+        if (!rm_db_file) {
+            exit 1, "ERROR: RepeatMasker requires a database file via params.repeatmasker.database_file when search_engine is 'rmblast' and database_type is '${rm_db_type}'."
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // STRICT VALIDATION: Augustus Gene Finding Mode 
+    // -------------------------------------------------------------------------
+    if (params.augustus.gene_finding_mode == 'ee') {
+        def has_any_hint = params.augustus.est_hints || params.augustus.protein_hints || params.augustus.isoseq_hints || params.augustus.rna_seq_se_hints || params.augustus.rna_seq_pe_hints
+        if (!has_any_hint) {
+            exit 1, "ERROR: When Augustus gene_finding_mode is 'ee' (Extrinsic Evidence), you must provide at least one hint file (est_hints, protein_hints, isoseq_hints, rna_seq_se_hints, or rna_seq_pe_hints)."
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Channel creation
+    // ARCHITECTURAL NOTE: .collect() gathers all reads into a single List so that
+    // only ONE OmicsBox task is spawned. OmicsBox parallelises internally over samples.
+    // -------------------------------------------------------------------------
+    def ch_reads = params.input_single_end
+        ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
+        : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
+
+    def ch_repeat_db = params.repeatmasker.database_file
+        ? channel.fromPath(params.repeatmasker.database_file, checkIfExists: true)
+        : channel.value([])
+    
+    def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+
+    // Optional file inputs for Trimmomatic
+    def ch_trimmomatic_adapters = params.trimmomatic.adapters
+        ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
+        : channel.value([])
+
+    def ch_fastqc_adapters = params.fastqc.adapters
+        ? channel.fromPath(params.fastqc.adapters, checkIfExists: true)
+        : channel.value([])
+
+    def ch_fastqc_contaminants = params.fastqc.contaminants
+        ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
+        : channel.value([])
+
+    // Optional ABYSS auxiliary data
+    def ch_abyss_linked = params.abyss.linked_reads
+        ? channel.fromPath(params.abyss.linked_reads, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_abyss_add_pe = params.abyss.additional_pe
+        ? channel.fromPath(params.abyss.additional_pe, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_abyss_mp = params.abyss.mate_pair
+        ? channel.fromPath(params.abyss.mate_pair, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_abyss_long = params.abyss.long_sequences
+        ? channel.fromPath(params.abyss.long_sequences, checkIfExists: true).collect()
+        : channel.value([])
+
+    // Optional AUGUSTUS evidence hints
+    def ch_aug_est = params.augustus.est_hints
+        ? channel.fromPath(params.augustus.est_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_protein = params.augustus.protein_hints
+        ? channel.fromPath(params.augustus.protein_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_isoseq = params.augustus.isoseq_hints
+        ? channel.fromPath(params.augustus.isoseq_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_rna_se = params.augustus.rna_seq_se_hints
+        ? channel.fromPath(params.augustus.rna_seq_se_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    def ch_aug_rna_ds = params.augustus.rna_seq_pe_hints
+        ? channel.fromPath(params.augustus.rna_seq_pe_hints, checkIfExists: true).collect()
+        : channel.value([])
+
+    // -------------------------------------------------------------------------
+    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // -------------------------------------------------------------------------
+    FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
+
+    // -------------------------------------------------------------------------
+    // 02 — Preprocessing & adapter removal
+    // -------------------------------------------------------------------------
+    TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
+
+    // -------------------------------------------------------------------------
+    // 03 — Quality assessment (post-trimming)
+    // -------------------------------------------------------------------------
+    FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
+
+    // -------------------------------------------------------------------------
+    // 04 — De novo eukaryotic genome assembly using ABySS
+    // CRITICAL: ABySS takes trimmed reads from Trimmomatic.
+    // Optional auxiliary data (linked reads, mate-pairs, long sequences) can enhance assembly.
+    // -------------------------------------------------------------------------
+    ABYSS(
+        TRIMMOMATIC.out.trimmed_reads,
+        ch_abyss_linked,
+        ch_abyss_add_pe,
+        ch_abyss_mp,
+        ch_abyss_long
+    )
+
+    // -------------------------------------------------------------------------
+    // 05a-05b — Parallel assembly evaluation
+    // Both QUAST and BUSCO take the scaffolds FASTA from ABySS.
+    // QUAST: Compares against reference genome (optional) for structural validation
+    // BUSCO: Assesses completeness using universal single-copy orthologs
+    // -------------------------------------------------------------------------
+    QUAST(ABYSS.out.scaffolds, ch_quast_ref)
+    BUSCO(ABYSS.out.scaffolds)
+
+    // -------------------------------------------------------------------------
+    // 06 — Repeat masking for eukaryotic genome
+    // CRITICAL: RepeatMasker takes ABySS assembly scaffolds.
+    // Produces soft-masked FASTA with repeats in lowercase.
+    // -------------------------------------------------------------------------
+    REPEATMASKER(ABYSS.out.scaffolds, ch_repeat_db)
+
+    // -------------------------------------------------------------------------
+    // 07 — Eukaryotic gene finding with AUGUSTUS
+    // CRITICAL: AUGUSTUS takes soft-masked FASTA from RepeatMasker.
+    // Optional evidence hints (EST, protein, RNA-Seq) improve prediction accuracy.
+    // Outputs OmicsBox project with predicted genes.
+    // -------------------------------------------------------------------------
+    AUGUSTUS(
+        REPEATMASKER.out.masked_fasta,
+        ch_aug_est,
+        ch_aug_protein,
+        ch_aug_isoseq,
+        ch_aug_rna_se,
+        ch_aug_rna_ds
+    )
+
+    // -------------------------------------------------------------------------
+    // 08a-08b — Parallel functional annotation branching
+    // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
+    // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
+    // INTERPROSCAN: Domain/motif-based annotation via InterPro
+    // -------------------------------------------------------------------------
+    DIAMOND_BLAST(AUGUSTUS.out.project)
+    INTERPROSCAN(AUGUSTUS.out.project)
+
+    // -------------------------------------------------------------------------
+    // 09 — Combine Diamond and InterProScan annotations
+    // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
+    // InterProScan project (with domain/motif annotations) and merges them
+    // into a single unified project.
+    // -------------------------------------------------------------------------
+    COMBINE_PROJECTS(DIAMOND_BLAST.out.annotated_project, INTERPROSCAN.out.annotated_project)
+
+    // -------------------------------------------------------------------------
+    // 10 — Gene Ontology mapping
+    // Takes the combined/unified project and maps functional terms to Gene Ontology.
+    // -------------------------------------------------------------------------
+    GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
+
+    // -------------------------------------------------------------------------
+    // 11 — BLAST2GO functional annotation
+    // Applies BLAST2GO algorithm for comprehensive functional annotation.
+    // -------------------------------------------------------------------------
+    GO_ANNOTATION(GO_MAPPING.out.go_mapped_project)
+
+    // -------------------------------------------------------------------------
+    // 12 — Final merge: InterProScan + GO-annotated genes
+    // Converges all annotation branches into a final unified project.
+    // -------------------------------------------------------------------------
+    MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)
+
+}
