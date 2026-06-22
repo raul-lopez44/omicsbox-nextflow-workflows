@@ -32,17 +32,20 @@ process SPADES {
     // =====================================================================
     // MAIN READS LOGIC (from Trimmomatic)
     // =====================================================================
-    def library_type = params.spades.paired_end_library_type ?: 'paired-end-fr'
+    def library_type = params.spades.paired_end_library_type
     def input_flag = is_single_end
         ? "--i-input-sequencing-data-spades-single-end=${reads instanceof List ? reads.join(',') : reads}"
         : "--i-input-sequencing-data-spades-${library_type}=${reads instanceof List ? reads.join(',') : reads}"
 
-    // Paired-end pattern flags — only injected when patterns are configured in params
-    def up_pat   = params.get('upstream_pattern')
-    def down_pat = params.get('downstream_pattern')
-    def pattern_flags = (!is_single_end && up_pat && down_pat)
-        ? "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
-        : ""
+    // =====================================================================
+    // PAIRED-END PATTERN LOGIC (Robust Fallback)
+    // =====================================================================
+    def pattern_flags = ""
+    if (!is_single_end) {
+        def up_pat = params.keySet().contains('upstream_pattern') && params.upstream_pattern ? params.upstream_pattern : '_1'
+        def down_pat = params.keySet().contains('downstream_pattern') && params.downstream_pattern ? params.downstream_pattern : '_2'
+        pattern_flags = "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
+    }
 
     // =====================================================================
     // OPTIONAL MATE-PAIR LOGIC (Triggers --use-mp-optional-data=true)

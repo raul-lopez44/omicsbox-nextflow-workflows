@@ -29,6 +29,18 @@ workflow {
     }
 
     // -------------------------------------------------------------------------
+    // STRICT VALIDATION: SPAdes Paired-End Library Type (Fail Fast)
+    // -------------------------------------------------------------------------
+    if (params.input_paired_end) {
+        def valid_pe_types = ['paired-end-fr', 'paired-end-rf', 'paired-end-ff', 'hq-mate-pair-fr', 'hq-mate-pair-rf', 'hq-mate-pair-ff', 'nxmate']
+        if (!params.spades.paired_end_library_type) {
+            exit 1, "ERROR: When using paired-end reads, you must explicitly define params.spades.paired_end_library_type in the config file. Valid options: ${valid_pe_types.join(', ')}"
+        } else if (!valid_pe_types.contains(params.spades.paired_end_library_type)) {
+            exit 1, "ERROR: Invalid params.spades.paired_end_library_type '${params.spades.paired_end_library_type}'. Valid options: ${valid_pe_types.join(', ')}"
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // Channel creation
     // ARCHITECTURAL NOTE: .collect() gathers all reads into a single List so that
     // only ONE OmicsBox task is spawned. OmicsBox parallelises internally over samples.
@@ -38,7 +50,11 @@ workflow {
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
     def ch_reference = channel.fromPath(params.quast.reference_genome, checkIfExists: true)
-    def ch_icm_model = channel.fromPath(params.glimmer.icm_model, checkIfExists: true)
+
+    // Glimmer ICM model is optional — if null, Glimmer will create a new model dynamically
+    def ch_icm_model = params.glimmer.icm_model
+        ? channel.fromPath(params.glimmer.icm_model, checkIfExists: true)
+        : channel.value([])
 
     // Optional file inputs — channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
@@ -132,9 +148,10 @@ workflow {
 
     // -------------------------------------------------------------------------
     // 06 — Prokaryotic gene finding
-    // CRITICAL: GLIMMER requires TWO inputs:
+    // CRITICAL: GLIMMER requires ONE input:
     //   - Input 1: Assembly FASTA from SPADES
-    //   - Input 2: Interpolated Context Model (ICM) for species-specific ORF prediction
+    // OPTIONAL: Provide an existing ICM model for species-specific prediction.
+    //   If no ICM model is provided, Glimmer will create a new model.
     // -------------------------------------------------------------------------
     GLIMMER(SPADES.out.assembly, ch_icm_model)
 
