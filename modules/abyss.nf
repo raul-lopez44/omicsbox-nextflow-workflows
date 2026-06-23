@@ -68,7 +68,7 @@ process ABYSS {
 
     """
     mkdir -p ${outdir}
-    omicsbox abyss \\
+    xvfb-run -a omicsbox abyss \\
         ${input_flag} \\
         ${pattern_flags} \\
         ${use_opt_flag} \\

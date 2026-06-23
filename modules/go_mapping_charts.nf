@@ -18,7 +18,7 @@ process GO_MAPPING_CHARTS {
 
     """
     mkdir -p ${outdir}
-    omicsbox statistics-mapping \\
+    xvfb-run -a omicsbox statistics-mapping \\
         --i-project=\$PWD/${mapped_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

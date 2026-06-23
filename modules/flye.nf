@@ -37,7 +37,7 @@ process FLYE {
 
     """
     mkdir -p ${outdir}
-    omicsbox flye \\
+    xvfb-run -a omicsbox flye \\
         ${lib_flag}=${reads_list} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

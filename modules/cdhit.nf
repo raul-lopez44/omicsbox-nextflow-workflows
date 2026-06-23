@@ -23,7 +23,7 @@ process CDHIT {
 
     """
     mkdir -p ${outdir}
-    omicsbox cdhit \\
+    xvfb-run -a omicsbox cdhit \\
         --i-input=\$PWD/${assembly} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

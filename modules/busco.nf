@@ -22,7 +22,7 @@ process BUSCO {
 
     """
     mkdir -p ${outdir}
-    omicsbox busco \\
+    xvfb-run -a omicsbox busco \\
         --i-sequences=\$PWD/${sequences} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

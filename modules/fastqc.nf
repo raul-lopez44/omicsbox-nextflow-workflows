@@ -40,7 +40,7 @@ process FASTQC {
 
     """
     mkdir -p ${outdir}
-    omicsbox fastqc \\
+    xvfb-run -a omicsbox fastqc \\
         ${input_flag} \\
         ${adapters_flag} \\
         ${contaminants_flag} \\

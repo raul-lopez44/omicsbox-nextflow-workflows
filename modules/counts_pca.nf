@@ -23,7 +23,7 @@ process COUNTS_PCA {
 
     """
     mkdir -p ${outdir}
-    omicsbox counts-pca \\
+    xvfb-run -a omicsbox counts-pca \\
         --i-count-table=\$PWD/${count_table_project} \\
         ${design_flag} \\
         --chart-format=${params.chart_format} \\

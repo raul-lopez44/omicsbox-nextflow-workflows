@@ -32,7 +32,7 @@ process GLIMMER {
 
     """
     mkdir -p ${outdir}
-    omicsbox runglimmer \\
+    xvfb-run -a omicsbox runglimmer \\
         --i-fastafile2=\$PWD/${fasta} \\
         ${use_icm_flag} \\
         ${icm_file_flag} \\

@@ -44,7 +44,7 @@ process TRIMMOMATIC {
 
     """
     mkdir -p ${outdir}
-    omicsbox trimmomatic \\
+    xvfb-run -a omicsbox trimmomatic \\
         ${input_flag} \\
         ${pattern_flags} \\
         ${adapter_flag} \\

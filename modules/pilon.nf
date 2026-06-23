@@ -22,7 +22,7 @@ process PILON {
 
     """
     mkdir -p ${outdir}
-    omicsbox pilon \\
+    xvfb-run -a omicsbox pilon \\
         --i-assembly=\$PWD/${assembly} \\
         --i-bam-file=\$PWD/${bam_file} \\
         --chart-format=${params.chart_format} \\

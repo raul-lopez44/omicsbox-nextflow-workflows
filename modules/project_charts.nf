@@ -18,7 +18,7 @@ process PROJECT_CHARTS {
 
     """
     mkdir -p ${outdir}
-    omicsbox statistics-project \\
+    xvfb-run -a omicsbox statistics-project \\
         --i-project=\$PWD/${validated_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

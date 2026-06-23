@@ -40,7 +40,7 @@ process TRINITY {
 
     """
     mkdir -p ${outdir}
-    omicsbox trinity \\
+    xvfb-run -a omicsbox trinity \\
         --i-fastq-files-assembly=${reads_list} \\
         ${input_flag} \\
         ${pattern_flags} \\
