@@ -4,20 +4,20 @@
 // =============================================================================
 nextflow.enable.dsl=2
 
-include { FASTQC as FASTQC_RAW   } from '../../modules/fastqc.nf'
-include { TRIMMOMATIC            } from '../../modules/trimmomatic.nf'
-include { FASTQC as FASTQC_POST  } from '../../modules/fastqc.nf'
-include { ABYSS                  } from '../../modules/abyss.nf'
-include { QUAST                  } from '../../modules/quast.nf'
-include { BUSCO                  } from '../../modules/busco.nf'
-include { REPEATMASKER           } from '../../modules/repeatmasker.nf'
-include { AUGUSTUS               } from '../../modules/augustus.nf'
-include { DIAMOND_BLAST          } from '../../modules/diamond_blast.nf'
-include { INTERPROSCAN           } from '../../modules/ips.nf'
-include { COMBINE_PROJECTS       } from '../../modules/combine_projects.nf'
-include { GO_MAPPING             } from '../../modules/go_mapping.nf'
-include { GO_ANNOTATION          } from '../../modules/go_annotation.nf'
-include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/merge_ips_gos_to_annotation.nf'
+include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
+include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
+include { FASTQC as FASTQC_POST  } from '../../modules/general_tools/fastqc.nf'
+include { ABYSS                  } from '../../modules/genome_analysis/abyss.nf'
+include { QUAST                  } from '../../modules/genome_analysis/quast.nf'
+include { BUSCO                  } from '../../modules/genome_analysis/busco.nf'
+include { REPEATMASKER           } from '../../modules/genome_analysis/repeatmasker.nf'
+include { AUGUSTUS               } from '../../modules/genome_analysis/augustus.nf'
+include { DIAMOND_BLAST          } from '../../modules/functional_analysis/diamond_blast.nf'
+include { INTERPROSCAN           } from '../../modules/functional_analysis/ips.nf'
+include { COMBINE_PROJECTS       } from '../../modules/utilities/combine_projects.nf'
+include { GO_MAPPING             } from '../../modules/functional_analysis/go_mapping.nf'
+include { GO_ANNOTATION          } from '../../modules/functional_analysis/go_annotation.nf'
+include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/functional_analysis/merge_ips_gos_to_annotation.nf'
 
 // =============================================================================
 workflow {

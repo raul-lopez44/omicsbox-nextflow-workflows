@@ -2,21 +2,21 @@
 // FILE: de_novo_transcriptome_characterization.nf
 nextflow.enable.dsl=2
 
-include { FASTQC as FASTQC_RAW    } from '../../modules/fastqc.nf'
-include { FASTQC as FASTQC_POST   } from '../../modules/fastqc.nf'
-include { TRIMMOMATIC             } from '../../modules/trimmomatic.nf'
-include { TRINITY                 } from '../../modules/trinity.nf'
-include { CDHIT                   } from '../../modules/cdhit.nf'
-include { BUSCO                   } from '../../modules/busco.nf'
-include { TRANSDECODER            } from '../../modules/transdecoder.nf'
-include { LOAD_FASTA              } from '../../modules/load_fasta.nf'
-include { DIAMOND_BLAST           } from '../../modules/diamond_blast.nf'
-include { BLAST_CHARTS            } from '../../modules/blast_charts.nf'
-include { INTERPROSCAN            } from '../../modules/ips.nf'
-include { IPS_CHARTS               } from '../../modules/ips_charts.nf'
-include { EGGNOG_MAPPER           } from '../../modules/eggnog_mapper.nf'
-include { COMBINE_PROJECTS        } from '../../modules/combine_projects.nf'
-include { MERGE_EGGNOG_5_GOS      } from '../../modules/merge_eggnog_5_gos.nf'
+include { FASTQC as FASTQC_RAW    } from '../../modules/general_tools/fastqc.nf'
+include { FASTQC as FASTQC_POST   } from '../../modules/general_tools/fastqc.nf'
+include { TRIMMOMATIC             } from '../../modules/general_tools/trimmomatic.nf'
+include { TRINITY                 } from '../../modules/genome_analysis/trinity.nf'
+include { CDHIT                   } from '../../modules/genome_analysis/cdhit.nf'
+include { BUSCO                   } from '../../modules/genome_analysis/busco.nf'
+include { TRANSDECODER            } from '../../modules/genome_analysis/transdecoder.nf'
+include { LOAD_FASTA              } from '../../modules/genome_analysis/load_fasta.nf'
+include { DIAMOND_BLAST           } from '../../modules/functional_analysis/diamond_blast.nf'
+include { BLAST_CHARTS            } from '../../modules/functional_analysis/blast_charts.nf'
+include { INTERPROSCAN            } from '../../modules/functional_analysis/ips.nf'
+include { IPS_CHARTS               } from '../../modules/functional_analysis/ips_charts.nf'
+include { EGGNOG_MAPPER           } from '../../modules/metagenomics/eggnog_mapper.nf'
+include { COMBINE_PROJECTS        } from '../../modules/utilities/combine_projects.nf'
+include { MERGE_EGGNOG_5_GOS      } from '../../modules/functional_analysis/merge_eggnog_5_gos.nf'
 
 // =============================================================================
 workflow {

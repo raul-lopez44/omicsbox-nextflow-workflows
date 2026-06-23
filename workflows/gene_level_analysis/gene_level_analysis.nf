@@ -4,13 +4,13 @@
 // =============================================================================
 nextflow.enable.dsl=2
 
-include { FASTQC as FASTQC_RAW   } from '../../modules/fastqc.nf'
-include { TRIMMOMATIC            } from '../../modules/trimmomatic.nf'
-include { FASTQC as FASTQC_POST  } from '../../modules/fastqc.nf'
-include { STAR                   } from '../../modules/star.nf'
-include { HTSEQ                  } from '../../modules/htseq.nf'
-include { COUNTS_PCA             } from '../../modules/counts_pca.nf'
-include { EDGER                  } from '../../modules/edger.nf'
+include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
+include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
+include { FASTQC as FASTQC_POST  } from '../../modules/general_tools/fastqc.nf'
+include { STAR                   } from '../../modules/transcriptomics/star.nf'
+include { HTSEQ                  } from '../../modules/transcriptomics/htseq.nf'
+include { COUNTS_PCA             } from '../../modules/transcriptomics/counts_pca.nf'
+include { EDGER                  } from '../../modules/transcriptomics/edger.nf'
 
 // =============================================================================
 workflow {

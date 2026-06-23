@@ -4,14 +4,14 @@
 // =============================================================================
 nextflow.enable.dsl=2
 
-include { FASTQC as FASTQC_RAW   } from '../../modules/fastqc.nf'
-include { TRIMMOMATIC            } from '../../modules/trimmomatic.nf'
-include { FASTQC as FASTQC_POST  } from '../../modules/fastqc.nf'
-include { SPADES                 } from '../../modules/spades.nf'
-include { QUAST                  } from '../../modules/quast.nf'
-include { BUSCO                  } from '../../modules/busco.nf'
-include { GLIMMER                } from '../../modules/glimmer.nf'
-include { DIAMOND_BLAST          } from '../../modules/diamond_blast.nf'
+include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
+include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
+include { FASTQC as FASTQC_POST  } from '../../modules/general_tools/fastqc.nf'
+include { SPADES                 } from '../../modules/genome_analysis/spades.nf'
+include { QUAST                  } from '../../modules/genome_analysis/quast.nf'
+include { BUSCO                  } from '../../modules/genome_analysis/busco.nf'
+include { GLIMMER                } from '../../modules/genome_analysis/glimmer.nf'
+include { DIAMOND_BLAST          } from '../../modules/functional_analysis/diamond_blast.nf'
 
 // =============================================================================
 workflow {
