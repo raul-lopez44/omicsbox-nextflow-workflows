@@ -19,7 +19,7 @@ process COMBINE_PROJECTS {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox combine-projects \\
+    omicsbox combine-projects \\
         --i-project1=\$PWD/${ips_project} \\
         --i-project2=\$PWD/${annotated_project} \\
         --local-folder=\$PWD/${outdir} \\

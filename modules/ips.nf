@@ -21,7 +21,7 @@ process INTERPROSCAN {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox interproscan-embl-ebi \\
+    omicsbox interproscan-embl-ebi \\
         --i-local-project=\$PWD/${omicsbox_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

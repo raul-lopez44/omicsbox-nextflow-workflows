@@ -19,7 +19,7 @@ process MERGE_IPS_GOS_TO_ANNOTATION {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox interproscan-join \\
+    omicsbox interproscan-join \\
         --i-project=\$PWD/${combined_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

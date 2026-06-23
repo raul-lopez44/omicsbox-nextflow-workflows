@@ -18,7 +18,7 @@ process COMBINED_GO_GRAPH {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox graph-combined-make \\
+    omicsbox graph-combined-make \\
         --i-project=\$PWD/${validated_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}

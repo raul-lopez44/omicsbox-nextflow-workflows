@@ -18,7 +18,7 @@ process EC_CODE_MAPPING {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox enzymecode-run \\
+    omicsbox enzymecode-run \\
         --i-project=\$PWD/${validated_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}

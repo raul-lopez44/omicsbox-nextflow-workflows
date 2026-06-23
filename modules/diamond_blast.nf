@@ -20,7 +20,7 @@ process DIAMOND_BLAST {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox diamond \\
+    omicsbox diamond \\
         --i-local-project=\$PWD/${omicsbox_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

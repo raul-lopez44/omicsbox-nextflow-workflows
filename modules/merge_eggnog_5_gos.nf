@@ -20,7 +20,7 @@ process MERGE_EGGNOG_5_GOS {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox merge-emapper5-annotations  \\
+    omicsbox merge-emapper5-annotations  \\
         --i-project=\$PWD/${integrated_project} \\
         --i-egg-nog-annotations=\$PWD/${eggnog_project} \\
         --chart-format=${params.chart_format} \\

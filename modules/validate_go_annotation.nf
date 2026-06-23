@@ -18,7 +18,7 @@ process VALIDATE_GO_ANNOTATION {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox annotation-validate \\
+    omicsbox annotation-validate \\
         --i-project=\$PWD/${final_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
