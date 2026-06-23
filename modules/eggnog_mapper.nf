@@ -21,7 +21,7 @@ process EGGNOG_MAPPER {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox eggnog-mapper \\
+    omicsbox eggnog-mapper \\
         --i-sequences=\$PWD/${fasta_file} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\

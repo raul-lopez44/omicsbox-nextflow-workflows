@@ -17,7 +17,7 @@ process LOAD_FASTA {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox load-sequences \\
+    omicsbox load-sequences \\
         --i-file=\$PWD/${fasta_file} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
