@@ -92,7 +92,7 @@ workflow {
     EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
     FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
     COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
-    EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
+    //EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
     // GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
     // GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
 }
