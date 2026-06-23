@@ -25,7 +25,7 @@ process BWA {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox bwa \\
+    omicsbox bwa \\
         --i-reference=\$PWD/${reference} \\
         --i-reads=${reads_list} \\
         --local-folder=\$PWD/${outdir} \\

@@ -41,7 +41,7 @@ process STAR {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox star-aligner \\
+    omicsbox star-aligner \\
         ${input_flag} \\
         ${pattern_flags} \\
         --i-fasta-file=\$PWD/${fasta} \\

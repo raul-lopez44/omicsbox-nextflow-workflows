@@ -42,7 +42,7 @@ process REPEATMASKER {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox repeatmasker \\
+    omicsbox repeatmasker \\
         --i-fasta-file-repeats=\$PWD/${fasta} \\
         ${engine_flag} \\
         ${db_type_flag} \\

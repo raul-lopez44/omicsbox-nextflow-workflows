@@ -24,7 +24,7 @@ process LONGQC {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox longqc \\
+    omicsbox longqc \\
         --i-reads=${reads_list} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

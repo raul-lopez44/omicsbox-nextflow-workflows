@@ -18,7 +18,7 @@ process GO_SLIM {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox goslim \\
+    omicsbox goslim \\
         --i-project=\$PWD/${project_file} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}

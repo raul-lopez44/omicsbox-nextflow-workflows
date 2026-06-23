@@ -22,7 +22,7 @@ process EDGER {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox edger \\
+    omicsbox edger \\
         --i-count-table=\$PWD/${count_table_project} \\
         --i-file-design-table=\$PWD/${design_file} \\
         --local-folder=\$PWD/${outdir} \\

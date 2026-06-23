@@ -25,7 +25,7 @@ process TRANSDECODER {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox transdecoder \\
+    omicsbox transdecoder \\
         --i-input=\$PWD/${input_fasta} \\
         --i-gene-trans-map=\$PWD/${gene_trans_map} \\
         --provide-gene-trans-map=true \\

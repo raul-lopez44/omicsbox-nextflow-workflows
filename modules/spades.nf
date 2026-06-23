@@ -101,7 +101,7 @@ process SPADES {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox spades \\
+    omicsbox spades \\
         ${input_flag} \\
         ${pattern_flags} \\
         ${use_mp_flag} \\

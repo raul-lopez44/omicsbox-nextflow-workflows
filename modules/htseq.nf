@@ -24,7 +24,7 @@ process HTSEQ {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox htseq \\
+    omicsbox htseq \\
         --i-alignment-files=${bam_files instanceof List ? bam_files.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${bam_files}"} \\
         --i-gff-file=\$PWD/${gff} \\
         --local-folder=\$PWD/${outdir} \\

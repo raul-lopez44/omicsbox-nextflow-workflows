@@ -18,7 +18,7 @@ process IPS_CHARTS {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox statistics-interpro \\
+    omicsbox statistics-interpro \\
         --i-project=\$PWD/${ips_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

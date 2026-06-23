@@ -18,7 +18,7 @@ process GO_ANNOTATION_CHARTS {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox statistics-annotation \\
+    omicsbox statistics-annotation \\
         --i-project=\$PWD/${annotated_project} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

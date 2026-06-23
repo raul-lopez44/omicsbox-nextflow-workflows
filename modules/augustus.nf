@@ -59,7 +59,7 @@ process AUGUSTUS {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox genefinding-eukaryotic \\
+    omicsbox genefinding-eukaryotic \\
         --i-input-sequences=\$PWD/${fasta} \\
         ${mode_flag} \\
         ${est_flag} \\

@@ -43,7 +43,7 @@ process RSEM {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox rsem \\
+    omicsbox rsem \\
         --i-fasta-file=\$PWD/${assembly} \\
         ${genes_trans_map_flag} \\
         ${input_flag} \\
