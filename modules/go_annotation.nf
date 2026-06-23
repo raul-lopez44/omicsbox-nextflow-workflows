@@ -1,5 +1,5 @@
 // --- FILE: modules/go_annotation.nf ---
-// Wraps: omicsbox annotation-run  |  backend: WJOB_ASYNC
+// Wraps: omicsbox annotation  |  backend: WJOB_ASYNC
 // BLAST2GO functional annotation
 nextflow.enable.dsl=2
 
@@ -18,7 +18,7 @@ process GO_ANNOTATION {
 
     """
     mkdir -p ${outdir}
-    omicsbox annotation-run \\
+    omicsbox annotation \\
         --i-project=\$PWD/${mapped_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
