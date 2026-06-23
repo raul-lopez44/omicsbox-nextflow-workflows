@@ -54,14 +54,14 @@ workflow {
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
     BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
-    GO_MAPPING(DIAMOND_BLAST.out.blasted_project)
-    GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
+    //GO_MAPPING(DIAMOND_BLAST.out.blasted_project)
+    //GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
     // 04 — Initial GO annotation via BLAST2GO
     // -------------------------------------------------------------------------
-    GO_ANNOTATION(GO_MAPPING.out.mapped_project)
-    BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
+    //GO_ANNOTATION(GO_MAPPING.out.mapped_project)
+    //BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
 
     // -------------------------------------------------------------------------
     // 05-07 — Parallel domain & orthology prediction
@@ -70,9 +70,9 @@ workflow {
     //   - INTERPROSCAN: consumes LOAD_FASTA project (same as DIAMOND_BLAST)
     //   - GO_ANNOTATION: consumes GO_MAPPING project (already computed above)
     // -------------------------------------------------------------------------
-    EGGNOG_MAPPER(ch_fasta)
-    INTERPROSCAN(LOAD_FASTA.out.fasta_project)
-    IPS_CHARTS(INTERPROSCAN.out.ips_project)
+    //EGGNOG_MAPPER(ch_fasta)
+    //INTERPROSCAN(LOAD_FASTA.out.fasta_project)
+    //IPS_CHARTS(INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
     // 08-10 — Multi-branch project consolidation
@@ -80,19 +80,19 @@ workflow {
     // MERGE_IPS_GOS_TO_ANNOTATION integrates domain terms into the combined project
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional data
     // -------------------------------------------------------------------------
-    COMBINE_PROJECTS(GO_ANNOTATION.out.annotated_project, INTERPROSCAN.out.ips_project)
-    MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
-    MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
+    //COMBINE_PROJECTS(GO_ANNOTATION.out.annotated_project, INTERPROSCAN.out.ips_project)
+    //MERGE_IPS_GOS_TO_ANNOTATION(COMBINE_PROJECTS.out.combined_project)
+    //MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
     // -------------------------------------------------------------------------
     // 11-13 — Final curation, enzyme mapping & comprehensive reporting
     // All downstream processes consume the unified, fully-annotated master project
     // -------------------------------------------------------------------------
-    VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
-    EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
-    FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
-    COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
-    EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
+    //VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)
+    //EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
+    //FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
+    //COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
+    //EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
     // GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
     // GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
 }

@@ -18,7 +18,7 @@ process GO_ANNOTATION {
 
     """
     mkdir -p ${outdir}
-    omicsbox annotation-run \\
+    omicsbox annotation \\
         --i-project=\$PWD/${mapped_project} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
