@@ -11,7 +11,7 @@ process FLYE {
     output:
     path "${task.ext.outdir}/*assembly*.fasta", emit: assembly        // De novo assembled genome (FASTA)
     path "${task.ext.outdir}/*report*.box", emit: report              // OmicsBox report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart    // OmicsBox chart
+    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart, optional: true    // OmicsBox chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
