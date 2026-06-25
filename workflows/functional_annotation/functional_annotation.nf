@@ -2,7 +2,7 @@
 // FILE: functional_annotation.nf
 nextflow.enable.dsl=2
 
-include { LOAD_FASTA                                       } from '../../modules/genome_analysis/load_fasta.nf'
+include { LOAD_FASTA                                       } from '../../modules/functional_analysis/load_fasta.nf'
 include { DIAMOND_BLAST                                    } from '../../modules/functional_analysis/diamond_blast.nf'
 include { BLAST_CHARTS                                     } from '../../modules/functional_analysis/blast_charts.nf'
 include { GO_MAPPING                                       } from '../../modules/functional_analysis/go_mapping.nf'
