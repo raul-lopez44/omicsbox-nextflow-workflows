@@ -32,7 +32,7 @@ process TRINITY {
     if (!is_single_end) {
         def up_pat = params.keySet().contains('upstream_pattern') ? params.upstream_pattern : '_1'
         def down_pat = params.keySet().contains('downstream_pattern') ? params.downstream_pattern : '_2'
-        pattern_flags = "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
+        pattern_flags = "--upstream-pattern-assembly=${up_pat} --downstream-pattern-assembly=${down_pat}"
     }
 
     // WJOB_ASYNC
