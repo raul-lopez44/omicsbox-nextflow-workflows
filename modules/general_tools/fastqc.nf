@@ -27,11 +27,11 @@ process FASTQC {
 
     def input_flag = "--i-fastq-files=${fastq_list}"
 
-    def adapters_flag = (adapters.name != '[]')
+    def adapters_flag = (!(adapters instanceof List) || !adapters.isEmpty())
         ? "--provide-adapters=true --i-adapters=\$PWD/${adapters}"
         : ""
 
-    def contaminants_flag = (contaminants.name != '[]')
+    def contaminants_flag = (contaminants instanceof List && !contaminants.isEmpty())
         ? "--provide-contaminants=true --i-contaminants=\$PWD/${contaminants}"
         : ""
 
