@@ -1,16 +1,16 @@
 // --- FILE: modules/metagenomics/pfam_scan.nf ---
 // Wraps: omicsbox pfam-scan  |  backend: WJOB_ASYNC
-// Annotates protein sequences with Pfam domains.
+// Annotates predicted proteins with Pfam protein domains.
 nextflow.enable.dsl=2
 
 process PFAM_SCAN {
 
     input:
-    path proteins               // Predicted proteins FASTA (from Prodigal)
+    path proteins   // Predicted protein FASTA (from Prodigal)
 
     output:
-    path "${task.ext.outdir}/*report*.box", emit: report              // OmicsBox report
-    path "${task.ext.outdir}/*", emit: pfam_output                    // Pfam annotation files
+    path "${task.ext.outdir}/*report*.box", emit: report   // Pfam-Scan report
+    path "${task.ext.outdir}/*.box", emit: pfam_output      // Pfam domain annotation project
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -21,7 +21,7 @@ process PFAM_SCAN {
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox pfam-scan \\
+    omicsbox pfam-scan \\
         --i-input-sequences=\$PWD/${proteins} \\
         --local-folder=\$PWD/${outdir} \\
         ${cloud_flag} \\
