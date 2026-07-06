@@ -14,7 +14,7 @@ include { PFAM_SCAN              } from '../../modules/metagenomics/pfam_scan.nf
 include { EGGNOG_MAPPER          } from '../../modules/metagenomics/eggnog_mapper.nf'
 
 // =============================================================================
-workflow {
+workflow METAGENOMICS {
 
     main:
 

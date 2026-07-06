@@ -25,7 +25,7 @@ include { GO_SLIM                                          } from '../../modules
 include { GO_ANNOTATION_CHARTS as GOSLIM_ANNOTATION_CHARTS } from '../../modules/functional_analysis/go_annotation_charts.nf'
 
 // =============================================================================
-workflow {
+workflow FUNCTIONAL_ANNOTATION {
 
     main:
 
