@@ -12,7 +12,7 @@ include { COUNTS_PCA             } from '../../modules/transcriptomics/counts_pc
 include { EDGER                  } from '../../modules/transcriptomics/edger.nf'
 
 // =============================================================================
-workflow GENE_LEVEL_ANALYSIS {
+workflow {
 
     main:
 

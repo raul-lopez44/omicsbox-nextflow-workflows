@@ -18,7 +18,7 @@ include { GO_ANNOTATION           } from '../../modules/functional_analysis/go_a
 include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/functional_analysis/merge_ips_gos_to_annotation.nf'
 
 // =============================================================================
-workflow LONG_READS_PROKARYOTIC_GENOME_ANALYSIS {
+workflow {
 
     main:
 

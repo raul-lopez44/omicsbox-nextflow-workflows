@@ -13,7 +13,7 @@ include { GLIMMER                } from '../../modules/genome_analysis/glimmer.n
 include { DIAMOND_BLAST          } from '../../modules/functional_analysis/diamond_blast.nf'
 
 // =============================================================================
-workflow PROKARYOTIC_GENOME_ANALYSIS {
+workflow {
 
     main:
 

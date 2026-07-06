@@ -18,7 +18,7 @@ include { COMBINE_PROJECTS        } from '../../modules/utilities/combine_projec
 include { MERGE_EGGNOG_5_GOS      } from '../../modules/functional_analysis/merge_eggnog_5_gos.nf'
 
 // =============================================================================
-workflow DE_NOVO_TRANSCRIPTOME_CHARACTERIZATION {
+workflow {
 
     main:
 
