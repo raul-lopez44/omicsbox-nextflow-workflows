@@ -10,7 +10,6 @@
 //   nextflow run raul-lopez44/omicsbox-nextflow-workflows -r feature/initial-workflows \
 //       --pipeline functional_annotation --input_fasta /ruta/reads.fasta -latest
 // =============================================================================
-nextflow.enable.dsl = 2
 
 include { FUNCTIONAL_ANNOTATION } from './workflows/functional_annotation/functional_annotation.nf'
 

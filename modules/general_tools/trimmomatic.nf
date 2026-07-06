@@ -1,7 +1,6 @@
 // --- FILE: modules/trimmomatic.nf ---
 // Wraps: omicsbox trimmomatic  |  backend: WJOB_ASYNC
 // Adapter and quality-based read trimming.
-nextflow.enable.dsl=2
 
 process TRIMMOMATIC {
 

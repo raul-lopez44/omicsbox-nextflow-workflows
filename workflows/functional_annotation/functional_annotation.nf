@@ -1,6 +1,5 @@
 // =============================================================================
 // FILE: functional_annotation.nf
-nextflow.enable.dsl=2
 
 include { LOAD_FASTA                                       } from '../../modules/functional_analysis/load_fasta.nf'
 include { DIAMOND_BLAST                                    } from '../../modules/functional_analysis/diamond_blast.nf'

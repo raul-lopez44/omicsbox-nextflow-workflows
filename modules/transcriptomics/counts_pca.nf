@@ -1,7 +1,6 @@
 // --- FILE: modules/pca_chart.nf ---
 // Wraps: omicsbox counts-pca  |  backend: LEGACY_SYNC
 // PCA/PCoA visualization of sample distances. 
-nextflow.enable.dsl=2
 
 process COUNTS_PCA {
 

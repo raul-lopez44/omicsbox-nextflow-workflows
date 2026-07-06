@@ -1,7 +1,6 @@
 // --- FILE: modules/export_genesets.nf ---
 // Wraps: omicsbox export-genesets  |  backend: LEGACY_SYNC
 // Exports annotated gene sets to standard formats
-nextflow.enable.dsl=2
 
 process EXPORT_GENE_SETS {
 

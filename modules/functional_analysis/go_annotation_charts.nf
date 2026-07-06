@@ -1,7 +1,6 @@
 // --- FILE: modules/go_annotation_charts.nf ---
 // Wraps: omicsbox statistics-annotation  |  backend: LEGACY_SYNC
 // Generates GO annotation distribution charts
-nextflow.enable.dsl=2
 
 process GO_ANNOTATION_CHARTS {
 

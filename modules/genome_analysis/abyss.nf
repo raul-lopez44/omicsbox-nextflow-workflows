@@ -1,7 +1,6 @@
 // --- FILE: modules/abyss.nf ---
 // Wraps: omicsbox abyss  |  backend: WJOB_ASYNC
 // DNA-Seq de novo genome assembly for eukaryotic genomes using ABySS assembler.
-nextflow.enable.dsl=2
 
 process ABYSS {
 

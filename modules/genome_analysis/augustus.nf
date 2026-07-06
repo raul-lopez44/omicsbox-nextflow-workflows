@@ -1,7 +1,6 @@
 // --- FILE: modules/augustus.nf ---
 // Wraps: omicsbox genefinding-eukaryotic  |  backend: LEGACY_SYNC
 // Eukaryotic gene finding using AUGUSTUS with evidence-based prediction.
-nextflow.enable.dsl=2
 
 process AUGUSTUS {
 

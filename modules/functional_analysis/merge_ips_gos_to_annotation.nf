@@ -1,7 +1,6 @@
 // --- FILE: modules/merge_ips_gos_to_annotation.nf ---
 // Wraps: omicsbox interproscan-join  |  backend: LEGACY_SYNC
 // Merges InterPro domains into GO annotations
-nextflow.enable.dsl=2
 
 process MERGE_IPS_GOS_TO_ANNOTATION {
 

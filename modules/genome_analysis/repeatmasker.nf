@@ -2,7 +2,6 @@
 // Wraps: omicsbox repeatmasker  |  backend: LEGACY_SYNC
 // Repeat masking for eukaryotic genome sequences.
 
-nextflow.enable.dsl=2
 
 process REPEATMASKER {
 

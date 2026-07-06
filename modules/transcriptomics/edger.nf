@@ -1,7 +1,6 @@
 // --- FILE: modules/edger.nf ---
 // Wraps: omicsbox edger  |  backend: WJOB_ASYNC
 // Pairwise differential expression analysis with edgeR.
-nextflow.enable.dsl=2
 
 process EDGER {
 

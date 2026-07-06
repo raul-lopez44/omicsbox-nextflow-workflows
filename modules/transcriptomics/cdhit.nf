@@ -1,7 +1,6 @@
 // --- FILE: modules/cdhit.nf ---
 // Wraps: omicsbox cdhit  |  backend: WJOB_ASYNC
 // Clusters Trinity transcripts at sequence-identity threshold.
-nextflow.enable.dsl=2
 
 process CDHIT {
 

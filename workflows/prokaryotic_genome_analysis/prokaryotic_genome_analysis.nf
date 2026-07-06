@@ -2,7 +2,6 @@
 // FILE: prokaryotic_genome_analysis.nf
 // Prokaryotic Genome Analysis Pipeline: Preprocessing → Assembly → Gene Finding → Functional Annotation
 // =============================================================================
-nextflow.enable.dsl=2
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
 include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
@@ -14,7 +13,7 @@ include { GLIMMER                } from '../../modules/genome_analysis/glimmer.n
 include { DIAMOND_BLAST          } from '../../modules/functional_analysis/diamond_blast.nf'
 
 // =============================================================================
-workflow {
+workflow PROKARYOTIC_GENOME_ANALYSIS {
 
     main:
 

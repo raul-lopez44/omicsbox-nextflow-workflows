@@ -1,7 +1,6 @@
 // --- FILE: modules/diamond_blast.nf ---
 // Wraps: omicsbox diamond  |  backend: WJOB_ASYNC
 // Sequence similarity search via DIAMOND BLAST.
-nextflow.enable.dsl=2
 
 process DIAMOND_BLAST {
 

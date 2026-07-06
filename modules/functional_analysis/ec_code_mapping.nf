@@ -1,7 +1,6 @@
 // --- FILE: modules/ec_code_mapping.nf ---
 // Wraps: omicsbox enzymecode  |  backend: LEGACY_SYNC
 // Maps Enzyme Commission codes from GO annotations
-nextflow.enable.dsl=2
 
 process EC_CODE_MAPPING {
 

@@ -1,7 +1,6 @@
 // --- FILE: modules/metagenomics/prodigal.nf ---
 // Wraps: omicsbox prodigal  |  backend: LEGACY_SYNC
 // Prokaryotic / metagenomic gene prediction from assembled contigs.
-nextflow.enable.dsl=2
 
 process PRODIGAL {
 

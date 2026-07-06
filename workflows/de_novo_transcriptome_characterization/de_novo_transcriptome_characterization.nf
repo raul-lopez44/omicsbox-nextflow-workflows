@@ -1,6 +1,5 @@
 // =============================================================================
 // FILE: de_novo_transcriptome_characterization.nf
-nextflow.enable.dsl=2
 
 include { FASTQC as FASTQC_RAW    } from '../../modules/general_tools/fastqc.nf'
 include { FASTQC as FASTQC_POST   } from '../../modules/general_tools/fastqc.nf'
@@ -19,7 +18,7 @@ include { COMBINE_PROJECTS        } from '../../modules/utilities/combine_projec
 include { MERGE_EGGNOG_5_GOS      } from '../../modules/functional_analysis/merge_eggnog_5_gos.nf'
 
 // =============================================================================
-workflow DE_NOVO_TRANSCRIPTOME {
+workflow DE_NOVO_TRANSCRIPTOME_CHARACTERIZATION {
 
     main:
 

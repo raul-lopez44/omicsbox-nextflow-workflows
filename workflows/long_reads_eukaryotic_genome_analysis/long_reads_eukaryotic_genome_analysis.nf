@@ -2,7 +2,6 @@
 // FILE: long_reads_eukaryotic_genome_analysis.nf
 // Long-Read Eukaryotic Genome Analysis Pipeline: QC → Assembly → Polish → Annotation → Functional Analysis
 // =============================================================================
-nextflow.enable.dsl=2
 
 include { LONGQC                       } from '../../modules/general_tools/longqc.nf'
 include { FLYE                         } from '../../modules/genome_analysis/flye.nf'
@@ -20,7 +19,7 @@ include { GO_ANNOTATION                } from '../../modules/functional_analysis
 include { MERGE_IPS_GOS_TO_ANNOTATION  } from '../../modules/functional_analysis/merge_ips_gos_to_annotation.nf'
 
 // =============================================================================
-workflow {
+workflow LONG_READS_EUKARYOTIC_GENOME_ANALYSIS {
 
     main:
 

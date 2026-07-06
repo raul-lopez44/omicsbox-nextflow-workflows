@@ -2,7 +2,6 @@
 // FILE: long_reads_prokaryotic_genome_analysis.nf
 // Long-Read Prokaryotic Genome Analysis Pipeline: QC → Assembly → Polish → Gene Finding → Functional Analysis
 // =============================================================================
-nextflow.enable.dsl=2
 
 include { LONGQC                  } from '../../modules/general_tools/longqc.nf'
 include { FLYE                    } from '../../modules/genome_analysis/flye.nf'
@@ -19,7 +18,7 @@ include { GO_ANNOTATION           } from '../../modules/functional_analysis/go_a
 include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/functional_analysis/merge_ips_gos_to_annotation.nf'
 
 // =============================================================================
-workflow {
+workflow LONG_READS_PROKARYOTIC_GENOME_ANALYSIS {
 
     main:
 

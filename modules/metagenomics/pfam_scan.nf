@@ -1,7 +1,6 @@
 // --- FILE: modules/metagenomics/pfam_scan.nf ---
 // Wraps: omicsbox pfam-scan  |  backend: WJOB_ASYNC
 // Annotates predicted proteins with Pfam protein domains.
-nextflow.enable.dsl=2
 
 process PFAM_SCAN {
 

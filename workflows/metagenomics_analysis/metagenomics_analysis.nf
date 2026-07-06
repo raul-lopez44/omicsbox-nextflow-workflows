@@ -2,7 +2,6 @@
 // FILE: metagenomics_analysis.nf
 // Metagenomics Analysis Pipeline: QC → Trimming → Decontamination → Assembly → Gene Prediction → Functional Annotation
 // =============================================================================
-nextflow.enable.dsl=2
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
 include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
@@ -14,7 +13,7 @@ include { PFAM_SCAN              } from '../../modules/metagenomics/pfam_scan.nf
 include { EGGNOG_MAPPER          } from '../../modules/metagenomics/eggnog_mapper.nf'
 
 // =============================================================================
-workflow METAGENOMICS {
+workflow METAGENOMICS_ANALYSIS {
 
     main:
 

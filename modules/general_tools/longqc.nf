@@ -1,7 +1,6 @@
 // --- FILE: modules/longqc.nf ---
 // Wraps: omicsbox longqc  |  backend: LEGACY_SYNC
 // Quality control and trimming for long-read sequencing data.
-nextflow.enable.dsl=2
 
 process LONGQC {
 

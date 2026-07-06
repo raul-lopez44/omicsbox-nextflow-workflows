@@ -1,7 +1,6 @@
 // --- FILE: modules/spades.nf ---
 // Wraps: omicsbox spades  |  backend: WJOB_ASYNC
 // DNA-Seq de novo genome assembly with comprehensive mate-pair and hybrid assembly support.
-nextflow.enable.dsl=2
 
 process SPADES {
 

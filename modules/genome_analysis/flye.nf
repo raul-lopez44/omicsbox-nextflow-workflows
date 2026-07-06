@@ -1,7 +1,6 @@
 // --- FILE: modules/flye.nf ---
 // Wraps: omicsbox flye  |  backend: LEGACY_SYNC
 // Long-read de novo genome assembly using Flye.
-nextflow.enable.dsl=2
 
 process FLYE {
 

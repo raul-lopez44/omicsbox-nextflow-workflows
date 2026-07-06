@@ -1,7 +1,6 @@
 // --- FILE: modules/go_mapping_charts.nf ---
 // Wraps: omicsbox statistics-mapping  |  backend: LEGACY_SYNC
 // Generates GO mapping distribution charts
-nextflow.enable.dsl=2
 
 process GO_MAPPING_CHARTS {
 

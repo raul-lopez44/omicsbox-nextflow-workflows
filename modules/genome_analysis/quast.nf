@@ -1,7 +1,6 @@
 // --- FILE: modules/quast.nf ---
 // Wraps: omicsbox quast  |  backend: WJOB_ASYNC
 // Quality assessment of genome assemblies using QUAST.
-nextflow.enable.dsl=2
 
 process QUAST {
 

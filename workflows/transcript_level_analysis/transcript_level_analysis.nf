@@ -1,6 +1,5 @@
 // =============================================================================
 // FILE: transcript_level_analysis.nf
-nextflow.enable.dsl=2
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
 include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
@@ -10,7 +9,7 @@ include { COUNTS_PCA             } from '../../modules/transcriptomics/counts_pc
 include { EDGER                  } from '../../modules/transcriptomics/edger.nf'
 
 // =============================================================================
-workflow {
+workflow TRANSCRIPT_LEVEL_ANALYSIS {
 
     main:
 

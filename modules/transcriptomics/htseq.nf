@@ -3,7 +3,6 @@
 // RNA-Seq read quantification at gene level from aligned BAM files and genome annotation.
 // Input: BAM alignment files, GFF/GTF annotation file
 // Output: gene-level read count table
-nextflow.enable.dsl=2
 
 process HTSEQ {
 

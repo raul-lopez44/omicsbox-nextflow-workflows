@@ -1,7 +1,6 @@
 // --- FILE: modules/trinity.nf ---
 // Wraps: omicsbox trinity  |  backend: WJOB_ASYNC
 // De-novo RNA-Seq assembly. 
-nextflow.enable.dsl=2
 
 process TRINITY {
 

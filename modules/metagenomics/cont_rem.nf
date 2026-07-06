@@ -1,7 +1,6 @@
 // --- FILE: modules/metagenomics/cont_rem.nf ---
 // Wraps: omicsbox remove-contamination  |  backend: WJOB_ASYNC
 // Removes contaminant reads (e.g. host/human DNA) from metagenomic libraries.
-nextflow.enable.dsl=2
 
 process CONT_REM {
 

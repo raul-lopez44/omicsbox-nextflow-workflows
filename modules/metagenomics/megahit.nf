@@ -1,7 +1,6 @@
 // --- FILE: modules/metagenomics/megahit.nf ---
 // Wraps: omicsbox megahit  |  backend: WJOB_ASYNC
 // De novo metagenome assembly using MEGAHIT.
-nextflow.enable.dsl=2
 
 process MEGAHIT {
 

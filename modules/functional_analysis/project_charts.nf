@@ -1,7 +1,6 @@
 // --- FILE: modules/project_charts.nf ---
 // Wraps: omicsbox statistics-project  |  backend: LEGACY_SYNC
 // Generates overall project statistics charts
-nextflow.enable.dsl=2
 
 process PROJECT_CHARTS {
 

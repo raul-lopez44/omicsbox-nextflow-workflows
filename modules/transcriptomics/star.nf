@@ -1,7 +1,6 @@
 // --- FILE: modules/star.nf ---
 // Wraps: omicsbox star-aligner  |  backend: WJOB_ASYNC
 // RNA-Seq read alignment to reference genome using STAR aligner.
-nextflow.enable.dsl=2
 
 process STAR {
 

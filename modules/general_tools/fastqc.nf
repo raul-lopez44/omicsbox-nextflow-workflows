@@ -1,7 +1,6 @@
 // --- FILE: modules/fastqc.nf ---
 // Wraps: omicsbox fastqc  |  backend: WJOB_ASYNC
 // Quality control assessment of sequence reads.
-nextflow.enable.dsl=2
 
 process FASTQC {
 

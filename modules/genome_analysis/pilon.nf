@@ -1,7 +1,6 @@
 // --- FILE: modules/pilon.nf ---
 // Wraps: omicsbox pilon  |  backend: LEGACY_SYNC
 // Polishes long-read assembly using short-read alignments.
-nextflow.enable.dsl=2
 
 process PILON {
 

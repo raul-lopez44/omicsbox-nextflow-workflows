@@ -1,7 +1,6 @@
 // --- FILE: modules/eggnog_mapper.nf ---
 // Wraps: omicsbox eggnog-mapper  |  backend: WJOB_ASYNC
 // Functional annotation via EggNOG ortholog mapping.
-nextflow.enable.dsl=2
 
 process EGGNOG_MAPPER {
 

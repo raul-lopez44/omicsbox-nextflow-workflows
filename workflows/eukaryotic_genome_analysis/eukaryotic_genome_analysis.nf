@@ -2,7 +2,6 @@
 // FILE: eukaryotic_genome_analysis.nf
 // Eukaryotic Genome Analysis Pipeline: Preprocessing → Assembly → Annotation → Functional Analysis
 // =============================================================================
-nextflow.enable.dsl=2
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
 include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
@@ -20,7 +19,7 @@ include { GO_ANNOTATION          } from '../../modules/functional_analysis/go_an
 include { MERGE_IPS_GOS_TO_ANNOTATION } from '../../modules/functional_analysis/merge_ips_gos_to_annotation.nf'
 
 // =============================================================================
-workflow {
+workflow EUKARYOTIC_GENOME_ANALYSIS {
 
     main:
 

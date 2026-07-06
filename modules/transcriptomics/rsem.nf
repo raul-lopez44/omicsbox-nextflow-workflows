@@ -1,7 +1,6 @@
 // --- FILE: modules/rsem.nf ---
 // Wraps: omicsbox rsem  |  backend: WJOB_ASYNC
 // Quantifies read expression against Trinity assembly.
-nextflow.enable.dsl=2
 
 process RSEM {
 

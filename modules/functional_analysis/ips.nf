@@ -1,7 +1,6 @@
 // --- FILE: modules/ips.nf ---
 // Wraps: omicsbox ips  |  backend: WJOB_ASYNC
 // Protein domain and functional annotation via InterProScan.
-nextflow.enable.dsl=2
 
 process INTERPROSCAN {
 

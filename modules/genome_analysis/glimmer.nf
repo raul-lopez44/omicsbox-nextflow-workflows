@@ -2,7 +2,6 @@
 // Wraps: omicsbox runglimmer  |  backend: LEGACY_SYNC
 // Prokaryotic gene finding using Glimmer with ICM model (creates new model if not provided).
 
-nextflow.enable.dsl=2
 
 process GLIMMER {
 

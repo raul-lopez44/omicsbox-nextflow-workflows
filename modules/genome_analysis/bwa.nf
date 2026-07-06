@@ -1,7 +1,6 @@
 // --- FILE: modules/bwa.nf ---
 // Wraps: omicsbox bwa  |  backend: LEGACY_SYNC
 // Aligns short reads to long-read assembly reference for hybrid polishing.
-nextflow.enable.dsl=2
 
 process BWA {
 

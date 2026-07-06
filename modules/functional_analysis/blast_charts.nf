@@ -1,7 +1,6 @@
 // --- FILE: modules/blast_charts.nf ---
 // Wraps: omicsbox statistics-blast  |  backend: WJOB_ASYNC
 // Generates visualization charts for DIAMOND BLAST results
-nextflow.enable.dsl=2
 
 process BLAST_CHARTS {
 

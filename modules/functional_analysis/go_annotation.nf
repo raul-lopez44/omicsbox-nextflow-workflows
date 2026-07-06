@@ -1,7 +1,6 @@
 // --- FILE: modules/go_annotation.nf ---
 // Wraps: omicsbox annotation  |  backend: WJOB_ASYNC
 // BLAST2GO functional annotation
-nextflow.enable.dsl=2
 
 process GO_ANNOTATION {
 

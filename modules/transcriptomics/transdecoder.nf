@@ -1,7 +1,6 @@
 // --- FILE: modules/transdecoder.nf ---
 // Wraps: omicsbox transdecoder  |  backend: WJOB_ASYNC
 // Predicts protein-coding regions (ORFs) from assembled transcripts.
-nextflow.enable.dsl=2
 
 process TRANSDECODER {
 
