@@ -12,13 +12,13 @@ process ABYSS {
     path opt_long_seqs       // Optional: Long sequence reads
 
     output:
-    path "${task.ext.outdir}/*unitigs.fa", emit: unitigs              // Assembled unitigs FASTA file
-    path "${task.ext.outdir}/*contigs.fa", emit: contigs              // Assembled contigs FASTA file
-    path "${task.ext.outdir}/*scaffolds.fa", emit: scaffolds          // Assembled scaffolds FASTA file
-    path "${task.ext.outdir}/*long-scaffolds.fa", emit: long_scaffolds  // Assembled long scaffolds FASTA file   
-    path "${task.ext.outdir}/*report*.box", emit: report              // OmicsBox report
-    path "${task.ext.outdir}/*Nx_plot*", emit: nx_plot                // Nx plot chart
-    path "${task.ext.outdir}/*graph", emit: abyss_graph, optional: true  // ABySS graph visualization
+    path "${task.ext.outdir}/*unitigs*.fasta", emit: unitigs                       // Assembled unitigs FASTA file
+    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs                       // Assembled contigs FASTA file
+    path "${task.ext.outdir}/scaffolds-file.fasta", emit: scaffolds                // Assembled scaffolds FASTA (exact: avoids matching long-scaffolds)
+    path "${task.ext.outdir}/long-scaffolds-file.fasta", emit: long_scaffolds, optional: true  // Long scaffolds FASTA (may be empty / not produced)
+    path "${task.ext.outdir}/*report*.box", emit: report                           // OmicsBox report
+    path "${task.ext.outdir}/*chart*.box", emit: nx_plot                           // Nx plot chart (OmicsBox webchart: abyss_chart.box)
+    path "${task.ext.outdir}/*.dot", emit: abyss_graph, optional: true             // ABySS assembly graphs (.dot)
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()

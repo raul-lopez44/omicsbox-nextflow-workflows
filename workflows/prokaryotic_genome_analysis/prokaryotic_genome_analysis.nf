@@ -103,36 +103,36 @@ workflow {
         : channel.value([])
 
     // SPADES optional inputs — dynamic flag injection based on channel presence
-        def ch_spades_opt_mp_fr = params.spades_opt_mp_fr
-        ? channel.fromPath(params.spades_opt_mp_fr, checkIfExists: true).collect()
+    def ch_spades_opt_mp_fr = params.spades.opt_mp_fr
+        ? channel.fromPath(params.spades.opt_mp_fr, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_opt_mp_rf = params.spades_opt_mp_rf
-        ? channel.fromPath(params.spades_opt_mp_rf, checkIfExists: true).collect()
+    def ch_spades_opt_mp_rf = params.spades.opt_mp_rf
+        ? channel.fromPath(params.spades.opt_mp_rf, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_opt_mp_ff = params.spades_opt_mp_ff
-        ? channel.fromPath(params.spades_opt_mp_ff, checkIfExists: true).collect()
+    def ch_spades_opt_mp_ff = params.spades.opt_mp_ff
+        ? channel.fromPath(params.spades.opt_mp_ff, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_sanger = params.spades_sanger
-        ? channel.fromPath(params.spades_sanger, checkIfExists: true).collect()
+    def ch_spades_sanger = params.spades.sanger
+        ? channel.fromPath(params.spades.sanger, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_pacbio = params.spades_pacbio
-        ? channel.fromPath(params.spades_pacbio, checkIfExists: true).collect()
+    def ch_spades_pacbio = params.spades.pacbio
+        ? channel.fromPath(params.spades.pacbio, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_nanopore = params.spades_nanopore
-        ? channel.fromPath(params.spades_nanopore, checkIfExists: true).collect()
+    def ch_spades_nanopore = params.spades.nanopore
+        ? channel.fromPath(params.spades.nanopore, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_trusted_contigs = params.spades_trusted_contigs
-        ? channel.fromPath(params.spades_trusted_contigs, checkIfExists: true).collect()
+    def ch_spades_trusted_contigs = params.spades.trusted_contigs
+        ? channel.fromPath(params.spades.trusted_contigs, checkIfExists: true).collect()
         : channel.value([])
 
-    def ch_spades_untrusted_contigs = params.spades_untrusted_contigs
-        ? channel.fromPath(params.spades_untrusted_contigs, checkIfExists: true).collect()
+    def ch_spades_untrusted_contigs = params.spades.untrusted_contigs
+        ? channel.fromPath(params.spades.untrusted_contigs, checkIfExists: true).collect()
         : channel.value([])
 
     // -------------------------------------------------------------------------
@@ -176,8 +176,8 @@ workflow {
     // QUAST: Compares against reference genome for structural validation
     // BUSCO: Assesses completeness using universal single-copy orthologs
     // -------------------------------------------------------------------------
-    QUAST(SPADES.out.assembly, ch_reference)
-    BUSCO(SPADES.out.assembly)
+    QUAST(SPADES.out.scaffolds, ch_reference)
+    BUSCO(SPADES.out.scaffolds)
 
     // -------------------------------------------------------------------------
     // 06 — Prokaryotic gene finding
@@ -186,7 +186,7 @@ workflow {
     // OPTIONAL: Provide an existing ICM model for species-specific prediction.
     //   If no ICM model is provided, Glimmer will create a new model.
     // -------------------------------------------------------------------------
-    GLIMMER(SPADES.out.assembly, ch_icm_model)
+    GLIMMER(SPADES.out.scaffolds, ch_icm_model)
 
     // -------------------------------------------------------------------------
     // 07 — Functional annotation of predicted genes
