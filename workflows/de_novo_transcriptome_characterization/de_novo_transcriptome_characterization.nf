@@ -24,7 +24,7 @@ workflow {
 
     if (params.dump_config) {
         // 1. Define the source path (inside the repo, using workflow.projectDir)
-        def sourceConfig = file("${workflow.projectDir}/de_novo_transcriptome_characterization.config")
+        def sourceConfig = file("${workflow.projectDir}/workflows/de_novo_transcriptome_characterization/de_novo_transcriptome_characterization.config")
         
         // 2. Define the target path (the current directory where the user is executing the command)
         def targetConfig = file("./de_novo_transcriptome_characterization.config")

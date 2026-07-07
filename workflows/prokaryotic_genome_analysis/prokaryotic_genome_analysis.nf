@@ -23,7 +23,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/prokaryotic_genome_analysis.config")
+        def sourceConfig = file("${workflow.projectDir}/workflows/prokaryotic_genome_analysis/prokaryotic_genome_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./prokaryotic_genome_analysis.config")

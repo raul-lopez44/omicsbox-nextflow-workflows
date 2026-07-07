@@ -19,7 +19,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/transcript_level_analysis.config")
+        def sourceConfig = file("${workflow.projectDir}/workflows/transcript_level_analysis/transcript_level_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./transcript_level_analysis.config")
