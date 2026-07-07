@@ -22,6 +22,35 @@ workflow {
 
     main:
 
+    if (params.dump_config) {
+        // 1. Define the source path (inside the repo, using workflow.projectDir)
+        def sourceConfig = file("${workflow.projectDir}/de_novo_transcriptome_characterization.config")
+        
+        // 2. Define the target path (the current directory where the user is executing the command)
+        def targetConfig = file("./de_novo_transcriptome_characterization.config")
+
+        if (sourceConfig.exists()) {
+            // 3. Physically copy the file to the user's environment
+            sourceConfig.copyTo(targetConfig)
+            
+            log.info "========================================================================="
+            log.info "  [OK] Configuration template successfully exported!"
+            log.info "========================================================================="
+            log.info "  File generated at: ./de_novo_transcriptome_characterization.config"
+            log.info ""
+            log.info "  Instructions:"
+            log.info "  1. Open and modify the parameters in the generated file as needed."
+            log.info "  2. Run the actual pipeline pointing to your local configuration using:"
+            log.info "     -c de_novo_transcriptome_characterization.config"
+            log.info "========================================================================="
+        } else {
+            log.error "  [ERROR] Could not find the internal template at: ${sourceConfig}"
+        }
+        
+        // 4. Stop Nextflow safely with exit code 0 (success)
+        exit 0
+    }
+
     // -------------------------------------------------------------------------
     // Safety checks
     // -------------------------------------------------------------------------

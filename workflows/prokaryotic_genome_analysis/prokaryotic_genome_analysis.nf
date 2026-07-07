@@ -18,6 +18,40 @@ workflow {
     main:
 
     // -------------------------------------------------------------------------
+    // Config template export: --dump_config copies this workflow's .config to
+    // the launch directory and exits, so the user can edit it and pass it via -c.
+    // -------------------------------------------------------------------------
+    if (params.dump_config) {
+        // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
+        def sourceConfig = file("${workflow.projectDir}/prokaryotic_genome_analysis.config")
+
+        // 2. Target: the current launch directory
+        def targetConfig = file("./prokaryotic_genome_analysis.config")
+
+        if (sourceConfig.exists()) {
+            // 3. Physically copy the file to the user's environment
+            sourceConfig.copyTo(targetConfig)
+
+            log.info "========================================================================="
+            log.info "  [OK] Configuration template successfully exported!"
+            log.info "========================================================================="
+            log.info "  File generated at: ./prokaryotic_genome_analysis.config"
+            log.info ""
+            log.info "  Instructions:"
+            log.info "  1. Open and modify the parameters in the generated file as needed."
+            log.info "  2. Run the actual pipeline pointing to your local configuration using:"
+            log.info "     -c prokaryotic_genome_analysis.config"
+            log.info "========================================================================="
+        } else {
+            log.error "  [ERROR] Could not find the internal template at: ${sourceConfig}"
+        }
+
+        // 4. Stop Nextflow safely with exit code 0 (success)
+        exit 0
+    }
+
+
+    // -------------------------------------------------------------------------
     // Safety checks — all 4 critical inputs
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {

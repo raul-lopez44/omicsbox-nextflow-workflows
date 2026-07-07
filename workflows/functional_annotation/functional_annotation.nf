@@ -30,7 +30,7 @@ workflow {
 
     if (params.dump_config) {
         // 1. Define the source path (inside the repo, using workflow.projectDir)
-        def sourceConfig = file("${workflow.projectDir}/workflows/functional_annotation/functional_annotation.config")
+        def sourceConfig = file("${workflow.projectDir}/functional_annotation.config")
         
         // 2. Define the target path (the current directory where the user is executing the command)
         def targetConfig = file("./functional_annotation.config")
