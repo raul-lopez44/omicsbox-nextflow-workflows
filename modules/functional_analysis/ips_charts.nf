@@ -1,5 +1,5 @@
 // --- FILE: modules/ips_charts.nf ---
-// Wraps: omicsbox statistics-interpro  |  backend: LEGACY_SYNC
+// Wraps: omicsbox statistics-interpro
 // Generates InterProScan domain distribution charts
 
 process IPS_CHARTS {

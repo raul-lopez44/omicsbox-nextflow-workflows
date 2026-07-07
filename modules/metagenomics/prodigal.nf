@@ -1,5 +1,5 @@
 // --- FILE: modules/metagenomics/prodigal.nf ---
-// Wraps: omicsbox prodigal  |  backend: LEGACY_SYNC
+// Wraps: omicsbox prodigal
 // Prokaryotic / metagenomic gene prediction from assembled contigs.
 
 process PRODIGAL {
@@ -16,7 +16,7 @@ process PRODIGAL {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // LEGACY_SYNC — single input FASTA, absolute path enforced.
+    // single input FASTA, absolute path enforced.
     """
     mkdir -p ${outdir}
     omicsbox prodigal \\

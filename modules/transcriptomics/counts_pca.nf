@@ -1,5 +1,5 @@
 // --- FILE: modules/pca_chart.nf ---
-// Wraps: omicsbox counts-pca  |  backend: LEGACY_SYNC
+// Wraps: omicsbox counts-pca
 // PCA/PCoA visualization of sample distances. 
 
 process COUNTS_PCA {

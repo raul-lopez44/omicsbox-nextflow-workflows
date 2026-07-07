@@ -1,5 +1,5 @@
 // --- FILE: modules/cdhit.nf ---
-// Wraps: omicsbox cdhit  |  backend: WJOB_ASYNC
+// Wraps: omicsbox cdhit
 // Clusters Trinity transcripts at sequence-identity threshold.
 
 process CDHIT {
@@ -17,15 +17,12 @@ process CDHIT {
     def outdir     = task.ext.outdir ?: task.process.toLowerCase()
     def args       = task.ext.args   ?: ''
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
     omicsbox cdhit \\
         --i-input=\$PWD/${assembly} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

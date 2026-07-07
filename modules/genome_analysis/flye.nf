@@ -1,5 +1,5 @@
 // --- FILE: modules/flye.nf ---
-// Wraps: omicsbox flye  |  backend: LEGACY_SYNC
+// Wraps: omicsbox flye
 // Long-read de novo genome assembly using Flye.
 
 process FLYE {
@@ -32,7 +32,6 @@ process FLYE {
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

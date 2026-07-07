@@ -1,5 +1,5 @@
 // --- FILE: modules/quast.nf ---
-// Wraps: omicsbox quast  |  backend: WJOB_ASYNC
+// Wraps: omicsbox quast
 // Quality assessment of genome assemblies using QUAST.
 
 process QUAST {
@@ -17,8 +17,6 @@ process QUAST {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -26,7 +24,6 @@ process QUAST {
         --i-assemblies=${assembly instanceof List ? assembly.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${assembly}"} \\
         --i-reference=\$PWD/${reference} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

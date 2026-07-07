@@ -1,5 +1,5 @@
 // --- FILE: modules/star.nf ---
-// Wraps: omicsbox star-aligner  |  backend: WJOB_ASYNC
+// Wraps: omicsbox star-aligner
 // RNA-Seq read alignment to reference genome using STAR aligner.
 
 process STAR {
@@ -35,8 +35,6 @@ process STAR {
         ? "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
         : ""
 
-    // WJOB_ASYNC: --cloud-folder required for cloud-backed runs
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -46,7 +44,6 @@ process STAR {
         --i-fasta-file=\$PWD/${fasta} \\
         --i-annotation-file=\$PWD/${annotation} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

@@ -1,5 +1,5 @@
 // --- FILE: modules/merge_eggnog_5_gos.nf ---
-// Wraps: omicsbox merge-emapper5-annotations  |  backend: LEGACY_SYNC
+// Wraps: omicsbox merge-emapper5-annotations
 // Integrates EggNOG annotations with GO terms
 
 process MERGE_EGGNOG_5_GOS {

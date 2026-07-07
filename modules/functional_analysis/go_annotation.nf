@@ -1,5 +1,5 @@
 // --- FILE: modules/go_annotation.nf ---
-// Wraps: omicsbox annotation  |  backend: WJOB_ASYNC
+// Wraps: omicsbox annotation
 // BLAST2GO functional annotation
 
 process GO_ANNOTATION {

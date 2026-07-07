@@ -1,5 +1,5 @@
 // --- FILE: modules/trimmomatic.nf ---
-// Wraps: omicsbox trimmomatic  |  backend: WJOB_ASYNC
+// Wraps: omicsbox trimmomatic
 // Adapter and quality-based read trimming.
 
 process TRIMMOMATIC {
@@ -38,8 +38,6 @@ process TRIMMOMATIC {
         ? "--i-adapter-file=\$PWD/${adapters}"
         : ""
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -47,7 +45,6 @@ process TRIMMOMATIC {
         ${input_flag} \\
         ${pattern_flags} \\
         ${adapter_flag} \\
-        ${cloud_flag} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
 

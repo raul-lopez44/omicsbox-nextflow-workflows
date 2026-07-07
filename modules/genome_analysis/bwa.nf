@@ -1,5 +1,5 @@
 // --- FILE: modules/bwa.nf ---
-// Wraps: omicsbox bwa  |  backend: LEGACY_SYNC
+// Wraps: omicsbox bwa
 // Aligns short reads to long-read assembly reference for hybrid polishing.
 
 process BWA {
@@ -39,7 +39,6 @@ process BWA {
         pattern_flags = "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
     }
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

@@ -1,5 +1,5 @@
 // --- FILE: modules/repeatmasker.nf ---
-// Wraps: omicsbox repeatmasker  |  backend: LEGACY_SYNC
+// Wraps: omicsbox repeatmasker
 // Repeat masking for eukaryotic genome sequences.
 
 
@@ -37,7 +37,6 @@ process REPEATMASKER {
     def has_db = database ? database.toString() != '[]' : false
     def db_file_flag = has_db ? "--i-database-file=\$PWD/${database}" : ""
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

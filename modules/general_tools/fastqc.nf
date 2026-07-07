@@ -1,5 +1,5 @@
 // --- FILE: modules/fastqc.nf ---
-// Wraps: omicsbox fastqc  |  backend: WJOB_ASYNC
+// Wraps: omicsbox fastqc
 // Quality control assessment of sequence reads.
 
 process FASTQC {
@@ -34,8 +34,6 @@ process FASTQC {
         ? "--provide-contaminants=true --i-contaminants=\$PWD/${contaminants}"
         : ""
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -44,7 +42,6 @@ process FASTQC {
         ${adapters_flag} \\
         ${contaminants_flag} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

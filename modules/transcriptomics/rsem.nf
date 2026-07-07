@@ -1,5 +1,5 @@
 // --- FILE: modules/rsem.nf ---
-// Wraps: omicsbox rsem  |  backend: WJOB_ASYNC
+// Wraps: omicsbox rsem
 // Quantifies read expression against Trinity assembly.
 
 process RSEM {
@@ -37,8 +37,6 @@ process RSEM {
         ? "--i-transcript-to-gene-file=\$PWD/${gene_trans_map}"
         : ""
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -48,7 +46,6 @@ process RSEM {
         ${input_flag} \\
         ${pattern_flags} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

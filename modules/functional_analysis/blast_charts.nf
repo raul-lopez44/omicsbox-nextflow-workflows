@@ -1,5 +1,5 @@
 // --- FILE: modules/blast_charts.nf ---
-// Wraps: omicsbox statistics-blast  |  backend: WJOB_ASYNC
+// Wraps: omicsbox statistics-blast
 // Generates visualization charts for DIAMOND BLAST results
 
 process BLAST_CHARTS {

@@ -1,5 +1,5 @@
 // --- FILE: modules/project_charts.nf ---
-// Wraps: omicsbox statistics-project  |  backend: LEGACY_SYNC
+// Wraps: omicsbox statistics-project
 // Generates overall project statistics charts
 
 process PROJECT_CHARTS {

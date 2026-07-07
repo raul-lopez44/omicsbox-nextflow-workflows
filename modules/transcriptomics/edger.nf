@@ -1,5 +1,5 @@
 // --- FILE: modules/edger.nf ---
-// Wraps: omicsbox edger  |  backend: WJOB_ASYNC
+// Wraps: omicsbox edger
 // Pairwise differential expression analysis with edgeR.
 
 process EDGER {
@@ -16,8 +16,6 @@ process EDGER {
     def outdir     = task.ext.outdir ?: task.process.toLowerCase()
     def args       = task.ext.args   ?: ''
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -25,7 +23,6 @@ process EDGER {
         --i-count-table=\$PWD/${count_table_project} \\
         --i-file-design-table=\$PWD/${design_file} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

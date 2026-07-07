@@ -1,5 +1,5 @@
 // --- FILE: modules/longqc.nf ---
-// Wraps: omicsbox longqc  |  backend: LEGACY_SYNC
+// Wraps: omicsbox longqc
 // Quality control and trimming for long-read sequencing data.
 
 process LONGQC {
@@ -19,7 +19,6 @@ process LONGQC {
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

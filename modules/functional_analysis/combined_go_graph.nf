@@ -1,5 +1,5 @@
 // --- FILE: modules/combined_go_graph.nf ---
-// Wraps: omicsbox graph-combined-make  |  backend: LEGACY_SYNC
+// Wraps: omicsbox graph-combined-make
 // Generates combined GO graph visualization
 
 process COMBINED_GO_GRAPH {

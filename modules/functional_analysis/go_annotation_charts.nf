@@ -1,5 +1,5 @@
 // --- FILE: modules/go_annotation_charts.nf ---
-// Wraps: omicsbox statistics-annotation  |  backend: LEGACY_SYNC
+// Wraps: omicsbox statistics-annotation
 // Generates GO annotation distribution charts
 
 process GO_ANNOTATION_CHARTS {

@@ -1,5 +1,5 @@
 // --- FILE: modules/metagenomics/megahit.nf ---
-// Wraps: omicsbox megahit  |  backend: WJOB_ASYNC
+// Wraps: omicsbox megahit
 // De novo metagenome assembly using MEGAHIT.
 
 process MEGAHIT {
@@ -39,17 +39,14 @@ process MEGAHIT {
         pattern_flags = "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
     }
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
-    xvfb-run -a omicsbox megahit \\
+    omicsbox megahit \\
         ${input_flag} \\
         ${pattern_flags} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

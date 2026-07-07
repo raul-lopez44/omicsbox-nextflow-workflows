@@ -1,5 +1,5 @@
 // --- FILE: modules/trinity.nf ---
-// Wraps: omicsbox trinity  |  backend: WJOB_ASYNC
+// Wraps: omicsbox trinity
 // De-novo RNA-Seq assembly. 
 
 process TRINITY {
@@ -34,8 +34,6 @@ process TRINITY {
         pattern_flags = "--upstream-pattern-assembly=${up_pat} --downstream-pattern-assembly=${down_pat}"
     }
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -44,7 +42,6 @@ process TRINITY {
         ${input_flag} \\
         ${pattern_flags} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

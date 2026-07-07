@@ -1,5 +1,5 @@
 // --- FILE: modules/go_mapping.nf ---
-// Wraps: omicsbox mapping-cloud  |  backend: LEGACY_SYNC
+// Wraps: omicsbox mapping-cloud
 // Maps sequences to Gene Ontology terms
 
 process GO_MAPPING {

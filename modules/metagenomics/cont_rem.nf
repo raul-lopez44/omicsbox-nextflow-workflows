@@ -1,5 +1,5 @@
 // --- FILE: modules/metagenomics/cont_rem.nf ---
-// Wraps: omicsbox remove-contamination  |  backend: WJOB_ASYNC
+// Wraps: omicsbox remove-contamination
 // Removes contaminant reads (e.g. host/human DNA) from metagenomic libraries.
 
 process CONT_REM {
@@ -45,8 +45,6 @@ process CONT_REM {
         ? "--i-target-genome=\$PWD/${target_genome}"
         : ""
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -55,7 +53,6 @@ process CONT_REM {
         ${pattern_flags} \\
         ${target_flag} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

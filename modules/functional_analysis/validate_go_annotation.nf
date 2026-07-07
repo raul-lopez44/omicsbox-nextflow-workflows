@@ -1,5 +1,5 @@
 // --- FILE: modules/validate_go_annotation.nf ---
-// Wraps: omicsbox annotation-validate  |  backend: LEGACY_SYNC
+// Wraps: omicsbox annotation-validate
 // Validates GO annotations using True-Path-Rule
 
 process VALIDATE_GO_ANNOTATION {

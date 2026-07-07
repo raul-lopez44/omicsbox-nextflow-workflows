@@ -1,5 +1,5 @@
 // --- FILE: modules/spades.nf ---
-// Wraps: omicsbox spades  |  backend: WJOB_ASYNC
+// Wraps: omicsbox spades
 // DNA-Seq de novo genome assembly with comprehensive mate-pair and hybrid assembly support.
 
 process SPADES {
@@ -95,8 +95,6 @@ process SPADES {
         ? "--i-data-for-hybrid-assembly-spades-untrusted-contigs=${untrusted_contigs instanceof List ? untrusted_contigs.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${untrusted_contigs}"}"
         : ""
 
-    // WJOB_ASYNC: --cloud-folder required for cloud-backed runs
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -115,7 +113,6 @@ process SPADES {
         ${untrusted_flag} \\
         --i-graph-folder=\$PWD/${outdir}/graphs \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

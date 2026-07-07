@@ -1,5 +1,5 @@
 // --- FILE: modules/export_genesets.nf ---
-// Wraps: omicsbox export-genesets  |  backend: LEGACY_SYNC
+// Wraps: omicsbox export-genesets
 // Exports annotated gene sets to standard formats
 
 process EXPORT_GENE_SETS {

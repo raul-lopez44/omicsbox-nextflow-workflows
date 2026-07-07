@@ -1,5 +1,5 @@
 // --- FILE: modules/glimmer.nf ---
-// Wraps: omicsbox runglimmer  |  backend: LEGACY_SYNC
+// Wraps: omicsbox runglimmer
 // Prokaryotic gene finding using Glimmer with ICM model (creates new model if not provided).
 
 
@@ -27,7 +27,6 @@ process GLIMMER {
     def use_icm_flag = has_icm ? "--use-icm=existing" : "--use-icm=create"
     def icm_file_flag = has_icm ? "--i-existing-icmodel=\$PWD/${icm_model}" : ""
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

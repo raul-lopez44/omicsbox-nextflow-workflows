@@ -1,5 +1,5 @@
 // --- FILE: modules/abyss.nf ---
-// Wraps: omicsbox abyss  |  backend: WJOB_ASYNC
+// Wraps: omicsbox abyss
 // DNA-Seq de novo genome assembly for eukaryotic genomes using ABySS assembler.
 
 process ABYSS {
@@ -62,8 +62,6 @@ process ABYSS {
         ? "--i-optional-data-abyss-long-sequences=${opt_long_seqs instanceof List ? opt_long_seqs.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${opt_long_seqs}"}"
         : ""
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
@@ -76,7 +74,6 @@ process ABYSS {
         ${mp_flag} \\
         ${long_flag} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }

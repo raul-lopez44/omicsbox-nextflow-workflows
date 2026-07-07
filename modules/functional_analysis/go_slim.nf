@@ -1,5 +1,5 @@
 // --- FILE: modules/go_slim.nf ---
-// Wraps: omicsbox goslim  |  backend: LEGACY_SYNC
+// Wraps: omicsbox goslim
 // Generates GO Slim subset annotation
 
 process GO_SLIM {

@@ -1,5 +1,5 @@
 // --- FILE: modules/pilon.nf ---
-// Wraps: omicsbox pilon  |  backend: LEGACY_SYNC
+// Wraps: omicsbox pilon
 // Polishes long-read assembly using short-read alignments.
 
 process PILON {
@@ -17,7 +17,6 @@ process PILON {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

@@ -1,5 +1,5 @@
 // --- FILE: modules/load_fasta.nf ---
-// Wraps: omicsbox load-sequences  |  backend: LEGACY_SYNC
+// Wraps: omicsbox load-sequences
 // Loads FASTA sequences into an OmicsBox project for downstream annotation.
 
 process LOAD_FASTA {

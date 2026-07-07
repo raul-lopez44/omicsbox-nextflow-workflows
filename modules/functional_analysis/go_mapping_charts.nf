@@ -1,5 +1,5 @@
 // --- FILE: modules/go_mapping_charts.nf ---
-// Wraps: omicsbox statistics-mapping  |  backend: LEGACY_SYNC
+// Wraps: omicsbox statistics-mapping
 // Generates GO mapping distribution charts
 
 process GO_MAPPING_CHARTS {

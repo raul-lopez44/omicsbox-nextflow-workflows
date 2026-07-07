@@ -1,5 +1,5 @@
 // --- FILE: modules/augustus.nf ---
-// Wraps: omicsbox genefinding-eukaryotic  |  backend: LEGACY_SYNC
+// Wraps: omicsbox genefinding-eukaryotic
 // Eukaryotic gene finding using AUGUSTUS with evidence-based prediction.
 
 process AUGUSTUS {
@@ -54,7 +54,6 @@ process AUGUSTUS {
         ? "--i-hint-files-rna-seq-d=${hint_rna_ds instanceof List ? hint_rna_ds.collect { file -> "\$PWD/${file}" }.join(',') : "\$PWD/${hint_rna_ds}"}"
         : ""
 
-    // LEGACY_SYNC
 
     """
     mkdir -p ${outdir}

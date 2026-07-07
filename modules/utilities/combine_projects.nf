@@ -1,5 +1,5 @@
 // --- FILE: modules/combine_projects.nf ---
-// Wraps: omicsbox combine-projects  |  backend: LEGACY_SYNC
+// Wraps: omicsbox combine-projects
 // Merges multiple OmicsBox projects into one
 
 process COMBINE_PROJECTS {

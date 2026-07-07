@@ -1,5 +1,5 @@
 // --- FILE: modules/ips.nf ---
-// Wraps: omicsbox ips  |  backend: WJOB_ASYNC
+// Wraps: omicsbox ips
 // Protein domain and functional annotation via InterProScan.
 
 process INTERPROSCAN {
@@ -15,15 +15,12 @@ process INTERPROSCAN {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // WJOB_ASYNC
-    def cloud_flag = params.cloud_folder ? "--cloud-folder=${params.cloud_folder}" : ""
 
     """
     mkdir -p ${outdir}
     omicsbox ips \\
         --i-local-project=\$PWD/${omicsbox_project} \\
         --local-folder=\$PWD/${outdir} \\
-        ${cloud_flag} \\
         ${args}
     """
 }
