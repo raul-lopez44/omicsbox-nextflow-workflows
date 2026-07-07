@@ -205,8 +205,8 @@ workflow {
     // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
     // INTERPROSCAN: Domain/motif-based annotation via InterPro
     // -------------------------------------------------------------------------
-    DIAMOND_BLAST(AUGUSTUS.out.project)
-    INTERPROSCAN(AUGUSTUS.out.project)
+    DIAMOND_BLAST(AUGUSTUS.out.protein_project)
+    INTERPROSCAN(AUGUSTUS.out.protein_project)
 
     // -------------------------------------------------------------------------
     // 10 — Combine Diamond and InterProScan annotations
@@ -214,7 +214,7 @@ workflow {
     // InterProScan project (with domain/motif annotations) and merges them
     // into a single unified project.
     // -------------------------------------------------------------------------
-    COMBINE_PROJECTS(DIAMOND_BLAST.out.annotated_project, INTERPROSCAN.out.annotated_project)
+    COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
     // 11 — Gene Ontology mapping
@@ -226,7 +226,7 @@ workflow {
     // 12 — BLAST2GO functional annotation
     // Applies BLAST2GO algorithm for comprehensive functional annotation.
     // -------------------------------------------------------------------------
-    GO_ANNOTATION(GO_MAPPING.out.go_mapped_project)
+    GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
     // 13 — Final merge: InterProScan + GO-annotated genes

@@ -151,7 +151,7 @@ workflow {
     // 09 — Combine Diamond and InterProScan annotations
     // Merges both annotation projects into a unified project.
     // -------------------------------------------------------------------------
-    COMBINE_PROJECTS(DIAMOND_BLAST.out.annotated_project, INTERPROSCAN.out.annotated_project)
+    COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
     // 10 — Gene Ontology mapping
@@ -163,7 +163,7 @@ workflow {
     // 11 — BLAST2GO functional annotation
     // Applies BLAST2GO algorithm for comprehensive functional annotation.
     // -------------------------------------------------------------------------
-    GO_ANNOTATION(GO_MAPPING.out.go_mapped_project)
+    GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
     // 12 — Final merge: InterProScan + GO-annotated genes

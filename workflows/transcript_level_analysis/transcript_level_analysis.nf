@@ -119,7 +119,7 @@ workflow {
     // 05-06 — Parallel statistical analysis
     // Both PCA and edgeR consume the count table from RSEM and the experimental design
     // -------------------------------------------------------------------------
-    COUNTS_PCA(RSEM.out.count_table, ch_design)
-    EDGER(RSEM.out.count_table, ch_design)
+    COUNTS_PCA(RSEM.out.count_table_transcripts, ch_design)
+    EDGER(RSEM.out.count_table_transcripts, ch_design)
 
 }
