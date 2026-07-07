@@ -6,11 +6,11 @@ process AUGUSTUS {
 
     input:
     path fasta                      // Soft-masked genome FASTA file
-    path hint_est, optional: true   // Optional: EST/cDNA hint files (evidence for gene prediction)
-    path hint_protein, optional: true  // Optional: Protein hint files (evidence for gene prediction)
-    path hint_isoseq, optional: true   // Optional: IsoSeq hint files (evidence)
-    path hint_rna_se, optional: true   // Optional: RNA-Seq single-end hint files
-    path hint_rna_ds, optional: true   // Optional: RNA-Seq paired-end hint files
+    path hint_est   // Optional: EST/cDNA hint files (evidence for gene prediction)
+    path hint_protein  // Optional: Protein hint files (evidence for gene prediction)
+    path hint_isoseq   // Optional: IsoSeq hint files (evidence)
+    path hint_rna_se   // Optional: RNA-Seq single-end hint files
+    path hint_rna_ds   // Optional: RNA-Seq paired-end hint files
 
     output:
     path "${task.ext.outdir}/*.gff", emit: gff_genes                 // Predicted genes in GFF format

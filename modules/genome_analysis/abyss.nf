@@ -6,10 +6,10 @@ process ABYSS {
 
     input:
     path reads                 // Trimmed FASTQ reads (single-end or paired-end)
-    path opt_linked_reads, optional: true    // Optional: Linked reads for hybrid assembly
-    path opt_add_paired_end, optional: true  // Optional: Additional paired-end reads
-    path opt_mate_pair, optional: true       // Optional: Mate-pair reads for scaffolding
-    path opt_long_seqs, optional: true       // Optional: Long sequence reads
+    path opt_linked_reads    // Optional: Linked reads for hybrid assembly
+    path opt_add_paired_end  // Optional: Additional paired-end reads
+    path opt_mate_pair       // Optional: Mate-pair reads for scaffolding
+    path opt_long_seqs       // Optional: Long sequence reads
 
     output:
     path "${task.ext.outdir}/*unitigs.fa", emit: unitigs              // Assembled unitigs FASTA file

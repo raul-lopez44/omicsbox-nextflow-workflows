@@ -7,7 +7,7 @@ process REPEATMASKER {
 
     input:
     path fasta              // Assembled genome FASTA file
-    path database, optional: true           // Repeat database file 
+    path database           // Repeat database file 
 
     output:
     path "${task.ext.outdir}/*.masked", emit: masked_fasta          // Masked genome FASTA file

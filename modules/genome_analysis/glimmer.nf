@@ -9,7 +9,7 @@ process GLIMMER {
 
     input:
     path fasta              // Assembled genome FASTA file
-    path icm_model, optional: true   // Optional: Interpolated Context Model (ICM) file. If null, creates new model.
+    path icm_model   // Optional: Interpolated Context Model (ICM) file. If null, creates new model.
 
     output:
     path "${task.ext.outdir}/*.gff", emit: gff_genes             // Predicted genes in GFF format

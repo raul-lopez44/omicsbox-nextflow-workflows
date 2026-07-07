@@ -7,15 +7,15 @@ process SPADES {
     input:
     path reads                   // FASTQ reads (single-end or paired-end)
     // Optional Mate-Pair channels (3 orientations)
-    path opt_mp_fr, optional: true            // Optional: Mate-pair reads (FR orientation)
-    path opt_mp_rf, optional: true            // Optional: Mate-pair reads (RF orientation)
-    path opt_mp_ff, optional: true            // Optional: Mate-pair reads (FF orientation)
+    path opt_mp_fr            // Optional: Mate-pair reads (FR orientation)
+    path opt_mp_rf            // Optional: Mate-pair reads (RF orientation)
+    path opt_mp_ff            // Optional: Mate-pair reads (FF orientation)
     // Optional Hybrid Assembly channels (Sanger, Long-reads, Contigs)
-    path sanger_reads, optional: true         // Optional: Sanger sequencing reads
-    path pacbio_reads, optional: true         // Optional: PacBio long reads for hybrid assembly
-    path nanopore_reads, optional: true       // Optional: Nanopore long reads for hybrid assembly
-    path trusted_contigs, optional: true      // Optional: Trusted contigs for hybrid assembly
-    path untrusted_contigs, optional: true    // Optional: Untrusted contigs for hybrid assembly
+    path sanger_reads         // Optional: Sanger sequencing reads
+    path pacbio_reads         // Optional: PacBio long reads for hybrid assembly
+    path nanopore_reads       // Optional: Nanopore long reads for hybrid assembly
+    path trusted_contigs      // Optional: Trusted contigs for hybrid assembly
+    path untrusted_contigs    // Optional: Untrusted contigs for hybrid assembly
 
     output:
     path "${task.ext.outdir}/*contigs*.fasta", emit: contigs             // Assembled contigs FASTA file
