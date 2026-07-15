@@ -124,11 +124,11 @@ workflow {
 
     // -------------------------------------------------------------------------
     // 07a-07b — Parallel functional annotation branching
-    // Both PFAM_SCAN and EGGNOG_MAPPER run on the predicted proteins from Prodigal.
+    // Both PFAM_SCAN and EGGNOG_MAPPER run on the predicted genes from Prodigal.
     // PFAM_SCAN: Pfam protein-domain annotation
     // EGGNOG_MAPPER: EggNOG ortholog-based functional annotation
     // -------------------------------------------------------------------------
-    PFAM_SCAN(PRODIGAL.out.proteins)
-    EGGNOG_MAPPER(PRODIGAL.out.proteins)
+    PFAM_SCAN(PRODIGAL.out.genes)
+    EGGNOG_MAPPER(PRODIGAL.out.genes)
 
 }
