@@ -9,7 +9,7 @@ process PROJECT_CHARTS {
     path validated_project
 
     output:
-    path "${task.ext.outdir}/*", emit: project_charts
+    path "${task.ext.outdir}/*.${params.chart_format}", emit: project_charts   // Final annotation charts (extension follows chart_format)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

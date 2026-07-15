@@ -10,7 +10,7 @@ process COMBINE_PROJECTS {
     path annotated_project
 
     output:
-    path "${task.ext.outdir}/*", emit: combined_project
+    path "${task.ext.outdir}/combined_project.box", emit: combined_project   // Merged OmicsBox project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

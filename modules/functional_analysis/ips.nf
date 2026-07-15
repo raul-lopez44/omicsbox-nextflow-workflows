@@ -8,8 +8,9 @@ process INTERPROSCAN {
     path omicsbox_project   // OmicsBox Sequence Project (.box) from LOAD_FASTA
 
     output:
-    path "${task.ext.outdir}/*.box", emit: ips_project                              // InterProScan-annotated OmicsBox project
-    path "${task.ext.outdir}/*.{xml,json,gff3,tsv}", emit: export_files, optional: true  // Optional export formats
+    path "${task.ext.outdir}/*output_project*.box", emit: ips_project   // InterProScan-annotated project (consumed downstream)
+    path "${task.ext.outdir}/*.gff3", emit: gff3                        // InterProScan GFF3 result(s)
+    path "${task.ext.outdir}/*.xml", emit: xml                          // InterProScan XML result(s)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

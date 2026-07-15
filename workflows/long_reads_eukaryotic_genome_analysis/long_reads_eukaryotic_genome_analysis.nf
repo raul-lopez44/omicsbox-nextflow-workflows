@@ -65,11 +65,11 @@ workflow {
     }
 
     if (!params.flye.library_type) {
-        exit 1, "ERROR: You must provide Flye library type via --flye.library_type (options: pacbio_raw, pacbio_corr, nano_raw, nano_corr)."
+        exit 1, "ERROR: You must provide Flye library type via --flye.library_type (options: pacbio_raw, pacbio_corr, pacbio_hifi, nano_raw, nano_corr)."
     }
 
-    if (!['pacbio_raw', 'pacbio_corr', 'nano_raw', 'nano_corr'].contains(params.flye.library_type)) {
-        exit 1, "ERROR: Flye library_type must be one of: pacbio_raw, pacbio_corr, nano_raw, nano_corr. Got: ${params.flye.library_type}"
+    if (!['pacbio_raw', 'pacbio_corr', 'pacbio_hifi', 'nano_raw', 'nano_corr'].contains(params.flye.library_type)) {
+        exit 1, "ERROR: Flye library_type must be one of: pacbio_raw, pacbio_corr, pacbio_hifi, nano_raw, nano_corr. Got: ${params.flye.library_type}"
     }
 
     if (!params.input_single_end && !params.input_paired_end) {

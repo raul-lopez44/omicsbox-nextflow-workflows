@@ -9,7 +9,7 @@ process EC_CODE_MAPPING {
     path validated_project
 
     output:
-    path "${task.ext.outdir}/*", emit: ec_mapped_project
+    path "${task.ext.outdir}/project.box", emit: ec_mapped_project   // EC-code-mapped project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -8,10 +8,10 @@ process CDHIT {
     path assembly   // Trinity.fasta from TRINITY
 
     output:
-    path "${task.ext.outdir}/output.fasta", emit: clustered_fasta
-    path "${task.ext.outdir}/output-clusters.txt", emit: clusters_file
-    path "${task.ext.outdir}/cdhit_report.box", emit: report
-    path "${task.ext.outdir}/cdhit_chart.box", emit: chart
+    path "${task.ext.outdir}/output.fasta", emit: clustered_fasta          // Non-redundant representative sequences (consumed downstream)
+    path "${task.ext.outdir}/output-clusters.txt", emit: clusters          // Cluster membership file
+    path "${task.ext.outdir}/*report*.box", emit: report                   // CD-HIT report
+    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // CD-HIT chart
 
     script:
     def outdir     = task.ext.outdir ?: task.process.toLowerCase()

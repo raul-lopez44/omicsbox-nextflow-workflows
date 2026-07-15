@@ -10,9 +10,9 @@ process RSEM {
     path gene_trans_map     
 
     output:
-    path "${task.ext.outdir}/*transcripts*counts*.box", emit: count_table_transcripts
-    path "${task.ext.outdir}/*genes*counts*.box", emit: count_table_genes, optional: true
-    path "${task.ext.outdir}/*report*.box", emit: report
+    path "${task.ext.outdir}/*isoforms*.box", emit: count_table_transcripts  // Isoform (transcript-level) quantification (consumed downstream)
+    path "${task.ext.outdir}/*genes*.box", emit: count_table_genes           // Gene-level quantification
+    path "${task.ext.outdir}/*report*.box", emit: report                     // RSEM report
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()

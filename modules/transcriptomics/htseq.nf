@@ -11,8 +11,8 @@ process HTSEQ {
     path gff                  // Genome annotation in GFF/GTF format
 
     output:
-    path "${task.ext.outdir}/*.txt", emit: count_table            // Gene-level count table 
-    path "${task.ext.outdir}/*report*.box", emit: report          // OmicsBox report
+    path "${task.ext.outdir}/count_table.box", emit: count_table   // Count-table project (consumed downstream)
+    path "${task.ext.outdir}/*report*.box", emit: report           // HTSeq report
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

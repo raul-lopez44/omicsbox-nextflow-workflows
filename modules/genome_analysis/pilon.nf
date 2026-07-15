@@ -1,5 +1,5 @@
 // --- FILE: modules/pilon.nf ---
-// Wraps: omicsbox pilon
+// Wraps: omicsbox polishing-pilon
 // Polishes long-read assembly using short-read alignments.
 
 process PILON {
@@ -9,9 +9,11 @@ process PILON {
     path bam_file               // Sorted BAM file from BWA alignment
 
     output:
-    path "${task.ext.outdir}/*polished*.fasta", emit: polished_assembly   // Polished assembly (FASTA)
-    path "${task.ext.outdir}/*report*.box", emit: report                  // OmicsBox report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // OmicsBox chart
+    path "${task.ext.outdir}/output-fasta.fasta", emit: polished_assembly                       // Polished assembly FASTA (consumed downstream)
+    path "${task.ext.outdir}/output-changes.txt", emit: changes                                 // Applied changes list
+    path "${task.ext.outdir}/*report*.box", emit: report                                        // Pilon report
+    path "${task.ext.outdir}/fix-type-distribution.${params.chart_format}", emit: fix_distribution  // Fix-type distribution chart
+    path "${task.ext.outdir}/nx-plot.${params.chart_format}", emit: nx_plot                     // Nx plot chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -20,9 +22,9 @@ process PILON {
 
     """
     mkdir -p ${outdir}
-    omicsbox pilon \\
-        --i-assembly=\$PWD/${assembly} \\
-        --i-bam-file=\$PWD/${bam_file} \\
+    omicsbox polishing-pilon \\
+        --i-input-fasta=\$PWD/${assembly} \\
+        --i-input-bams=\$PWD/${bam_file} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}

@@ -13,11 +13,11 @@ process AUGUSTUS {
     path hint_rna_ds   // Optional: RNA-Seq paired-end hint files
 
     output:
-    path "${task.ext.outdir}/*.gff", emit: gff_genes                 // Predicted genes in GFF format
-    path "${task.ext.outdir}/*cds*project*", emit: cds_project               // OmicsBox CDS project with predictions
-    path "${task.ext.outdir}/*protein*project*", emit: protein_project         // OmicsBox protein project with predictions
-    path "${task.ext.outdir}/*report*.box", emit: report             // OmicsBox report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart               // OmicsBox chart
+    path "${task.ext.outdir}/*protein*egf*.box", emit: protein_project            // Predicted proteins project (consumed downstream)
+    path "${task.ext.outdir}/*cds*egf*.box", emit: cds_project                    // Predicted CDS project
+    path "${task.ext.outdir}/*gff*egf*.box", emit: gff_genes                      // Predicted genes (GFF exported as .box)
+    path "${task.ext.outdir}/*report*.box", emit: report                          // Augustus report
+    path "${task.ext.outdir}/*distribution*.${params.chart_format}", emit: chart  // CDS-length distribution chart
     
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

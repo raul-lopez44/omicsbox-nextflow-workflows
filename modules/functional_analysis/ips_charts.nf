@@ -9,7 +9,8 @@ process IPS_CHARTS {
     path ips_project
 
     output:
-    path "${task.ext.outdir}/*", emit: ips_charts
+    path "${task.ext.outdir}/interproscan-families-distribution.${params.chart_format}", emit: families_chart  // InterPro families distribution chart
+    path "${task.ext.outdir}/interproscan-results.${params.chart_format}", emit: results_chart                 // InterProScan results chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -12,9 +12,10 @@ process GLIMMER {
     path icm_model   // Optional: Interpolated Context Model (ICM) file. If null, creates new model.
 
     output:
-    path "${task.ext.outdir}/*.gff", emit: gff_genes             // Predicted genes in GFF format
-    path "${task.ext.outdir}/*project*", emit: project           // OmicsBox sequence project
-    path "${task.ext.outdir}/*report*.box", emit: report         // OmicsBox report
+    path "${task.ext.outdir}/project.box", emit: project                     // Glimmer sequence project (consumed downstream)
+    path "${task.ext.outdir}/*gff*.box", emit: gff_genes                     // Predicted genes (GFF exported as .box)
+    path "${task.ext.outdir}/*.icm", emit: icm_model, optional: true         // Interpolated context model
+    path "${task.ext.outdir}/*report*.box", emit: report                     // Glimmer report
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

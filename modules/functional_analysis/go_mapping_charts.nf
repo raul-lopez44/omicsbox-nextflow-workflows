@@ -9,7 +9,8 @@ process GO_MAPPING_CHARTS {
     path mapped_project
 
     output:
-    path "${task.ext.outdir}/*", emit: mapping_charts
+    path "${task.ext.outdir}/evidence-code-distribution-for-sequences.${params.chart_format}", emit: evidence_chart  // Evidence-code distribution chart
+    path "${task.ext.outdir}/go-mapping-distribution.${params.chart_format}", emit: mapping_chart                    // GO-mapping distribution chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

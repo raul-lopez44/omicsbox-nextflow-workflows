@@ -10,10 +10,10 @@ process REPEATMASKER {
     path database           // Repeat database file 
 
     output:
-    path "${task.ext.outdir}/*.masked", emit: masked_fasta          // Masked genome FASTA file
-    path "${task.ext.outdir}/*.gff", emit: gff_repeats              // GFF annotation of repeats
-    path "${task.ext.outdir}/*tbl.${params.chart_format}", emit: repeat_table              // Tabular summary of repeats
-    path "${task.ext.outdir}/*report*.box", emit: report            // OmicsBox report
+    path "${task.ext.outdir}/output-repeat-masker.fasta", emit: masked_fasta                             // Soft-masked genome FASTA (consumed downstream)
+    path "${task.ext.outdir}/*gff*.box", emit: gff_repeats                                               // Repeat annotations (GFF exported as .box)
+    path "${task.ext.outdir}/*report*.box", emit: report                                                 // RepeatMasker report
+    path "${task.ext.outdir}/repeat-type-distribution.${params.chart_format}", emit: distribution        // Repeat-type distribution chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

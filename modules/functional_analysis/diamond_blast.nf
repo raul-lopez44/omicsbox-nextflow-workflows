@@ -8,7 +8,7 @@ process DIAMOND_BLAST {
     path omicsbox_project   // OmicsBox Sequence Project (.box) 
 
     output:
-    path "${task.ext.outdir}/*", emit: blasted_project  // BLAST-annotated OmicsBox project
+    path "${task.ext.outdir}/*output_project*.box", emit: blasted_project   // BLAST-annotated project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

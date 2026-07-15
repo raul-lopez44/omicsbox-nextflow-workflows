@@ -9,7 +9,8 @@ process BLAST_CHARTS {
     path blasted_project
 
     output:
-    path "${task.ext.outdir}/*", emit: blast_charts
+    path "${task.ext.outdir}/e-value-distribution.${params.chart_format}", emit: evalue_chart          // E-value distribution chart
+    path "${task.ext.outdir}/top-hit-species-distribution.${params.chart_format}", emit: species_chart  // Top-hit species distribution chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

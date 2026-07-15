@@ -5,11 +5,11 @@
 process PFAM_SCAN {
 
     input:
-    path proteins   // Predicted protein FASTA (from Prodigal)
+    path fasta   // Predicted protein FASTA
 
     output:
-    path "${task.ext.outdir}/*report*.box", emit: report   // Pfam-Scan report
-    path "${task.ext.outdir}/*.box", emit: pfam_output      // Pfam domain annotation project
+    path "${task.ext.outdir}/*Report*.box", emit: report          // Pfam-Scan report
+    path "${task.ext.outdir}/*Annotations*.box", emit: pfam_output  // Pfam domain annotation project
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -19,7 +19,7 @@ process PFAM_SCAN {
     """
     mkdir -p ${outdir}
     omicsbox pfam-scan \\
-        --i-input-sequences=\$PWD/${proteins} \\
+        --i-sequences=\$PWD/${fasta} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
     """

@@ -9,8 +9,10 @@ process BWA {
     path reads                  // Short reads (SE or PE, List of FASTQ files)
 
     output:
-    path "${task.ext.outdir}/*.bam", emit: sorted_bam                 // Sorted BAM file
-    path "${task.ext.outdir}/*report*.box", emit: report              // OmicsBox report
+    path "${task.ext.outdir}/*.bam", emit: sorted_bam                              // Coordinate-sorted BAM (consumed downstream)
+    path "${task.ext.outdir}/*report*.box", emit: report                          // BWA report
+    path "${task.ext.outdir}/*chart_abs*.${params.chart_format}", emit: chart_abs  // Absolute-value chart
+    path "${task.ext.outdir}/*chart_rel*.${params.chart_format}", emit: chart_rel  // Relative-value chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

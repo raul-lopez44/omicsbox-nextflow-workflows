@@ -9,9 +9,9 @@ process QUAST {
     path reference             
 
     output:
-    path "${task.ext.outdir}/*", emit: quast_results            // QUAST results 
-    path "${task.ext.outdir}/*report*.box", emit: report        // OmicsBox report
-    path "${task.ext.outdir}/*chart*", emit: ngx_chart, optional: true  // NGx chart visualization
+    path "${task.ext.outdir}/*results*.box", emit: results                 // QUAST results project
+    path "${task.ext.outdir}/*report*.box", emit: report                   // QUAST report
+    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // QUAST chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

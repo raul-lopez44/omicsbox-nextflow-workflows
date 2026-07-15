@@ -9,7 +9,7 @@ process GO_ANNOTATION_CHARTS {
     path annotated_project
 
     output:
-    path "${task.ext.outdir}/*", emit: annotation_charts
+    path "${task.ext.outdir}/annotation-distribution.${params.chart_format}", emit: annotation_chart   // Annotation distribution chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

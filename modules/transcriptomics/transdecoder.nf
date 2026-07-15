@@ -9,11 +9,11 @@ process TRANSDECODER {
     path gene_trans_map     // Gene-to-transcript mapping file
 
     output:
-    path "${task.ext.outdir}/protein-output.fasta", emit: predicted_proteins
-    path "${task.ext.outdir}/cds-output.fasta", emit: predicted_cds
-    path "${task.ext.outdir}/output-gff.gff", emit: gff_annotation
-    path "${task.ext.outdir}/transdecoder_report.box", emit: report
-    path "${task.ext.outdir}/transdecoder_chart.box", emit: chart
+    path "${task.ext.outdir}/protein-output.fasta", emit: predicted_proteins  // Predicted proteins FASTA (consumed downstream)
+    path "${task.ext.outdir}/cds-output.fasta", emit: predicted_cds           // Predicted CDS FASTA
+    path "${task.ext.outdir}/output-gff.gff", emit: gff                       // Predicted ORFs in GFF
+    path "${task.ext.outdir}/*report*.box", emit: report                      // TransDecoder report
+    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart     // TransDecoder chart
 
     script:
     def outdir     = task.ext.outdir ?: task.process.toLowerCase()

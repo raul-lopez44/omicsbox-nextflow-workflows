@@ -8,7 +8,7 @@ process LOAD_FASTA {
     path fasta_file     // Input FASTA file (assembled transcripts or proteins)
 
     output:
-    path "${task.ext.outdir}/*", emit: fasta_project  // OmicsBox project directory
+    path "${task.ext.outdir}/project.box", emit: fasta_project   // Loaded FASTA OmicsBox project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -9,7 +9,7 @@ process COMBINED_GO_GRAPH {
     path validated_project
 
     output:
-    path "${task.ext.outdir}/*", emit: combined_graph
+    path "${task.ext.outdir}/graph*.${params.chart_format}", emit: go_graphs   // Combined GO graph chart(s)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

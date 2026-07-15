@@ -9,15 +9,15 @@ process COUNTS_PCA {
     path design_file           // Experimental design TSV; channel.value([]) if not provided
 
     output:
-    path "${task.ext.outdir}/*.box", emit: pca_chart
-
+    path "${task.ext.outdir}/*.${params.chart_format}", emit: pca_chart
+    
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args   = task.ext.args   ?: ''
 
-    // Experimental design file is optional for PCA; only inject flag when provided
+    // Wire the experimental design FILE when provided. 
     def design_flag = (design_file.name != '[]')
-        ? "--i-experimental-design=\$PWD/${design_file} --design=true"
+        ? "--i-experimental-design=\$PWD/${design_file}"
         : ""
 
     """

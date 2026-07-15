@@ -9,7 +9,7 @@ process VALIDATE_GO_ANNOTATION {
     path final_project
 
     output:
-    path "${task.ext.outdir}/*", emit: validated_project
+    path "${task.ext.outdir}/project.box", emit: validated_project   // Validated GO-annotation project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -9,7 +9,7 @@ process GO_ANNOTATION {
     path mapped_project
 
     output:
-    path "${task.ext.outdir}/*", emit: annotated_project
+    path "${task.ext.outdir}/project.box", emit: annotated_project   // GO-annotated project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

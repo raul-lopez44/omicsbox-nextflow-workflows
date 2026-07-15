@@ -8,9 +8,9 @@ process MEGAHIT {
     path reads                  // Contaminant-free reads (single-end or paired-end, List of FASTQ files)
 
     output:
-    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs         // Assembled contigs FASTA file
-    path "${task.ext.outdir}/*report*.box", emit: report             // OmicsBox report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // OmicsBox chart
+    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs                 // Assembled contigs FASTA (consumed downstream)
+    path "${task.ext.outdir}/*report*.box", emit: report                     // MEGAHIT report
+    path "${task.ext.outdir}/nx-plot.${params.chart_format}", emit: nx_plot  // Nx plot chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -18,16 +18,15 @@ process MEGAHIT {
     def is_single_end = params.input_single_end ? true : false
 
     // =====================================================================
-    // DYNAMIC: Single-End vs Paired-End input flag
-    // Metagenomics typically uses paired-end, but single-end is supported
+    // DYNAMIC: input files + sequencing type
+    // OmicsBox megahit expects ONE --i-read-files flag PER file (repeated),
+    // plus --sequencing single|paired.
     // =====================================================================
-    def reads_list = reads instanceof List
-        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
-        : "\$PWD/${reads}"
+    def input_flag = reads instanceof List
+        ? reads.collect { file -> "--i-read-files=\$PWD/${file}" }.join(' ')
+        : "--i-read-files=\$PWD/${reads}"
 
-    def input_flag = is_single_end
-        ? "--i-input-sequencing-data-single=${reads_list}"
-        : "--i-input-sequencing-data-paired=${reads_list}"
+    def seq_flag = is_single_end ? "--sequencing=single" : "--sequencing=paired"
 
     // =====================================================================
     // DYNAMIC: Paired-end pattern flags (only if paired-end input)
@@ -43,6 +42,7 @@ process MEGAHIT {
     """
     mkdir -p ${outdir}
     omicsbox megahit \\
+        ${seq_flag} \\
         ${input_flag} \\
         ${pattern_flags} \\
         --chart-format=${params.chart_format} \\

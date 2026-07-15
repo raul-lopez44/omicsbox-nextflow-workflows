@@ -9,7 +9,7 @@ process GO_MAPPING {
     path blasted_project
 
     output:
-    path "${task.ext.outdir}/*", emit: mapped_project
+    path "${task.ext.outdir}/project.box", emit: mapped_project   // GO-mapped project (consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

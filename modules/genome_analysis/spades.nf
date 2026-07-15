@@ -18,10 +18,10 @@ process SPADES {
     path untrusted_contigs    // Optional: Untrusted contigs for hybrid assembly
 
     output:
-    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs             // Assembled contigs FASTA file
-    path "${task.ext.outdir}/*scaffolds*.fasta", emit: scaffolds         // Assembled scaffolds FASTA file
-    path "${task.ext.outdir}/*report*.box", emit: report                // OmicsBox report
-    path "${task.ext.outdir}/*Nx_plot*", emit: nx_plot, optional: true  // Nx plot chart
+    path "${task.ext.outdir}/scaffolds.fasta", emit: scaffolds                                       // Scaffolds FASTA (consumed downstream)
+    path "${task.ext.outdir}/contigs.fasta", emit: contigs                                           // Contigs FASTA
+    path "${task.ext.outdir}/assembly_graph_with_scaffolds.gfa", emit: assembly_graph                // Assembly graph with scaffolds
+    path "${task.ext.outdir}/assembly_graph_after_simplification.gfa", emit: assembly_graph_simplified  // Simplified assembly graph
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()
@@ -111,7 +111,6 @@ process SPADES {
         ${nanopore_flag} \\
         ${trusted_flag} \\
         ${untrusted_flag} \\
-        --i-graph-folder=\$PWD/${outdir}/graphs \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
     """

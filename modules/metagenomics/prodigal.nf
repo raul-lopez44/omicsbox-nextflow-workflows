@@ -8,9 +8,12 @@ process PRODIGAL {
     path contigs   // Assembled metagenome contigs FASTA (from MEGAHIT)
 
     output:
-    path "${task.ext.outdir}/*protein*.fasta", emit: proteins  // Predicted protein sequences (CDS translations)
-    path "${task.ext.outdir}/*gene*.fasta", emit: genes        // Predicted gene (nucleotide) sequences
-    path "${task.ext.outdir}/*report*.box", emit: report       // Gene prediction report
+    path "${task.ext.outdir}/faa.fasta", emit: proteins    // Predicted protein sequences (consumed downstream)
+    path "${task.ext.outdir}/fna.fasta", emit: genes       // Predicted gene (nucleotide) sequences
+    path "${task.ext.outdir}/gff.gff", emit: gff           // Gene coordinates (GFF)
+    path "${task.ext.outdir}/*report*.box", emit: report   // Prodigal report
+    path "${task.ext.outdir}/gc-content-distribution.${params.chart_format}", emit: gc_chart       // GC-content distribution chart
+    path "${task.ext.outdir}/gene-length-distribution.${params.chart_format}", emit: length_chart  // Gene-length distribution chart
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
@@ -20,7 +23,8 @@ process PRODIGAL {
     """
     mkdir -p ${outdir}
     omicsbox prodigal \\
-        --i-input-sequences=\$PWD/${contigs} \\
+        --i-sequences=\$PWD/${contigs} \\
+        --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\
         ${args}
     """

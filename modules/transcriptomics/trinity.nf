@@ -8,11 +8,11 @@ process TRINITY {
     path reads
 
     output:
-    path "${task.ext.outdir}/transcripts.fasta", emit: assembly
-    path "${task.ext.outdir}/supertranscripts.fasta", emit: supertranscripts, optional: true
-    path "${task.ext.outdir}/*map*.txt", emit: gene_trans_map
-    path "${task.ext.outdir}/*report*.box", emit: report
-    path "${task.ext.outdir}/read_content.box", emit: read_content, optional: true
+    path "${task.ext.outdir}/transcripts.fasta", emit: assembly                                   // Assembled transcripts FASTA (consumed downstream)
+    path "${task.ext.outdir}/save-map-file.txt", emit: gene_trans_map                             // Gene-to-transcript map (consumed downstream)
+    path "${task.ext.outdir}/*report*.box", emit: report                                          // Trinity report
+    path "${task.ext.outdir}/supertranscripts.fasta", emit: supertranscripts, optional: true      // SuperTranscripts FASTA
+    path "${task.ext.outdir}/read_content.box", emit: read_content, optional: true                // Read-content object
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()
