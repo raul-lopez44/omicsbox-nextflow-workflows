@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: gene_level_analysis.nf
-// Gene-Level RNA-Seq Analysis Pipeline: Read alignment (STAR) → quantification (HTSEQ) → differential expression
+// Gene-Level RNA-Seq Analysis Pipeline: Read alignment (STAR) -> quantification (HTSEQ) -> differential expression
 // =============================================================================
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'

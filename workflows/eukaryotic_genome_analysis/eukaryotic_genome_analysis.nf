@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: eukaryotic_genome_analysis.nf
-// Eukaryotic Genome Analysis Pipeline: Preprocessing → Assembly → Annotation → Functional Analysis
+// Eukaryotic Genome Analysis Pipeline: Preprocessing -> Assembly -> Annotation -> Functional Analysis
 // =============================================================================
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'

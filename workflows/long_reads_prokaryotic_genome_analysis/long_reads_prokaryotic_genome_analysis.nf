@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: long_reads_prokaryotic_genome_analysis.nf
-// Long-Read Prokaryotic Genome Analysis Pipeline: QC → Assembly → Polish → Gene Finding → Functional Analysis
+// Long-Read Prokaryotic Genome Analysis Pipeline: QC -> Assembly -> Polish -> Gene Finding -> Functional Analysis
 // =============================================================================
 
 include { LONGQC                  } from '../../modules/general_tools/longqc.nf'

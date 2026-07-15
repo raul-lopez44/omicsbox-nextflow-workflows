@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: metagenomics_analysis.nf
-// Metagenomics Analysis Pipeline: QC → Trimming → Decontamination → Assembly → Gene Prediction → Functional Annotation
+// Metagenomics Analysis Pipeline: QC -> Trimming -> Decontamination -> Assembly -> Gene Prediction -> Functional Annotation
 // =============================================================================
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'

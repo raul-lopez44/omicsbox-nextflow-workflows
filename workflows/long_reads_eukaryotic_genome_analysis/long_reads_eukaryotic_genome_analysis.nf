@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: long_reads_eukaryotic_genome_analysis.nf
-// Long-Read Eukaryotic Genome Analysis Pipeline: QC → Assembly → Polish → Annotation → Functional Analysis
+// Long-Read Eukaryotic Genome Analysis Pipeline: QC -> Assembly -> Polish -> Annotation -> Functional Analysis
 // =============================================================================
 
 include { LONGQC                       } from '../../modules/general_tools/longqc.nf'

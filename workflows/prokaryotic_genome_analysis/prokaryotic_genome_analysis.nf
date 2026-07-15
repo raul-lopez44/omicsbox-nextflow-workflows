@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: prokaryotic_genome_analysis.nf
-// Prokaryotic Genome Analysis Pipeline: Preprocessing → Assembly → Gene Finding → Functional Annotation
+// Prokaryotic Genome Analysis Pipeline: Preprocessing -> Assembly -> Gene Finding -> Functional Annotation
 // =============================================================================
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
