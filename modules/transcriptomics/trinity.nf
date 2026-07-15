@@ -29,8 +29,8 @@ process TRINITY {
 
     // Check if the input is Paired-End 
     if (!is_single_end) {
-        def up_pat = params.keySet().contains('upstream_pattern') ? params.upstream_pattern : '_1'
-        def down_pat = params.keySet().contains('downstream_pattern') ? params.downstream_pattern : '_2'
+        def up_pat = params.getOrDefault('upstream_pattern', '_1')
+        def down_pat = params.getOrDefault('downstream_pattern', '_2')
         pattern_flags = "--upstream-pattern-assembly=${up_pat} --downstream-pattern-assembly=${down_pat}"
     }
 

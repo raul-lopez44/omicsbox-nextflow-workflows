@@ -1,5 +1,5 @@
 // --- FILE: modules/metagenomics/cont_rem.nf ---
-// Wraps: omicsbox remove-contamination
+// Wraps: omicsbox cont-rem 
 // Removes contaminant reads (e.g. host/human DNA) from metagenomic libraries.
 
 process CONT_REM {
@@ -35,8 +35,8 @@ process CONT_REM {
     def pattern_flags = ""
 
     if (!is_single_end) {
-        def up_pat = params.keySet().contains('upstream_pattern') ? params.upstream_pattern : '_1'
-        def down_pat = params.keySet().contains('downstream_pattern') ? params.downstream_pattern : '_2'
+        def up_pat = params.getOrDefault('upstream_pattern', '_1')
+        def down_pat = params.getOrDefault('downstream_pattern', '_2')
         pattern_flags = "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
     }
 
@@ -51,7 +51,7 @@ process CONT_REM {
 
     """
     mkdir -p ${outdir}
-    omicsbox remove-contamination \\
+    omicsbox cont-rem \\
         ${input_flag} \\
         ${pattern_flags} \\
         ${target_flag} \\

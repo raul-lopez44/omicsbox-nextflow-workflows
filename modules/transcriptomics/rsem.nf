@@ -27,8 +27,8 @@ process RSEM {
         ? "--i-input-sequencing-data-furi-single-end=${reads_list}"
         : "--i-input-sequencing-data-furi-paired-end=${reads_list}"
 
-    def up_pat   = params.get('upstream_pattern')
-    def down_pat = params.get('downstream_pattern')
+    def up_pat   = params.getOrDefault('upstream_pattern', '_1')
+    def down_pat = params.getOrDefault('downstream_pattern', '_2')
     def pattern_flags = (!is_single_end && up_pat && down_pat)
         ? "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
         : ""
