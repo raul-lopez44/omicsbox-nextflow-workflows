@@ -10,7 +10,7 @@ process PILON {
 
     output:
     path "${task.ext.outdir}/output-fasta.fasta", emit: polished_assembly                       // Polished assembly FASTA (consumed downstream)
-    path "${task.ext.outdir}/output-changes.txt", emit: changes                                 // Applied changes list
+    path "${task.ext.outdir}/output-changes.txt", emit: changes, optional: true                 // Applied changes list (only if --save-changes=true)
     path "${task.ext.outdir}/*report*.box", emit: report                                        // Pilon report
     path "${task.ext.outdir}/fix-type-distribution.${params.chart_format}", emit: fix_distribution  // Fix-type distribution chart
     path "${task.ext.outdir}/nx-plot.${params.chart_format}", emit: nx_plot                     // Nx plot chart

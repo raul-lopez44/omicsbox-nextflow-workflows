@@ -1,5 +1,5 @@
 // --- FILE: modules/glimmer.nf ---
-// Wraps: omicsbox runglimmer
+// Wraps: omicsbox glimmerv2
 // Prokaryotic gene finding using Glimmer with ICM model (creates new model if not provided).
 
 
@@ -31,7 +31,7 @@ process GLIMMER {
 
     """
     mkdir -p ${outdir}
-    omicsbox runglimmer \\
+    omicsbox glimmerv2 \\
         --i-fastafile2=\$PWD/${fasta} \\
         ${use_icm_flag} \\
         ${icm_file_flag} \\

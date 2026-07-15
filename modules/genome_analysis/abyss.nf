@@ -15,8 +15,9 @@ process ABYSS {
     path "${task.ext.outdir}/scaffolds-file.fasta", emit: scaffolds          // Scaffolds FASTA (consumed downstream)
     path "${task.ext.outdir}/contigs-file.fasta", emit: contigs              // Contigs FASTA
     path "${task.ext.outdir}/unitigs-file.fasta", emit: unitigs              // Unitigs FASTA
-    path "${task.ext.outdir}/assembly-scaffolds.dot", emit: scaffolds_graph  // Scaffold assembly graph
-    path "${task.ext.outdir}/assembly-contigs.dot", emit: contigs_graph      // Contig assembly graph
+    path "${task.ext.outdir}/long-scaffolds-file.fasta", emit: long_scaffolds, optional: true  // Long scaffolds FASTA (only long sequence libraries are provided)
+    path "${task.ext.outdir}/assembly-scaffolds.dot", emit: scaffolds_graph, optional: true  // Scaffold assembly graph (only if --save-graph=true)
+    path "${task.ext.outdir}/assembly-contigs.dot", emit: contigs_graph, optional: true      // Contig assembly graph (only if --save-graph=true)
     path "${task.ext.outdir}/*report*.box", emit: report                     // ABySS report
     path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart    // ABySS chart
 
