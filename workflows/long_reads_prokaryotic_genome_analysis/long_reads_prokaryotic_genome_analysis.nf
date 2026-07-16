@@ -90,7 +90,7 @@ workflow {
         ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
-    def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+    def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
     def ch_glimmer_icm = params.glimmer.icm_model
         ? channel.fromPath(params.glimmer.icm_model, checkIfExists: true)

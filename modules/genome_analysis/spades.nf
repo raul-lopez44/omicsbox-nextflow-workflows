@@ -20,8 +20,10 @@ process SPADES {
     output:
     path "${task.ext.outdir}/scaffolds.fasta", emit: scaffolds                                       // Scaffolds FASTA (consumed downstream)
     path "${task.ext.outdir}/contigs.fasta", emit: contigs                                           // Contigs FASTA
-    path "${task.ext.outdir}/assembly_graph_with_scaffolds.gfa", emit: assembly_graph                // Assembly graph with scaffolds
-    path "${task.ext.outdir}/assembly_graph_after_simplification.gfa", emit: assembly_graph_simplified  // Simplified assembly graph
+    path "${task.ext.outdir}/*report*.box", emit: report                                             // SPAdes report (spades_report.box)
+    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart                            // SPAdes Nx-plot chart (spades_chart.box; extension follows chart_format)
+    path "${task.ext.outdir}/assembly_graph_with_scaffolds.gfa", emit: assembly_graph, optional: true                // Assembly graph with scaffolds (only if --save-graph=true)
+    path "${task.ext.outdir}/assembly_graph_after_simplification.gfa", emit: assembly_graph_simplified, optional: true  // Simplified assembly graph (only if --save-graph=true)
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()

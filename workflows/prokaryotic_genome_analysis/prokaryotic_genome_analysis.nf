@@ -82,7 +82,7 @@ workflow {
         ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
-    def ch_reference = channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+    def ch_reference = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
     // Glimmer ICM model is optional — if null, Glimmer will create a new model dynamically
     def ch_icm_model = params.glimmer.icm_model

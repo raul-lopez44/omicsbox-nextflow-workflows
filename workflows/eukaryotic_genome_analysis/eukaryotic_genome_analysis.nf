@@ -102,7 +102,7 @@ workflow {
         ? channel.fromPath(params.repeatmasker.database_file, checkIfExists: true)
         : channel.value([])
     
-    def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+    def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
     // Optional file inputs for Trimmomatic
     def ch_trimmomatic_adapters = params.trimmomatic.adapters

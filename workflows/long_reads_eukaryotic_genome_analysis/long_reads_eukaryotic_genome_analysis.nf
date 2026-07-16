@@ -119,7 +119,7 @@ workflow {
         : channel.value([])
 
     def ch_quast_ref = params.quast.reference_genome
-        ? channel.fromPath(params.quast.reference_genome, checkIfExists: true)
+        ? channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
         : channel.value([])
 
     // Optional AUGUSTUS evidence hints

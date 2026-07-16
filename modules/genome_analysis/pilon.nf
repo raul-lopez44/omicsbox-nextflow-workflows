@@ -1,5 +1,5 @@
 // --- FILE: modules/pilon.nf ---
-// Wraps: omicsbox polishing-pilon
+// Wraps: omicsbox pilon
 // Polishes long-read assembly using short-read alignments.
 
 process PILON {
@@ -22,7 +22,7 @@ process PILON {
 
     """
     mkdir -p ${outdir}
-    omicsbox polishing-pilon \\
+    omicsbox pilon \\
         --i-input-fasta=\$PWD/${assembly} \\
         --i-input-bams=\$PWD/${bam_file} \\
         --chart-format=${params.chart_format} \\
