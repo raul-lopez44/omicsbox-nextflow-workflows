@@ -10,10 +10,12 @@ process STAR {
     path annotation           // Genome annotation in GTF/GFF format
 
     output:
-    path "${task.ext.outdir}/*.bam", emit: bam_sorted                                    // Coordinate-sorted BAM (consumed downstream)
+    path "${task.ext.outdir}/*.bam", emit: bam_sorted                                    // Coordinate-sorted BAM(s), one per sample (consumed downstream)
     path "${task.ext.outdir}/*report*.box", emit: report                                 // STAR report
     path "${task.ext.outdir}/chart_abs_value.${params.chart_format}", emit: chart_abs    // Absolute-value chart
     path "${task.ext.outdir}/chart_rel_value.${params.chart_format}", emit: chart_rel    // Relative-value chart
+    path "${task.ext.outdir}/*_SJ.out.tab", emit: splice_junctions, optional: true       // Splice junctions per sample (only if --save-splice-junctions=true)
+    path "${task.ext.outdir}/*_Unmapped.fastq.gz", emit: unmapped_reads, optional: true  // Unmapped/partially-mapped reads per sample (only if --save-unmapped-reads=true)
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()

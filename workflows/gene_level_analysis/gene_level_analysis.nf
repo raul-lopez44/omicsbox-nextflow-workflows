@@ -78,9 +78,9 @@ workflow {
         ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
-    def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
-    def ch_gff = channel.fromPath(params.input_gff, checkIfExists: true)
-    def ch_design = channel.fromPath(params.experimental_design, checkIfExists: true)
+    def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true).first()
+    def ch_gff = channel.fromPath(params.input_gff, checkIfExists: true).first()
+    def ch_design = channel.fromPath(params.experimental_design, checkIfExists: true).first()
 
     // Optional file inputs — channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters

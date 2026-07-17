@@ -24,13 +24,13 @@ process RSEM {
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
     def input_flag = is_single_end
-        ? "--i-input-sequencing-data-furi-single-end=${reads_list}"
-        : "--i-input-sequencing-data-furi-paired-end=${reads_list}"
+        ? "--i-fastq-files-single-end=${reads_list}"
+        : "--i-fastq-files-paired-end=${reads_list}"
 
     def up_pat   = params.getOrDefault('upstream_pattern', '_1')
     def down_pat = params.getOrDefault('downstream_pattern', '_2')
     def pattern_flags = (!is_single_end && up_pat && down_pat)
-        ? "--upstream-pattern-preprocessing=${up_pat} --downstream-pattern-preprocessing=${down_pat}"
+        ? "--upstream-pattern-counts=${up_pat} --downstream-pattern-counts=${down_pat}"
         : ""
 
     def genes_trans_map_flag = (!(gene_trans_map instanceof List) || !gene_trans_map.isEmpty())

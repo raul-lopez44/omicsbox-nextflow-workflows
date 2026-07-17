@@ -5,8 +5,6 @@
 
 process GLIMMER {
 
-    tag { fasta.name }
-
     input:
     path fasta              // Assembled genome FASTA file
     path icm_model   // Optional: Interpolated Context Model (ICM) file. If null, creates new model.
