@@ -11,6 +11,7 @@ process FLYE {
     path "${task.ext.outdir}/assembly-output-file.fasta", emit: assembly   // Assembled contigs FASTA (consumed downstream)
     path "${task.ext.outdir}/*report*.box", emit: report                   // Flye report
     path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // Flye chart
+    path "${task.ext.outdir}/graph-file.gfa", emit: assembly_graph, optional: true  // Assembly graph (only if --save-graph=true)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

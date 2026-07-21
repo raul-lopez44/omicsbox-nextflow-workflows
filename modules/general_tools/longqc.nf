@@ -10,7 +10,7 @@ process LONGQC {
     output:
     path "${task.ext.outdir}/*results*.box", emit: results            // LongQC results object (QC + read stats)
     path "${task.ext.outdir}/*report*.box", emit: report              // OmicsBox QC report
-    path "${task.ext.outdir}/*trimmed*", emit: trimmed_reads          // Trimmed/filtered long reads (requires --output-trimmed=true)
+    path "${task.ext.outdir}/*trimmed*", emit: trimmed_reads, optional: true  // Trimmed/filtered long reads (only if --output-trimmed=true produces them)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

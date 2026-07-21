@@ -11,8 +11,9 @@ process RSEM {
 
     output:
     path "${task.ext.outdir}/*isoforms*.box", emit: count_table_transcripts  // Isoform (transcript-level) quantification (consumed downstream)
-    path "${task.ext.outdir}/*genes*.box", emit: count_table_genes           // Gene-level quantification
+    path "${task.ext.outdir}/*genes*.box", emit: count_table_genes, optional: true  // Gene-level quantification (ONLY produced when --gene-level=true)
     path "${task.ext.outdir}/*report*.box", emit: report                     // RSEM report
+    path "${task.ext.outdir}/*.bam", emit: bam, optional: true               // Per-sample BAM, reads aligned to transcripts (only if --bam-output=true)
 
     script:
     def outdir        = task.ext.outdir ?: task.process.toLowerCase()
