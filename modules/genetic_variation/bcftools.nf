@@ -12,9 +12,11 @@ process BCFTOOLS {
     output:
     // The called VCF is the key downstream product; it is NOT listed as a formal JSON output key,
     // so its name is INFERRED with a tolerant glob (matches .vcf and .vcf.gz, excludes .tbi/.csi indexes).
-    path "${task.ext.outdir}/*.vcf{,.gz}", emit: vcf                        // Called variants VCF (consumed downstream)
-    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                // Variant_Calling_Report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: charts // WebCharts (proportion-quality-depth, depth, mapping-quality); extension follows chart_format
+    path "${task.ext.outdir}/*.vcf{,.gz}", emit: vcf                        // Called variants VCF (dir-save.vcf.gz; consumed downstream)
+    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                // Variant_Calling_Report.box
+    // WebCharts: raw-read-depth / proportion-quality-depth / average-mapping-quality (their names carry 'depth' or 'quality',
+    // never 'chart'). This glob matches all three and excludes the report (no depth/quality) and the .vcf.gz. Ext follows chart_format.
+    path "${task.ext.outdir}/*{depth,quality}*.${params.chart_format}", emit: charts
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
