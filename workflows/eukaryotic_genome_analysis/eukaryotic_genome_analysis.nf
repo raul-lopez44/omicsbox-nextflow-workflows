@@ -58,7 +58,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs for eukaryotic pipeline
+    // Safety checks - critical inputs for eukaryotic pipeline
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {
         exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
@@ -156,22 +156,22 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter removal
+    // 02 - Preprocessing & adapter removal
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming)
+    // 03 - Quality assessment (post-trimming)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — De novo eukaryotic genome assembly using ABySS
+    // 04 - De novo eukaryotic genome assembly using ABySS
     // CRITICAL: ABySS takes trimmed reads from Trimmomatic.
     // Optional auxiliary data (linked reads, mate-pairs, long sequences) can enhance assembly.
     // -------------------------------------------------------------------------
@@ -184,7 +184,7 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 05a-05b — Parallel assembly evaluation
+    // 05a-05b - Parallel assembly evaluation
     // Both QUAST and BUSCO take the scaffolds FASTA from ABySS.
     // QUAST: Compares against reference genome (optional) for structural validation
     // BUSCO: Assesses completeness using universal single-copy orthologs
@@ -193,14 +193,14 @@ workflow {
     BUSCO(ABYSS.out.scaffolds)
 
     // -------------------------------------------------------------------------
-    // 06 — Repeat masking for eukaryotic genome
+    // 06 - Repeat masking for eukaryotic genome
     // CRITICAL: RepeatMasker takes ABySS assembly scaffolds.
     // Produces soft-masked FASTA with repeats in lowercase.
     // -------------------------------------------------------------------------
     REPEATMASKER(ABYSS.out.scaffolds, ch_repeat_db)
 
     // -------------------------------------------------------------------------
-    // 07 — Eukaryotic gene finding with AUGUSTUS
+    // 07 - Eukaryotic gene finding with AUGUSTUS
     // CRITICAL: AUGUSTUS takes soft-masked FASTA from RepeatMasker.
     // Optional evidence hints (EST, protein, RNA-Seq) improve prediction accuracy.
     // Outputs OmicsBox project with predicted genes.
@@ -215,7 +215,7 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 08a-08b — Parallel functional annotation branching
+    // 08a-08b - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
     // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
     // INTERPROSCAN: Domain/motif-based annotation via InterPro
@@ -224,7 +224,7 @@ workflow {
     INTERPROSCAN(AUGUSTUS.out.protein_project)
 
     // -------------------------------------------------------------------------
-    // 09 — Combine Diamond and InterProScan annotations
+    // 09 - Combine Diamond and InterProScan annotations
     // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
     // InterProScan project (with domain/motif annotations) and merges them
     // into a single unified project.
@@ -232,19 +232,19 @@ workflow {
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 10 — Gene Ontology mapping
+    // 10 - Gene Ontology mapping
     // Takes the combined/unified project and maps functional terms to Gene Ontology.
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 11 — BLAST2GO functional annotation
+    // 11 - BLAST2GO functional annotation
     // Applies BLAST2GO algorithm for comprehensive functional annotation.
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 12 — Final merge: InterProScan + GO-annotated genes
+    // 12 - Final merge: InterProScan + GO-annotated genes
     // Converges all annotation branches into a final unified project.
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)

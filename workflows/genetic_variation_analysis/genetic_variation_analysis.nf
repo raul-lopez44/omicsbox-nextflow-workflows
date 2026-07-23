@@ -50,7 +50,7 @@ workflow {
     }
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs
+    // Safety checks - critical inputs
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {
         exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
@@ -82,7 +82,7 @@ workflow {
     def ch_gff = channel.fromPath(params.variant_annotation.annotation, checkIfExists: true).first()
     def ch_pheno = channel.fromPath(params.gwas.input_pheno, checkIfExists: true).first()
 
-    // Optional file inputs — channel.value([]) acts as a safe "not provided" placeholder
+    // Optional file inputs - channel.value([]) acts as a safe "not provided" placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -110,49 +110,52 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter/quality trimming
+    // 02 - Preprocessing & adapter/quality trimming
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming, isolated)
+    // 03 - Quality assessment (post-trimming, isolated)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — Read alignment to the reference genome (BWA takes: reference, reads)
+    // 04 - Read alignment to the reference genome (BWA takes: reference, reads)
     // -------------------------------------------------------------------------
     BWA(ch_reference, TRIMMOMATIC.out.trimmed_reads)
 
     // -------------------------------------------------------------------------
-    // 05 — Variant calling (BCFtools) from the BAM(s) + reference genome
+    // 05 - Variant calling (BCFtools) from the BAM(s) + reference genome
     // -------------------------------------------------------------------------
     BCFTOOLS(BWA.out.sorted_bam, ch_reference, ch_group)
 
     // -------------------------------------------------------------------------
-    // 06 — Variant filtering (quality/depth/MAF/missingness)
+    // 06 - Variant filtering (quality/depth/MAF/missingness)
     // -------------------------------------------------------------------------
     VARIANT_FILTERING(BCFTOOLS.out.vcf)
 
     // -------------------------------------------------------------------------
-    // 07 — Genotype phasing & imputation (Beagle). Produces the VCF for GWAS.
+    // 07 - Genotype phasing & imputation (Beagle). Produces the VCF for GWAS.
     // -------------------------------------------------------------------------
     BEAGLE(VARIANT_FILTERING.out.filtered_vcf)
 
     // -------------------------------------------------------------------------
-    // 08 — GWAS. VCF now comes from Beagle (phased/imputed), NOT from the user.
+    // 08 - GWAS. VCF now comes from Beagle (phased/imputed), NOT from the user.
     // Optional kinship / covariate-matrix files are provided only when set.
     // -------------------------------------------------------------------------
     GWAS(BEAGLE.out.phased_vcf, ch_pheno, ch_kinship, ch_covariate)
 
     // -------------------------------------------------------------------------
-    // 09 — Variant annotation (parallel branch off the FILTERED variants).
+    // 09 - Variant annotation (parallel branch off the FILTERED variants, NOT the phased VCF).
+    // Annotation only needs the variant set + genome/GTF; phasing is irrelevant to it. Crucially, Beagle STRIPS the
+    // VCF ##contig headers (and drops unplaced scaffolds), so its phased VCF no longer matches the genome and OmicsBox
+    // rejects it ("reference genome ... not the same"). The filtered VCF keeps bcftools' ##contig headers -> passes.
     // -------------------------------------------------------------------------
-    VARIANT_ANNOTATION(BEAGLE.out.phased_vcf, ch_gff, ch_reference)
+    VARIANT_ANNOTATION(VARIANT_FILTERING.out.filtered_vcf, ch_gff, ch_reference)
 
 }

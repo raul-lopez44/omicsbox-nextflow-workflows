@@ -14,7 +14,10 @@ process FLAIR {
     output:
     // The isoform models (GTF) are the key downstream product; NOT a formal JSON output key -> inferred glob.
     path "${task.ext.outdir}/*isoforms*.gtf", emit: isoforms                     // Reconstructed isoform models (consumed downstream by SQANTI3)
-    path "${task.ext.outdir}/*[Cc]ount*.box", emit: count_table                  // count_table_transcript
+    path "${task.ext.outdir}/*[Cc]ount*.box", emit: count_table                  // count_table_transcript (OmicsBox count-table object)
+    // SQANTI3-formatted full-length counts from the quantification step (source file: quantification.counts.sqanti3.tsv).
+    // Fed directly to SQANTI3 --i-fl-file downstream. NOTE: on-disk name derived from source; verify glob on first run.
+    path "${task.ext.outdir}/*sqanti3*.tsv", emit: counts                        // FL counts 
     path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                      // flair_report
     path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart        // isoform_length_chart (extension follows chart_format)
 

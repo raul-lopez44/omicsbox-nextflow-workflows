@@ -70,7 +70,7 @@ workflow {
         ? channel.fromPath(params.input_single_end, checkIfExists: true).collect()
         : channel.fromPath(params.input_paired_end, checkIfExists: true).collect()
 
-    // Optional file inputs — channel.value([]) acts as a safe empty placeholder
+    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -84,37 +84,37 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw QC  (isolated: outputs are NOT connected downstream)
+    // 01 - Raw QC  (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing
+    // 02 - Preprocessing
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Post-trim QC  (isolated: outputs are NOT connected downstream)
+    // 03 - Post-trim QC  (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — De-novo transcriptome assembly
+    // 04 - De-novo transcriptome assembly
     // -------------------------------------------------------------------------
     TRINITY(TRIMMOMATIC.out.trimmed_reads)
 
     // -------------------------------------------------------------------------
-    // 05 — Sequence clustering
+    // 05 - Sequence clustering
     // -------------------------------------------------------------------------
     CDHIT(TRINITY.out.assembly)
 
     // -------------------------------------------------------------------------
-    // 06 — Assembly completeness assessment  
+    // 06 - Assembly completeness assessment  
     // -------------------------------------------------------------------------
     BUSCO(CDHIT.out.clustered_fasta)
 
     // -------------------------------------------------------------------------
-    // 07 — Predict protein-coding regions (ORFs) from clustered transcripts
+    // 07 - Predict protein-coding regions (ORFs) from clustered transcripts
     // CRITICAL: TRANSDECODER requires TWO inputs:
     //   - Input 1: Clustered FASTA from CDHIT
     //   - Input 2: Gene-to-transcript mapping from TRINITY
@@ -122,12 +122,12 @@ workflow {
     TRANSDECODER(CDHIT.out.clustered_fasta, TRINITY.out.gene_trans_map)
 
     // -------------------------------------------------------------------------
-    // 08 — Load predicted protein sequences into OmicsBox project for annotation
+    // 08 - Load predicted protein sequences into OmicsBox project for annotation
     // -------------------------------------------------------------------------
     LOAD_FASTA(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
-    // 09-11 — Functional annotation 
+    // 09-11 - Functional annotation 
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
     BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)
@@ -136,12 +136,12 @@ workflow {
     EGGNOG_MAPPER(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
-    // 12 — Merge Diamond and InterProScan results
+    // 12 - Merge Diamond and InterProScan results
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 13 — Final integrated functional annotation (Diamond + InterPro + EggNOG)
+    // 13 - Final integrated functional annotation (Diamond + InterPro + EggNOG)
     // -------------------------------------------------------------------------
     MERGE_EGGNOG_5_GOS(COMBINE_PROJECTS.out.combined_project, EGGNOG_MAPPER.out.eggnog_project)
 }

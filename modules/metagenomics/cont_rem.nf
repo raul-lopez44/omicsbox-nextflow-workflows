@@ -10,7 +10,7 @@ process CONT_REM {
 
     output:
     path "${task.ext.outdir}/un_*.fq.gz", emit: clean_reads                                  // Contaminant-free (unaligned) reads (consumed downstream)
-    path "${task.ext.outdir}/al_*.fq.gz", emit: contaminant_reads, optional: true            // Contaminant (aligned) reads — only if result-mode includes aligned
+    path "${task.ext.outdir}/al_*.fq.gz", emit: contaminant_reads, optional: true            // Contaminant (aligned) reads - only if result-mode includes aligned
     path "${task.ext.outdir}/*report*.box", emit: report                                     // Decontamination report
     path "${task.ext.outdir}/*chart_abs*.${params.chart_format}", emit: chart_abs            // Absolute-value chart
     path "${task.ext.outdir}/*chart_rel*.${params.chart_format}", emit: chart_rel            // Relative-value chart

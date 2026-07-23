@@ -52,7 +52,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs for the metagenomics pipeline
+    // Safety checks - critical inputs for the metagenomics pipeline
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {
         exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
@@ -89,41 +89,41 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter removal
+    // 02 - Preprocessing & adapter removal
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming)
+    // 03 - Quality assessment (post-trimming)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — Contaminant (host) removal
+    // 04 - Contaminant (host) removal
     // CRITICAL: Takes trimmed reads from Trimmomatic. Optional custom target
     // genome overrides the built-in --target-index defined in the config.
     // -------------------------------------------------------------------------
     CONT_REM(TRIMMOMATIC.out.trimmed_reads, ch_cont_rem_target)
 
     // -------------------------------------------------------------------------
-    // 05 — De novo metagenome assembly using MEGAHIT
+    // 05 - De novo metagenome assembly using MEGAHIT
     // CRITICAL: Takes the contaminant-free reads from CONT_REM.
     // -------------------------------------------------------------------------
     MEGAHIT(CONT_REM.out.clean_reads)
 
     // -------------------------------------------------------------------------
-    // 06 — Gene prediction with Prodigal
+    // 06 - Gene prediction with Prodigal
     // CRITICAL: Takes the assembled contigs from MEGAHIT (--procedure=meta).
     // -------------------------------------------------------------------------
     PRODIGAL(MEGAHIT.out.contigs)
 
     // -------------------------------------------------------------------------
-    // 07a-07b — Parallel functional annotation branching
+    // 07a-07b - Parallel functional annotation branching
     // Both PFAM_SCAN and EGGNOG_MAPPER run on the predicted genes from Prodigal.
     // PFAM_SCAN: Pfam protein-domain annotation
     // EGGNOG_MAPPER: EggNOG ortholog-based functional annotation

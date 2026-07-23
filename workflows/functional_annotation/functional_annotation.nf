@@ -71,12 +71,12 @@ workflow {
     def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
 
     // -------------------------------------------------------------------------
-    // 01 — Load sequences into OmicsBox project
+    // 01 - Load sequences into OmicsBox project
     // -------------------------------------------------------------------------
     LOAD_FASTA(ch_fasta)
 
     // -------------------------------------------------------------------------
-    // 02-03 — Sequence homology search & GO mapping
+    // 02-03 - Sequence homology search & GO mapping
     // DIAMOND_BLAST and GO_MAPPING both consume the same LOAD_FASTA project
     // and run in parallel, branching the workflow into two annotation streams
     // -------------------------------------------------------------------------
@@ -86,13 +86,13 @@ workflow {
     GO_MAPPING_CHARTS(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 04 — Initial GO annotation via BLAST2GO
+    // 04 - Initial GO annotation via BLAST2GO
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
     BLAST2GO_ANNOTATION_CHARTS(GO_ANNOTATION.out.annotated_project)
 
     // -------------------------------------------------------------------------
-    // 05-07 — Parallel domain & orthology prediction
+    // 05-07 - Parallel domain & orthology prediction
     // Three independent annotation branches, each consuming different inputs:
     //   - EGGNOG_MAPPER: consumes raw FASTA directly
     //   - INTERPROSCAN: consumes LOAD_FASTA project (same as DIAMOND_BLAST)
@@ -103,7 +103,7 @@ workflow {
     IPS_CHARTS(INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 08-10 — Multi-branch project consolidation
+    // 08-10 - Multi-branch project consolidation
     // COMBINE_PROJECTS merges GO annotation + InterProScan branches
     // MERGE_IPS_GOS_TO_ANNOTATION integrates domain terms into the combined project
     // MERGE_EGGNOG_5_GOS integrates EggNOG functional data
@@ -113,7 +113,7 @@ workflow {
     MERGE_EGGNOG_5_GOS(MERGE_IPS_GOS_TO_ANNOTATION.out.integrated_project, EGGNOG_MAPPER.out.eggnog_project)
 
     // -------------------------------------------------------------------------
-    // 11-13 — Final curation, enzyme mapping & comprehensive reporting
+    // 11-13 - Final curation, enzyme mapping & comprehensive reporting
     // All downstream processes consume the unified, fully-annotated master project
     // -------------------------------------------------------------------------
     VALIDATE_GO_ANNOTATION(MERGE_EGGNOG_5_GOS.out.final_project)

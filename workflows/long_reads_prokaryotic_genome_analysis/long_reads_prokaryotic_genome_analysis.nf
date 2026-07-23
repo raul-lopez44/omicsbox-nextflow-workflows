@@ -57,7 +57,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs for long-read prokaryotic pipeline
+    // Safety checks - critical inputs for long-read prokaryotic pipeline
     // -------------------------------------------------------------------------
     if (!params.input_long_reads) {
         exit 1, "ERROR: You must provide long reads via --input_long_reads."
@@ -97,49 +97,49 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Long-read quality control & trimming
+    // 01 - Long-read quality control & trimming
     // -------------------------------------------------------------------------
     LONGQC(ch_long_reads)
 
     // -------------------------------------------------------------------------
-    // 02 — De novo long-read assembly using Flye
+    // 02 - De novo long-read assembly using Flye
     // Takes trimmed reads from LONGQC.
     // -------------------------------------------------------------------------
     FLYE(LONGQC.out.trimmed_reads)
 
     // -------------------------------------------------------------------------
-    // 03 — Assembly quality assessment (QUAST)
+    // 03 - Assembly quality assessment (QUAST)
     // Evaluates the unpolished Flye assembly.
     // -------------------------------------------------------------------------
     QUAST(FLYE.out.assembly, ch_quast_ref)
 
     // -------------------------------------------------------------------------
-    // 04 — Short-read alignment to long-read assembly (BWA)
+    // 04 - Short-read alignment to long-read assembly (BWA)
     // Maps short reads to Flye assembly for polishing.
     // -------------------------------------------------------------------------
     BWA(FLYE.out.assembly, ch_short_reads)
 
     // -------------------------------------------------------------------------
-    // 05 — Hybrid assembly polishing (PILON)
+    // 05 - Hybrid assembly polishing (PILON)
     // Polishes Flye assembly using short-read alignments from BWA.
     // -------------------------------------------------------------------------
     PILON(FLYE.out.assembly, BWA.out.sorted_bam)
 
     // -------------------------------------------------------------------------
-    // 06 — Assembly completeness assessment (BUSCO)
+    // 06 - Assembly completeness assessment (BUSCO)
     // Evaluates the polished assembly.
     // -------------------------------------------------------------------------
     BUSCO(PILON.out.polished_assembly)
 
     // -------------------------------------------------------------------------
-    // 07 — Prokaryotic gene finding with GLIMMER
+    // 07 - Prokaryotic gene finding with GLIMMER
     // Takes the polished assembly from Pilon.
     // Optional ICM model for pre-trained gene predictions.
     // -------------------------------------------------------------------------
     GLIMMER(PILON.out.polished_assembly, ch_glimmer_icm)
 
     // -------------------------------------------------------------------------
-    // 08a-08b — Parallel functional annotation branching
+    // 08a-08b - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on GLIMMER project output.
     // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
     // INTERPROSCAN: Domain/motif-based annotation via InterPro
@@ -148,25 +148,25 @@ workflow {
     INTERPROSCAN(GLIMMER.out.project)
 
     // -------------------------------------------------------------------------
-    // 09 — Combine Diamond and InterProScan annotations
+    // 09 - Combine Diamond and InterProScan annotations
     // Merges both annotation projects into a unified project.
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 10 — Gene Ontology mapping
+    // 10 - Gene Ontology mapping
     // Maps functional terms to Gene Ontology.
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 11 — BLAST2GO functional annotation
+    // 11 - BLAST2GO functional annotation
     // Applies BLAST2GO algorithm for comprehensive functional annotation.
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 12 — Final merge: InterProScan + GO-annotated genes
+    // 12 - Final merge: InterProScan + GO-annotated genes
     // Converges all annotation branches into a final unified project.
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)

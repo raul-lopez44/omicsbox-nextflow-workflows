@@ -75,7 +75,7 @@ workflow {
     def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true).first()
     def ch_design = channel.fromPath(params.experimental_design, checkIfExists: true).first()
 
-    // Optional file inputs — channel.value([]) acts as a safe empty placeholder
+    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -93,22 +93,22 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter removal
+    // 02 - Preprocessing & adapter removal
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming)
+    // 03 - Quality assessment (post-trimming)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — Transcript quantification
+    // 04 - Transcript quantification
     // CRITICAL: RSEM requires TWO inputs:
     //   - Input 1: Trimmed FASTQ reads from TRIMMOMATIC
     //   - Input 2: Reference transcriptome FASTA file
@@ -116,7 +116,7 @@ workflow {
     RSEM(TRIMMOMATIC.out.trimmed_reads, ch_fasta, ch_genes_trans_map)
 
     // -------------------------------------------------------------------------
-    // 05-06 — Parallel statistical analysis
+    // 05-06 - Parallel statistical analysis
     // Both PCA and edgeR consume the count table from RSEM and the experimental design
     // -------------------------------------------------------------------------
     COUNTS_PCA(RSEM.out.count_table_transcripts, ch_design)

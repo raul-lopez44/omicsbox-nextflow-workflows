@@ -58,7 +58,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs for long-read eukaryotic pipeline
+    // Safety checks - critical inputs for long-read eukaryotic pipeline
     // -------------------------------------------------------------------------
     if (!params.input_long_reads) {
         exit 1, "ERROR: You must provide long reads via --input_long_reads."
@@ -144,49 +144,49 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Long-read quality control & trimming
+    // 01 - Long-read quality control & trimming
     // -------------------------------------------------------------------------
     LONGQC(ch_long_reads)
 
     // -------------------------------------------------------------------------
-    // 02 — De novo long-read assembly using Flye
+    // 02 - De novo long-read assembly using Flye
     // Takes trimmed reads from LONGQC.
     // -------------------------------------------------------------------------
     FLYE(LONGQC.out.trimmed_reads)
 
     // -------------------------------------------------------------------------
-    // 03 — Assembly quality assessment (QUAST)
+    // 03 - Assembly quality assessment (QUAST)
     // Evaluates the unpolished Flye assembly.
     // -------------------------------------------------------------------------
     QUAST(FLYE.out.assembly, ch_quast_ref)
 
     // -------------------------------------------------------------------------
-    // 04 — Short-read alignment to long-read assembly (BWA)
+    // 04 - Short-read alignment to long-read assembly (BWA)
     // Maps short reads to Flye assembly for polishing.
     // -------------------------------------------------------------------------
     BWA(FLYE.out.assembly, ch_short_reads)
 
     // -------------------------------------------------------------------------
-    // 05 — Hybrid assembly polishing (PILON)
+    // 05 - Hybrid assembly polishing (PILON)
     // Polishes Flye assembly using short-read alignments from BWA.
     // -------------------------------------------------------------------------
     PILON(FLYE.out.assembly, BWA.out.sorted_bam)
 
     // -------------------------------------------------------------------------
-    // 06 — Assembly completeness assessment (BUSCO)
+    // 06 - Assembly completeness assessment (BUSCO)
     // Evaluates the polished assembly.
     // -------------------------------------------------------------------------
     BUSCO(PILON.out.polished_assembly)
 
     // -------------------------------------------------------------------------
-    // 07 — Repeat masking for eukaryotic genome
+    // 07 - Repeat masking for eukaryotic genome
     // Takes the polished assembly from Pilon.
     // Produces soft-masked FASTA with repeats in lowercase.
     // -------------------------------------------------------------------------
     REPEATMASKER(PILON.out.polished_assembly, ch_repeat_db)
 
     // -------------------------------------------------------------------------
-    // 08 — Eukaryotic gene finding with AUGUSTUS
+    // 08 - Eukaryotic gene finding with AUGUSTUS
     // Takes soft-masked FASTA from RepeatMasker.
     // Optional evidence hints improve prediction accuracy.
     // -------------------------------------------------------------------------
@@ -200,7 +200,7 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 09a-09b — Parallel functional annotation branching
+    // 09a-09b - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
     // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
     // INTERPROSCAN: Domain/motif-based annotation via InterPro
@@ -209,7 +209,7 @@ workflow {
     INTERPROSCAN(AUGUSTUS.out.protein_project)
 
     // -------------------------------------------------------------------------
-    // 10 — Combine Diamond and InterProScan annotations
+    // 10 - Combine Diamond and InterProScan annotations
     // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
     // InterProScan project (with domain/motif annotations) and merges them
     // into a single unified project.
@@ -217,19 +217,19 @@ workflow {
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 11 — Gene Ontology mapping
+    // 11 - Gene Ontology mapping
     // Takes the combined/unified project and maps functional terms to Gene Ontology.
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 12 — BLAST2GO functional annotation
+    // 12 - BLAST2GO functional annotation
     // Applies BLAST2GO algorithm for comprehensive functional annotation.
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 13 — Final merge: InterProScan + GO-annotated genes
+    // 13 - Final merge: InterProScan + GO-annotated genes
     // Converges all annotation branches into a final unified project.
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)

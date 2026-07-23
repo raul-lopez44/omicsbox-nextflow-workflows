@@ -51,7 +51,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — all 4 critical inputs
+    // Safety checks - all 4 critical inputs
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {
         exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
@@ -82,7 +82,7 @@ workflow {
     def ch_gff = channel.fromPath(params.input_gff, checkIfExists: true).first()
     def ch_design = channel.fromPath(params.experimental_design, checkIfExists: true).first()
 
-    // Optional file inputs — channel.value([]) acts as a safe empty placeholder
+    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -96,22 +96,22 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter removal
+    // 02 - Preprocessing & adapter removal
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming)
+    // 03 - Quality assessment (post-trimming)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — Read alignment to reference genome
+    // 04 - Read alignment to reference genome
     // CRITICAL: STAR requires THREE inputs:
     //   - Input 1: Trimmed FASTQ reads from TRIMMOMATIC
     //   - Input 2: Reference genome FASTA file
@@ -120,7 +120,7 @@ workflow {
     STAR(TRIMMOMATIC.out.trimmed_reads, ch_fasta, ch_gff)
 
     // -------------------------------------------------------------------------
-    // 05 — Gene-level quantification from aligned reads
+    // 05 - Gene-level quantification from aligned reads
     // CRITICAL: HTSEQ requires TWO inputs:
     //   - Input 1: BAM alignment files from STAR
     //   - Input 2: Genome annotation (GTF/GFF) for feature assignment
@@ -128,7 +128,7 @@ workflow {
     HTSEQ(STAR.out.bam_sorted, ch_gff)
 
     // -------------------------------------------------------------------------
-    // 06-07 — Parallel statistical analysis
+    // 06-07 - Parallel statistical analysis
     // Both PCA and edgeR consume the count table from HTSEQ and the experimental design
     // -------------------------------------------------------------------------
     COUNTS_PCA(HTSEQ.out.count_table, ch_design)

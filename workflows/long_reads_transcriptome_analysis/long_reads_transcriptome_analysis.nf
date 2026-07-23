@@ -43,7 +43,7 @@ workflow {
     }
 
     // -------------------------------------------------------------------------
-    // Safety checks — critical inputs
+    // Safety checks - critical inputs
     // -------------------------------------------------------------------------
     if (!params.input_reads) {
         exit 1, "ERROR: You must provide long reads (FASTA/Q) via --input_reads."
@@ -93,17 +93,17 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Long-read quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Long-read quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     LONGQC(ch_reads)
 
     // -------------------------------------------------------------------------
-    // 02 — Long-read alignment to the reference genome (Minimap2)
+    // 02 - Long-read alignment to the reference genome (Minimap2)
     // -------------------------------------------------------------------------
     MINIMAP2(ch_reads, ch_reference, ch_junc_bed)
 
     // -------------------------------------------------------------------------
-    // 03 — Isoform identification & quantification (FLAIR)
+    // 03 - Isoform identification & quantification (FLAIR)
     // FLAIR takes: raw reads (required) + reference genome + annotation + the
     // Minimap2 alignment BAM (via --aligned-reads-check=true in the config).
     // -------------------------------------------------------------------------
@@ -112,7 +112,7 @@ workflow {
     FLAIR(ch_reads, ch_reference, ch_annotation, MINIMAP2.out.bam, ch_flair_junction_bed)
 
     // -------------------------------------------------------------------------
-    // 04 — Curation of the transcriptome (SQANTI3)
+    // 04 - Curation of the transcriptome (SQANTI3)
     // The input depends on params.sqanti3.pb_or_gff (the module injects --pb-or-gff and the matching --i-*-file):
     //   GFF                 -> FLAIR's reconstructed isoform GTF (default pipeline flow)
     //   TRANSCRIPT / PACBIO -> a user-provided FASTA/Q file (SQANTI3 does its own mapping/collapse)
@@ -136,7 +136,10 @@ workflow {
     def ch_sqanti_tss   = params.sqanti3.tss_file   ? channel.fromPath(params.sqanti3.tss_file,   checkIfExists: true).first() : channel.value([])
     def ch_sqanti_polya = params.sqanti3.polya_file ? channel.fromPath(params.sqanti3.polya_file, checkIfExists: true).first() : channel.value([])
     def ch_sqanti_peak  = params.sqanti3.polya_peak ? channel.fromPath(params.sqanti3.polya_peak, checkIfExists: true).first() : channel.value([])
-    def ch_sqanti_fl    = params.sqanti3.fl_counts  ? channel.fromPath(params.sqanti3.fl_counts,  checkIfExists: true).first() : channel.value([])
+    // FL counts are ALWAYS produced by FLAIR (quantification.counts.sqanti3.tsv) -> not a user param. Only meaningful in
+    // GFF mode, where SQANTI3 curates FLAIR's own isoforms (matching IDs). In TRANSCRIPT/PACBIO SQANTI3 analyses a
+    // different, user-provided input, so FLAIR's counts do NOT correspond -> no FL counts there.
+    def ch_sqanti_fl    = params.sqanti3.pb_or_gff == 'GFF' ? FLAIR.out.counts : channel.value([])
     def ch_sqanti_json  = params.sqanti3.rules_json ? channel.fromPath(params.sqanti3.rules_json, checkIfExists: true).first() : channel.value([])
 
     SQANTI3(ch_sqanti_input, ch_reference, ch_annotation, ch_sqanti_short_reads,

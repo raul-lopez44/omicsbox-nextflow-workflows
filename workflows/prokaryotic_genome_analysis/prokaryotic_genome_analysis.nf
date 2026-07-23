@@ -52,7 +52,7 @@ workflow {
 
 
     // -------------------------------------------------------------------------
-    // Safety checks — all 4 critical inputs
+    // Safety checks - all 4 critical inputs
     // -------------------------------------------------------------------------
     if (!params.input_paired_end && !params.input_single_end) {
         exit 1, "ERROR: You must provide reads via --input_paired_end or --input_single_end."
@@ -84,12 +84,12 @@ workflow {
 
     def ch_reference = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
-    // Glimmer ICM model is optional — if null, Glimmer will create a new model dynamically
+    // Glimmer ICM model is optional - if null, Glimmer will create a new model dynamically
     def ch_icm_model = params.glimmer.icm_model
         ? channel.fromPath(params.glimmer.icm_model, checkIfExists: true)
         : channel.value([])
 
-    // Optional file inputs — channel.value([]) acts as a safe empty placeholder
+    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -102,7 +102,7 @@ workflow {
         ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
 
-    // SPADES optional inputs — dynamic flag injection based on channel presence
+    // SPADES optional inputs - dynamic flag injection based on channel presence
     def ch_spades_opt_mp_fr = params.spades.opt_mp_fr
         ? channel.fromPath(params.spades.opt_mp_fr, checkIfExists: true).collect()
         : channel.value([])
@@ -136,22 +136,22 @@ workflow {
         : channel.value([])
 
     // -------------------------------------------------------------------------
-    // 01 — Raw quality assessment (isolated: outputs are NOT connected downstream)
+    // 01 - Raw quality assessment (isolated: outputs are NOT connected downstream)
     // -------------------------------------------------------------------------
     FASTQC_RAW(ch_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 02 — Preprocessing & adapter removal
+    // 02 - Preprocessing & adapter removal
     // -------------------------------------------------------------------------
     TRIMMOMATIC(ch_reads, ch_trimmomatic_adapters)
 
     // -------------------------------------------------------------------------
-    // 03 — Quality assessment (post-trimming)
+    // 03 - Quality assessment (post-trimming)
     // -------------------------------------------------------------------------
     FASTQC_POST(TRIMMOMATIC.out.trimmed_reads, ch_fastqc_adapters, ch_fastqc_contaminants)
 
     // -------------------------------------------------------------------------
-    // 04 — De novo genome assembly
+    // 04 - De novo genome assembly
     // SPADES main input is TRIMMED reads from Trimmomatic, which may be biologically 
     // single-end or paired-end (FR/RF/FF/HQ-MP/NxMate orientation set via config).
     // Optional channels (8 total) bypass Trimmomatic and are fed directly to SPAdes via
@@ -171,7 +171,7 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 05a-05b — Parallel assembly evaluation
+    // 05a-05b - Parallel assembly evaluation
     // Both QUAST and BUSCO take the assembly FASTA from SPADES.
     // QUAST: Compares against reference genome for structural validation
     // BUSCO: Assesses completeness using universal single-copy orthologs
@@ -180,7 +180,7 @@ workflow {
     BUSCO(SPADES.out.scaffolds)
 
     // -------------------------------------------------------------------------
-    // 06 — Prokaryotic gene finding
+    // 06 - Prokaryotic gene finding
     // CRITICAL: GLIMMER requires ONE input:
     //   - Input 1: Assembly FASTA from SPADES
     // OPTIONAL: Provide an existing ICM model for species-specific prediction.
@@ -189,7 +189,7 @@ workflow {
     GLIMMER(SPADES.out.scaffolds, ch_icm_model)
 
     // -------------------------------------------------------------------------
-    // 07 — Functional annotation of predicted genes
+    // 07 - Functional annotation of predicted genes
     // DIAMOND performs similarity search against protein databases using predicted ORFs.
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(GLIMMER.out.project)

@@ -30,7 +30,7 @@ process STAR {
         ? "--i-input-sequencing-data-single-end=${reads_list}"
         : "--i-input-sequencing-data-paired-end=${reads_list}"
 
-    // Paired-end pattern flags — only injected when patterns are configured in params
+    // Paired-end pattern flags - only injected when patterns are configured in params
     def up_pat   = params.getOrDefault('upstream_pattern', '_1')
     def down_pat = params.getOrDefault('downstream_pattern', '_2')
     def pattern_flags = (!is_single_end && up_pat && down_pat)
