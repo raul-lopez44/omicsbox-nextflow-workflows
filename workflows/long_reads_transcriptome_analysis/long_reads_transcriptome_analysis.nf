@@ -100,7 +100,7 @@ workflow {
     // -------------------------------------------------------------------------
     // 02 - Long-read alignment to the reference genome (Minimap2)
     // -------------------------------------------------------------------------
-    //MINIMAP2(ch_reads, ch_reference, ch_junc_bed)
+    MINIMAP2(ch_reads, ch_reference, ch_junc_bed)
 
     // -------------------------------------------------------------------------
     // 03 - Isoform identification & quantification (FLAIR)
@@ -109,7 +109,7 @@ workflow {
     // --aligned-reads-check=false (FLAIR aligns internally). Same presence-based logic as annotation / SQANTI3 fl_counts.
     // To run WITHOUT external alignment, wire channel.value([]) here instead of MINIMAP2.out.bam.
     // -------------------------------------------------------------------------
-    FLAIR(ch_reads, ch_reference, ch_annotation, channel.value([]), ch_flair_junction_bed)
+    FLAIR(ch_reads, ch_reference, ch_annotation, MINIMAP2.out.bam, ch_flair_junction_bed)
 
     // -------------------------------------------------------------------------
     // 04 - Curation of the transcriptome (SQANTI3)
