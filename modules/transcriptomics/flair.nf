@@ -12,14 +12,14 @@ process FLAIR {
     path junction_bed   // Optional: short-read splice junctions (BAM w/ XS tag, or STAR SJ.out.tab) -> --i-junction-bed (channel.value([]) when unused; needs --junction-bed-check=true)
 
     output:
-    // The isoform models (GTF) are the key downstream product; NOT a formal JSON output key -> inferred glob.
-    path "${task.ext.outdir}/*isoforms*.gtf", emit: isoforms                     // Reconstructed isoform models (consumed downstream by SQANTI3)
-    path "${task.ext.outdir}/*[Cc]ount*.box", emit: count_table                  // count_table_transcript (OmicsBox count-table object)
-    // SQANTI3-formatted full-length counts from the quantification step (source file: quantification.counts.sqanti3.tsv).
-    // Fed directly to SQANTI3 --i-fl-file downstream. NOTE: on-disk name derived from source; verify glob on first run.
-    path "${task.ext.outdir}/*sqanti3*.tsv", emit: counts                        // FL counts 
-    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                      // flair_report
-    path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart        // isoform_length_chart (extension follows chart_format)
+    // Output filenames CONFIRMED on a real run. The reconstructed transcriptome GTF is the key downstream product (-> SQANTI3).
+    path "${task.ext.outdir}/*transcriptome*.gtf", emit: isoforms                 // output-transcriptome.gtf (reconstructed isoforms; consumed by SQANTI3)
+    path "${task.ext.outdir}/*[Cc]ount*.box", emit: count_table                  // count_table_transcript.box (OmicsBox count-table object)
+    // Full-length counts from the quantification step (output-counts.tsv). Fed to SQANTI3 --i-fl-file downstream.
+    path "${task.ext.outdir}/*counts*.tsv", emit: counts                         // output-counts.tsv (FL counts for SQANTI3)
+    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                      // flair_report.box
+    path "${task.ext.outdir}/*[Ll]ength*.${params.chart_format}", emit: chart    // isoforms-length.box (isoform_length_chart; ext follows chart_format)
+    path "${task.ext.outdir}/*fasta*", emit: fasta, optional: true               // output-fasta (isoform sequences FASTA; auxiliary, not consumed downstream)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
