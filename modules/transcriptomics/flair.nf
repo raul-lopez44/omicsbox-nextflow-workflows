@@ -8,7 +8,7 @@ process FLAIR {
     path reads          // Raw long reads FASTA/Q (one or more files, required) -> --i-input-files
     path ref_genome     // Reference genome FASTA (required) -> --i-ref-genome
     path annotation     // Optional: reference transcriptome annotation GTF (channel.value([]) when unused). The module sets --use-annotation-file coherently with its presence (see script). Not always mandatory.
-    path aligned_reads  // Aligned reads BAM from Minimap2 -> --i-aligned-reads (needs --aligned-reads-check=true)
+    path aligned_reads  // Optional: aligned reads BAM from Minimap2 -> --i-aligned-reads (channel.value([]) when unused). If absent, FLAIR aligns internally. Module sets --aligned-reads-check coherently.
     path junction_bed   // Optional: short-read splice junctions (BAM w/ XS tag, or STAR SJ.out.tab) -> --i-junction-bed (channel.value([]) when unused; needs --junction-bed-check=true)
 
     output:
@@ -30,10 +30,19 @@ process FLAIR {
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
 
-    // Aligned reads (Minimap2 BAM) may be one or more files.
-    def aligned_list = aligned_reads instanceof List
-        ? aligned_reads.collect { file -> "\$PWD/${file}" }.join(',')
-        : "\$PWD/${aligned_reads}"
+    // Optional aligned reads (Minimap2 BAM). Same coherent-injection pattern as the annotation flag: keep
+    // --aligned-reads-check in sync with the file presence so they never conflict:
+    //   provided -> --aligned-reads-check=true  --i-aligned-reads=<bam(s)>  (use the external alignment, skip FLAIR's own)
+    //   not given -> --aligned-reads-check=false                            (FLAIR aligns internally with minimap2)
+    def aligned_flag
+    if (!(aligned_reads instanceof List) || !aligned_reads.isEmpty()) {
+        def aligned_list = aligned_reads instanceof List
+            ? aligned_reads.collect { file -> "\$PWD/${file}" }.join(',')
+            : "\$PWD/${aligned_reads}"
+        aligned_flag = "--aligned-reads-check=true --i-aligned-reads=${aligned_list}"
+    } else {
+        aligned_flag = "--aligned-reads-check=false"
+    }
 
     // Optional annotation GTF. Keep --use-annotation-file COHERENT with the file presence so the two never conflict
     // (the tool disables --i-annotation-file when --use-annotation-file=false):
@@ -57,7 +66,7 @@ process FLAIR {
         --i-input-files=${reads_list} \\
         --i-ref-genome=\$PWD/${ref_genome} \\
         ${annotation_flag} \\
-        --i-aligned-reads=${aligned_list} \\
+        ${aligned_flag} \\
         ${junc_bed_flag} \\
         --chart-format=${params.chart_format} \\
         --local-folder=\$PWD/${outdir} \\

@@ -11,10 +11,10 @@ process VARIANT_FILTERING {
     // Filtered VCF is the key downstream product (not a formal JSON output key) -> inferred, tolerant glob.
     path "${task.ext.outdir}/*.vcf{,.gz}", emit: filtered_vcf               // Filtered variants VCF (consumed downstream)
     path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                // Variant_Filtering_Report
-    // WebCharts: proportion-quality-depth / quality / depth / mapping-quality (names carry 'depth' or 'quality', never 'chart').
-    // Same glob rationale as BCFtools: matches the charts, excludes the report and the .vcf.gz. Ext follows chart_format.
-    // NOTE: chart FILENAMES not yet confirmed on a real run; derived from the tool's declared output keys.
-    path "${task.ext.outdir}/*{depth,quality}*.${params.chart_format}", emit: charts
+    // WebCharts confirmed on a real run: raw-read-depth, phred-quality, proportion-quality-depth, average-mapping-quality,
+    // maf-histogram. Their names carry 'depth', 'quality' or 'maf' (never 'chart'). This glob matches all five and
+    // excludes the report (no such token) and the .vcf.gz. Ext follows chart_format.
+    path "${task.ext.outdir}/*{depth,quality,maf}*.${params.chart_format}", emit: charts
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

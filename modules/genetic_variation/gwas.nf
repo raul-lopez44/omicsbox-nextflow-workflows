@@ -13,8 +13,10 @@ process GWAS {
     output:
     // Both outputs are mandatory (JSON: optional=false) and are OmicsBox objects (.box).
     // Names are INFERRED (real output names unknown) using simple, tolerant globs.
-    path "${task.ext.outdir}/*results*.box", emit: gwas_results   // GWAS results object
-    path "${task.ext.outdir}/*report*.box", emit: gwas_report     // GWAS summary report
+    path "${task.ext.outdir}/*results*.box", emit: gwas_results   // GWAS results object (gwas_results.box)
+    path "${task.ext.outdir}/*report*.box", emit: gwas_report     // GWAS summary report (gwas_report.box)
+    // Auxiliary: corrected/normalized phenotype table written under output/ (only when --normalize=true) -> optional.
+    path "${task.ext.outdir}/output/*corrected_phenotype*", emit: corrected_phenotype, optional: true
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

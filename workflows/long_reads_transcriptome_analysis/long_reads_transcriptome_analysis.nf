@@ -104,11 +104,11 @@ workflow {
 
     // -------------------------------------------------------------------------
     // 03 - Isoform identification & quantification (FLAIR)
-    // FLAIR takes: raw reads (required) + reference genome + annotation + the
-    // Minimap2 alignment BAM (via --aligned-reads-check=true in the config).
+    // This workflow wires Minimap2's BAM as FLAIR's aligned-reads input. The FLAIR module treats that input as
+    // OPTIONAL (agnostic): a BAM present -> --aligned-reads-check=true (--i-aligned-reads); an empty channel ->
+    // --aligned-reads-check=false (FLAIR aligns internally). Same presence-based logic as annotation / SQANTI3 fl_counts.
+    // To run WITHOUT external alignment, wire channel.value([]) here instead of MINIMAP2.out.bam.
     // -------------------------------------------------------------------------
-    // The annotation GTF is passed as-is; the FLAIR module decides --use-annotation-file automatically from whether
-    // the file is present (here input_gff is required by SQANTI3, so it is always provided). SQANTI3 uses it too.
     FLAIR(ch_reads, ch_reference, ch_annotation, MINIMAP2.out.bam, ch_flair_junction_bed)
 
     // -------------------------------------------------------------------------
