@@ -70,6 +70,11 @@ workflow {
     // -------------------------------------------------------------------------
     def ch_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
 
+    // Optional custom GO-Slim OBO file (only used with --option=custom). Empty channel -> module omits --i-go-slim-obo-file.
+    def ch_goslim_obo = params.goslim.obo_file
+        ? channel.fromPath(params.goslim.obo_file, checkIfExists: true).first()
+        : channel.value([])
+        
     // -------------------------------------------------------------------------
     // 01 - Load sequences into OmicsBox project
     // -------------------------------------------------------------------------
@@ -120,7 +125,7 @@ workflow {
     EC_CODE_MAPPING(VALIDATE_GO_ANNOTATION.out.validated_project)
     FINAL_ANNOTATION_CHARTS(EC_CODE_MAPPING.out.ec_mapped_project)
     COMBINED_GO_GRAPH(EC_CODE_MAPPING.out.ec_mapped_project)
-    //EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
-    // GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project)
-    // GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
+    EXPORT_GENE_SETS(EC_CODE_MAPPING.out.ec_mapped_project)
+    GO_SLIM(EC_CODE_MAPPING.out.ec_mapped_project, ch_goslim_obo)
+    GOSLIM_ANNOTATION_CHARTS(GO_SLIM.out.goslim_project)
 }
