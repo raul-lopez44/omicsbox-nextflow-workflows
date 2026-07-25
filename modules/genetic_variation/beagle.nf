@@ -1,16 +1,15 @@
 // --- FILE: modules/genetic_variation/beagle.nf ---
-// Wraps: omicsbox beagle  |  backend: LEGACY_SYNC
+// Wraps: omicsbox beagle
 // Genotype Phasing and Imputation with Beagle.
 
 process BEAGLE {
 
     input:
-    path vcf   // VCF to be phased and imputed (required)
+    path vcf   // VCF to phase and impute
 
     output:
-    // The phased/imputed VCF is the key downstream product (not a formal JSON output key) -> inferred, tolerant glob.
-    path "${task.ext.outdir}/*.vcf{,.gz}", emit: phased_vcf   // Phased/imputed VCF (consumed downstream by GWAS)
-    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report   // Beagle_Report
+    path "${task.ext.outdir}/*.vcf{,.gz}", emit: phased_vcf   // Phased/imputed VCF
+    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report   // Beagle report
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

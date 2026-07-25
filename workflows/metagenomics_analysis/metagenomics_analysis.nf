@@ -23,7 +23,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/metagenomics_analysis/metagenomics_analysis.config")
+        def sourceConfig = file("${moduleDir}/metagenomics_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./metagenomics_analysis.config")
@@ -83,7 +83,6 @@ workflow {
         ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
 
-    // Optional custom target genome for contaminant removal
     def ch_cont_rem_target = params.cont_rem.target_genome
         ? channel.fromPath(params.cont_rem.target_genome, checkIfExists: true)
         : channel.value([])
@@ -123,10 +122,8 @@ workflow {
     PRODIGAL(MEGAHIT.out.contigs)
 
     // -------------------------------------------------------------------------
-    // 07a-07b - Parallel functional annotation branching
+    // 07-08 - Parallel functional annotation branching
     // Both PFAM_SCAN and EGGNOG_MAPPER run on the predicted genes from Prodigal.
-    // PFAM_SCAN: Pfam protein-domain annotation
-    // EGGNOG_MAPPER: EggNOG ortholog-based functional annotation
     // -------------------------------------------------------------------------
     PFAM_SCAN(PRODIGAL.out.genes)
     EGGNOG_MAPPER(PRODIGAL.out.genes)

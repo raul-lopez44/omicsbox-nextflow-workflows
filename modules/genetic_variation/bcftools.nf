@@ -1,33 +1,30 @@
 // --- FILE: modules/genetic_variation/bcftools.nf ---
-// Wraps: omicsbox variantcalling-multipackage  |  backend: LEGACY_SYNC
+// Wraps: omicsbox variantcalling-multipackage
 // Variant Calling with BCFtools: calls SNPs/indels from BAM alignments against a reference genome.
 
 process BCFTOOLS {
 
     input:
-    path bams               // BAM alignments from BWA (one or more samples, required)
-    path ref_gen            // faidx-indexed reference genome FASTA, Ensembl recommended (required)
-    path group_experiment   // Optional: tab-delimited sample->group file (channel.value([]) when unused; requires --use-groups=true)
+    path bams               // Input BAM alignments (one or more samples)
+    path ref_gen            // Reference genome FASTA, faidx-indexed (Ensembl recommended)
+    path group_experiment   // Optional: tab-delimited sample-to-group mapping (requires --use-groups=true)
 
     output:
-    // The called VCF is the key downstream product; it is NOT listed as a formal JSON output key,
-    // so its name is INFERRED with a tolerant glob (matches .vcf and .vcf.gz, excludes .tbi/.csi indexes).
-    path "${task.ext.outdir}/*.vcf{,.gz}", emit: vcf                        // Called variants VCF (dir-save.vcf.gz; consumed downstream)
-    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                // Variant_Calling_Report.box
-    // WebCharts: raw-read-depth / proportion-quality-depth / average-mapping-quality (their names carry 'depth' or 'quality',
-    // never 'chart'). This glob matches all three and excludes the report (no depth/quality) and the .vcf.gz. Ext follows chart_format.
-    path "${task.ext.outdir}/*{depth,quality}*.${params.chart_format}", emit: charts
+    path "${task.ext.outdir}/*.vcf{,.gz}", emit: vcf                        // Called variants VCF
+    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                // Variant calling report
+    path "${task.ext.outdir}/*{depth,quality}*.${params.chart_format}", emit: charts   // Read-depth and mapping-quality charts
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // Multiple BAMs -> a single comma-separated --i-input-files (OmicsBox expands it). Absolute paths enforced.
+    // 'bams' is a single path for one file, or a List when the workflow .collect()s multiple samples.
     def bams_list = bams instanceof List
         ? bams.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${bams}"
 
-    // Optional grouping file: inject ONLY when provided. Coupling (see config): needs --use-groups=true.
+    // Optional-input convention: when no grouping file is wired in, the workflow passes an empty
+    // List (channel.value([])) instead of a real path - that's the "not provided" case to skip.
     def group_flag = (!(group_experiment instanceof List) || !group_experiment.isEmpty())
         ? "--i-group-experiment=\$PWD/${group_experiment}"
         : ""

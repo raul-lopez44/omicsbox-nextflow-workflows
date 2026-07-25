@@ -1,5 +1,7 @@
 // =============================================================================
 // FILE: transcript_level_analysis.nf
+// Transcript-Level RNA-Seq Analysis Pipeline: Preprocessing -> Quantification (RSEM) -> PCA & differential expression (edgeR)
+// =============================================================================
 
 include { FASTQC as FASTQC_RAW   } from '../../modules/general_tools/fastqc.nf'
 include { TRIMMOMATIC            } from '../../modules/general_tools/trimmomatic.nf'
@@ -19,7 +21,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/transcript_level_analysis/transcript_level_analysis.config")
+        def sourceConfig = file("${moduleDir}/transcript_level_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./transcript_level_analysis.config")
@@ -87,7 +89,7 @@ workflow {
     def ch_fastqc_contaminants = params.fastqc.contaminants
         ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
-    
+
      def ch_genes_trans_map = params.rsem.gene_trans_map
         ? channel.fromPath(params.rsem.gene_trans_map, checkIfExists: true).first()
         : channel.value([])

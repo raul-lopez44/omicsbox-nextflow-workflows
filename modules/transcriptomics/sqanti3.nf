@@ -1,26 +1,29 @@
 // --- FILE: modules/transcriptomics/sqanti3.nf ---
-// Wraps: omicsbox sqanti3  |  backend: LEGACY_SYNC
-// Curation of Long-Read Transcriptomes with SQANTI3: classifies/curates isoforms against a reference.
+// Wraps: omicsbox sqanti3
+// Classifies and curates long-read transcript isoforms against a reference genome and annotation.
 
 process SQANTI3 {
 
     input:
-    path sqanti_input   // Primary input; its type and CLI flag depend on params.sqanti3.pb_or_gff (see script):
-                        //   GFF        -> --i-gff-file           (isoform annotation GTF, e.g. FLAIR's reconstruction)
-                        //   TRANSCRIPT -> --i-transcriptome-file (FASTA/Q transcript sequences; SQANTI3 maps with minimap2)
-                        //   PACBIO     -> --i-pac-bio-file       (FASTA/Q raw long reads; minimap2 + cDNA Cupcake collapse)
-    path ref_genome     // Reference genome FASTA (required) -> --i-ref-genome
-    path ref_annot      // Reference annotation GTF (required) -> --i-ref-annot
-    path short_reads    // Optional: short-read FASTQ file(s) to validate splice junctions -> --i-short-reads (channel.value([]) when unused)
-    path tss_file       // Optional: TSS annotation BED -> --i-tss-file        (enables --tss-check;        channel.value([]) when unused)
-    path polya_file     // Optional: polyA-motif TXT   -> --i-polya-file      (enables --polya-check;      channel.value([]) when unused)
-    path polya_peak     // Optional: polyA-peak BED    -> --i-poly-apeak      (enables --poly-apeak-check; channel.value([]) when unused)
-    path fl_counts      // Optional: full-length counts-> --i-fl-file         (enables --fl-check;          channel.value([]) when unused)
-    path rules_json     // Optional: custom-rules JSON -> --i-json            (REQUIRED only if --filtering=RULES_FILTER; channel.value([]) when unused)
+    path sqanti_input   // Isoform data: GFF, transcript FASTA/FASTQ, or PacBio reads (mode set by params.sqanti3.pb_or_gff)
+    path ref_genome     // Reference genome FASTA
+    path ref_annot      // Reference annotation GTF
+    path short_reads    // Optional: short-read FASTQ file(s) to validate splice junctions
+    path tss_file       // Optional: transcription start site (TSS) annotation BED
+    path polya_file     // Optional: polyA motif file
+    path polya_peak     // Optional: polyA peak BED
+    path fl_counts      // Optional: full-length read counts file
+    path rules_json     // Optional: custom filtering rules JSON
 
     output:
-    path "${task.ext.outdir}/*[Rr]esults*.box", emit: results   // SQANTI3_Results (curated transcriptome; inferred name)
-    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report     // SQANTI3_Report
+    path "${task.ext.outdir}/*[Rr]esults*.box", emit: results                                  // SQANTI3 results object
+    path "${task.ext.outdir}/*[Rr]eport*.box", emit: report                                     // SQANTI3 report
+    path "${task.ext.outdir}/*_transcriptome*.gtf", emit: transcriptome_gtf                      // Curated transcriptome GTF (rescued variant when --do-rescue=true)
+    path "${task.ext.outdir}/*_isoforms.fasta", emit: isoforms_fasta                             // Curated isoform sequences FASTA
+    path "${task.ext.outdir}/*_isoforms_aminoacids.faa", emit: isoforms_amino, optional: true    // Predicted isoform amino-acid sequences (only if --fasta-amino-file=true)
+    path "${task.ext.outdir}/*_junctions.txt*", emit: junctions                                  // Splice-junction table (compressed + plain)
+    path "${task.ext.outdir}/*_collapsed.group.txt", emit: collapsed_group, optional: true       // Collapsed-isoform grouping (PACBIO mode only)
+    path "${task.ext.outdir}/final_classification.txt*", emit: final_classification              // Isoform classification table (compressed + plain)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

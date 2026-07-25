@@ -26,10 +26,14 @@ workflow {
     // the launch directory and exits, so the user can edit it and pass it via -c.
     // -------------------------------------------------------------------------
     if (params.dump_config) {
-        def sourceConfig = file("${workflow.projectDir}/workflows/genetic_variation_analysis/genetic_variation_analysis.config")
+        // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
+        def sourceConfig = file("${moduleDir}/genetic_variation_analysis.config")
+
+        // 2. Target: the current launch directory
         def targetConfig = file("./genetic_variation_analysis.config")
 
         if (sourceConfig.exists()) {
+            // 3. Physically copy the file to the user's environment
             sourceConfig.copyTo(targetConfig)
 
             log.info "========================================================================="
@@ -46,8 +50,10 @@ workflow {
             log.error "  [ERROR] Could not find the internal template at: ${sourceConfig}"
         }
 
+        // 4. Stop Nextflow safely with exit code 0 (success)
         exit 0
     }
+
 
     // -------------------------------------------------------------------------
     // Safety checks - critical inputs
@@ -145,16 +151,15 @@ workflow {
     BEAGLE(VARIANT_FILTERING.out.filtered_vcf)
 
     // -------------------------------------------------------------------------
-    // 08 - GWAS. VCF now comes from Beagle (phased/imputed), NOT from the user.
-    // Optional kinship / covariate-matrix files are provided only when set.
+    // 08 - GWAS: association test using the phased/imputed VCF from Beagle.
     // -------------------------------------------------------------------------
     GWAS(BEAGLE.out.phased_vcf, ch_pheno, ch_kinship, ch_covariate)
 
     // -------------------------------------------------------------------------
-    // 09 - Variant annotation (parallel branch off the FILTERED variants, NOT the phased VCF).
-    // Annotation only needs the variant set + genome/GTF; phasing is irrelevant to it. Crucially, Beagle STRIPS the
-    // VCF ##contig headers (and drops unplaced scaffolds), so its phased VCF no longer matches the genome and OmicsBox
-    // rejects it ("reference genome ... not the same"). The filtered VCF keeps bcftools' ##contig headers -> passes.
+    // 09 - Variant annotation: parallel branch off the FILTERED variants, not the phased VCF.
+    // CRITICAL: Beagle strips the VCF ##contig headers (and drops unplaced scaffolds), so its
+    // phased VCF no longer matches the genome and OmicsBox rejects it. The filtered VCF keeps
+    // bcftools' ##contig headers, so annotation reads from it instead.
     // -------------------------------------------------------------------------
     VARIANT_ANNOTATION(VARIANT_FILTERING.out.filtered_vcf, ch_gff, ch_reference)
 

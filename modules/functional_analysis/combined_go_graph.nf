@@ -1,12 +1,11 @@
-// --- FILE: modules/combined_go_graph.nf ---
+// --- FILE: modules/functional_analysis/combined_go_graph.nf ---
 // Wraps: omicsbox graph-combined-make
-// Generates combined GO graph visualization
+// Generates combined GO graph visualization.
 
 process COMBINED_GO_GRAPH {
 
     input:
-    // OmicsBox EC-mapped project (.box) emitted by the upstream EC_CODE_MAPPING step.
-    path validated_project
+    path validated_project   // EC-mapped OmicsBox project (.box)
 
     output:
     path "${task.ext.outdir}/graph*.${params.chart_format}", emit: go_graphs   // Combined GO graph chart(s)

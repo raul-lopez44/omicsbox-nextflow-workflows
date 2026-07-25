@@ -1,4 +1,4 @@
-// --- FILE: modules/flye.nf ---
+// --- FILE: modules/genome_analysis/flye.nf ---
 // Wraps: omicsbox flye
 // Long-read de novo genome assembly using Flye.
 
@@ -8,7 +8,7 @@ process FLYE {
     path reads                      // Trimmed long reads (List of FASTQ/FASTA files)
 
     output:
-    path "${task.ext.outdir}/assembly-output-file.fasta", emit: assembly   // Assembled contigs FASTA (consumed downstream)
+    path "${task.ext.outdir}/assembly-output-file.fasta", emit: assembly   // Assembled contigs FASTA
     path "${task.ext.outdir}/*report*.box", emit: report                   // Flye report
     path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart  // Flye chart
     path "${task.ext.outdir}/graph-file.gfa", emit: assembly_graph, optional: true  // Assembly graph (only if --save-graph=true)
@@ -17,10 +17,7 @@ process FLYE {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // =====================================================================
-    // DYNAMIC: Library type flag injection
-    // Maps library_type parameter to OmicsBox CLI flag
-    // =====================================================================
+    // Maps the configured library type to its OmicsBox CLI input flag
     def lib_type = params.flye.library_type ?: 'pacbio_raw'
     def lib_flag = [
         'pacbio_raw' : '--i-input-sequencing-data-pacbio-raw',

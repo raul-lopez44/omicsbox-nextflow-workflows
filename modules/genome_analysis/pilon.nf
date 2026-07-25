@@ -1,4 +1,4 @@
-// --- FILE: modules/pilon.nf ---
+// --- FILE: modules/genome_analysis/pilon.nf ---
 // Wraps: omicsbox pilon
 // Polishes long-read assembly using short-read alignments.
 
@@ -6,10 +6,10 @@ process PILON {
 
     input:
     path assembly               // Unpolished long-read assembly (FASTA)
-    path bam_file               // Sorted BAM file from BWA alignment
+    path bam_file               // Sorted BAM alignment file
 
     output:
-    path "${task.ext.outdir}/output-fasta.fasta", emit: polished_assembly                       // Polished assembly FASTA (consumed downstream)
+    path "${task.ext.outdir}/output-fasta.fasta", emit: polished_assembly                       // Polished assembly FASTA
     path "${task.ext.outdir}/output-changes.txt", emit: changes, optional: true                 // Applied changes list (only if --save-changes=true)
     path "${task.ext.outdir}/*report*.box", emit: report                                        // Pilon report
     path "${task.ext.outdir}/fix-type-distribution.${params.chart_format}", emit: fix_distribution  // Fix-type distribution chart

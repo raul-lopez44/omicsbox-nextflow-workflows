@@ -1,5 +1,7 @@
 // =============================================================================
 // FILE: de_novo_transcriptome_characterization.nf
+// De Novo Transcriptome Characterization Pipeline: Preprocessing -> Assembly (Trinity) -> Clustering (CD-HIT) -> Completeness (BUSCO) -> ORF Prediction (TransDecoder) -> Functional Annotation (DIAMOND + InterProScan + EggNOG)
+// =============================================================================
 
 include { FASTQC as FASTQC_RAW    } from '../../modules/general_tools/fastqc.nf'
 include { FASTQC as FASTQC_POST   } from '../../modules/general_tools/fastqc.nf'
@@ -22,17 +24,21 @@ workflow {
 
     main:
 
+    // -------------------------------------------------------------------------
+    // Config template export: --dump_config copies this workflow's .config to
+    // the launch directory and exits, so the user can edit it and pass it via -c.
+    // -------------------------------------------------------------------------
     if (params.dump_config) {
-        // 1. Define the source path (inside the repo, using workflow.projectDir)
-        def sourceConfig = file("${workflow.projectDir}/workflows/de_novo_transcriptome_characterization/de_novo_transcriptome_characterization.config")
-        
-        // 2. Define the target path (the current directory where the user is executing the command)
+        // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
+        def sourceConfig = file("${moduleDir}/de_novo_transcriptome_characterization.config")
+
+        // 2. Target: the current launch directory
         def targetConfig = file("./de_novo_transcriptome_characterization.config")
 
         if (sourceConfig.exists()) {
             // 3. Physically copy the file to the user's environment
             sourceConfig.copyTo(targetConfig)
-            
+
             log.info "========================================================================="
             log.info "  [OK] Configuration template successfully exported!"
             log.info "========================================================================="
@@ -46,10 +52,11 @@ workflow {
         } else {
             log.error "  [ERROR] Could not find the internal template at: ${sourceConfig}"
         }
-        
+
         // 4. Stop Nextflow safely with exit code 0 (success)
         exit 0
     }
+
 
     // -------------------------------------------------------------------------
     // Safety checks
@@ -109,7 +116,7 @@ workflow {
     CDHIT(TRINITY.out.assembly)
 
     // -------------------------------------------------------------------------
-    // 06 - Assembly completeness assessment  
+    // 06 - Assembly completeness assessment
     // -------------------------------------------------------------------------
     BUSCO(CDHIT.out.clustered_fasta)
 
@@ -127,7 +134,7 @@ workflow {
     LOAD_FASTA(TRANSDECODER.out.predicted_proteins)
 
     // -------------------------------------------------------------------------
-    // 09-11 - Functional annotation 
+    // 09-11 - Functional annotation
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(LOAD_FASTA.out.fasta_project)
     BLAST_CHARTS(DIAMOND_BLAST.out.blasted_project)

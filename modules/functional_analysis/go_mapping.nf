@@ -1,15 +1,14 @@
-// --- FILE: modules/go_mapping.nf ---
+// --- FILE: modules/functional_analysis/go_mapping.nf ---
 // Wraps: omicsbox mapping-cloud
-// Maps sequences to Gene Ontology terms
+// Maps sequences to Gene Ontology terms.
 
 process GO_MAPPING {
 
     input:
-    // OmicsBox BLAST Project (.box) emitted by the upstream DIAMOND_BLAST step.
-    path blasted_project
+    path blasted_project   // BLAST-annotated OmicsBox project (.box)
 
     output:
-    path "${task.ext.outdir}/project.box", emit: mapped_project   // GO-mapped project (consumed downstream)
+    path "${task.ext.outdir}/project.box", emit: mapped_project   // GO-mapped project
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

@@ -1,6 +1,6 @@
-// --- FILE: modules/load_fasta.nf ---
+// --- FILE: modules/functional_analysis/load_fasta.nf ---
 // Wraps: omicsbox load-sequences
-// Loads FASTA sequences into an OmicsBox project for downstream annotation.
+// Loads FASTA sequences into an OmicsBox project.
 
 process LOAD_FASTA {
 
@@ -8,7 +8,7 @@ process LOAD_FASTA {
     path fasta_file     // Input FASTA file (assembled transcripts or proteins)
 
     output:
-    path "${task.ext.outdir}/project.box", emit: fasta_project   // Loaded FASTA OmicsBox project (consumed downstream)
+    path "${task.ext.outdir}/project.box", emit: fasta_project   // Loaded FASTA OmicsBox project
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()

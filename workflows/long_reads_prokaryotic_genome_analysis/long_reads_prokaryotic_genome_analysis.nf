@@ -28,7 +28,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/long_reads_prokaryotic_genome_analysis/long_reads_prokaryotic_genome_analysis.config")
+        def sourceConfig = file("${moduleDir}/long_reads_prokaryotic_genome_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./long_reads_prokaryotic_genome_analysis.config")
@@ -134,40 +134,33 @@ workflow {
     // -------------------------------------------------------------------------
     // 07 - Prokaryotic gene finding with GLIMMER
     // Takes the polished assembly from Pilon.
-    // Optional ICM model for pre-trained gene predictions.
     // -------------------------------------------------------------------------
     GLIMMER(PILON.out.polished_assembly, ch_glimmer_icm)
 
     // -------------------------------------------------------------------------
-    // 08a-08b - Parallel functional annotation branching
+    // 08-09 - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on GLIMMER project output.
-    // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
-    // INTERPROSCAN: Domain/motif-based annotation via InterPro
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(GLIMMER.out.project)
     INTERPROSCAN(GLIMMER.out.project)
 
     // -------------------------------------------------------------------------
-    // 09 - Combine Diamond and InterProScan annotations
-    // Merges both annotation projects into a unified project.
+    // 10 - Combine Diamond and InterProScan annotations
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 10 - Gene Ontology mapping
-    // Maps functional terms to Gene Ontology.
+    // 11 - Gene Ontology mapping
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 11 - BLAST2GO functional annotation
-    // Applies BLAST2GO algorithm for comprehensive functional annotation.
+    // 12 - BLAST2GO functional annotation
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 12 - Final merge: InterProScan + GO-annotated genes
-    // Converges all annotation branches into a final unified project.
+    // 13 - Final merge: InterProScan + GO-annotated genes
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)
 

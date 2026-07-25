@@ -1,26 +1,26 @@
-// --- FILE: modules/rsem.nf ---
+// --- FILE: modules/transcriptomics/rsem.nf ---
 // Wraps: omicsbox rsem
-// Quantifies read expression against Trinity assembly.
+// Quantifies transcript- and gene-level expression from RNA-Seq reads against an assembled transcriptome.
 
 process RSEM {
 
     input:
-    path reads
-    path assembly           
-    path gene_trans_map     
+    path reads             // Input FASTQ reads (single-end or paired-end)
+    path assembly          // Trinity-format assembly FASTA
+    path gene_trans_map    // Optional: gene-to-transcript map
 
     output:
-    path "${task.ext.outdir}/*isoforms*.box", emit: count_table_transcripts  // Isoform (transcript-level) quantification (consumed downstream)
-    path "${task.ext.outdir}/*genes*.box", emit: count_table_genes, optional: true  // Gene-level quantification (ONLY produced when --gene-level=true)
+    path "${task.ext.outdir}/*isoforms*.box", emit: count_table_transcripts  // Isoform (transcript-level) quantification
+    path "${task.ext.outdir}/*genes*.box", emit: count_table_genes, optional: true  // Gene-level quantification (only if --gene-level=true)
     path "${task.ext.outdir}/*report*.box", emit: report                     // RSEM report
     path "${task.ext.outdir}/*.bam", emit: bam, optional: true               // Per-sample BAM, reads aligned to transcripts (only if --bam-output=true)
 
     script:
-    def outdir        = task.ext.outdir ?: task.process.toLowerCase()
-    def args          = task.ext.args   ?: ''
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
+    def args = task.ext.args ?: ''
     def is_single_end = params.input_single_end ? true : false
 
-    // Single-End vs Paired-End input flag
+    // 'reads' is a single path for one file, or a List when the workflow .collect()s multiple samples.
     def reads_list = reads instanceof List
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
@@ -28,12 +28,16 @@ process RSEM {
         ? "--i-fastq-files-single-end=${reads_list}"
         : "--i-fastq-files-paired-end=${reads_list}"
 
+    // Only paired-end needs these: they tell OmicsBox how to pair up R1/R2 files by name
+    // (e.g. '_1'/'_2') when multiple sample pairs are collected into the same run.
     def up_pat   = params.getOrDefault('upstream_pattern', '_1')
     def down_pat = params.getOrDefault('downstream_pattern', '_2')
     def pattern_flags = (!is_single_end && up_pat && down_pat)
         ? "--upstream-pattern-counts=${up_pat} --downstream-pattern-counts=${down_pat}"
         : ""
 
+    // Optional-input convention: an unwired gene-to-transcript map arrives as channel.value([])
+    // (empty List) instead of a real path - that's the "not provided" case to skip.
     def genes_trans_map_flag = (!(gene_trans_map instanceof List) || !gene_trans_map.isEmpty())
         ? "--i-transcript-to-gene-file=\$PWD/${gene_trans_map}"
         : ""

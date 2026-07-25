@@ -23,7 +23,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/prokaryotic_genome_analysis/prokaryotic_genome_analysis.config")
+        def sourceConfig = file("${moduleDir}/prokaryotic_genome_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./prokaryotic_genome_analysis.config")
@@ -84,12 +84,11 @@ workflow {
 
     def ch_reference = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
-    // Glimmer ICM model is optional - if null, Glimmer will create a new model dynamically
+    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_icm_model = params.glimmer.icm_model
         ? channel.fromPath(params.glimmer.icm_model, checkIfExists: true)
         : channel.value([])
 
-    // Optional file inputs - channel.value([]) acts as a safe empty placeholder
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -102,7 +101,6 @@ workflow {
         ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
 
-    // SPADES optional inputs - dynamic flag injection based on channel presence
     def ch_spades_opt_mp_fr = params.spades.opt_mp_fr
         ? channel.fromPath(params.spades.opt_mp_fr, checkIfExists: true).collect()
         : channel.value([])
@@ -152,7 +150,7 @@ workflow {
 
     // -------------------------------------------------------------------------
     // 04 - De novo genome assembly
-    // SPADES main input is TRIMMED reads from Trimmomatic, which may be biologically 
+    // SPADES main input is TRIMMED reads from Trimmomatic, which may be biologically
     // single-end or paired-end (FR/RF/FF/HQ-MP/NxMate orientation set via config).
     // Optional channels (8 total) bypass Trimmomatic and are fed directly to SPAdes via
     // dynamic flag injection (--use-mp-optional-data and --use-data-for-hybrid-assembly
@@ -171,16 +169,14 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 05a-05b - Parallel assembly evaluation
+    // 05-06 - Parallel assembly evaluation
     // Both QUAST and BUSCO take the assembly FASTA from SPADES.
-    // QUAST: Compares against reference genome for structural validation
-    // BUSCO: Assesses completeness using universal single-copy orthologs
     // -------------------------------------------------------------------------
     QUAST(SPADES.out.scaffolds, ch_reference)
     BUSCO(SPADES.out.scaffolds)
 
     // -------------------------------------------------------------------------
-    // 06 - Prokaryotic gene finding
+    // 07 - Prokaryotic gene finding
     // CRITICAL: GLIMMER requires ONE input:
     //   - Input 1: Assembly FASTA from SPADES
     // OPTIONAL: Provide an existing ICM model for species-specific prediction.
@@ -189,8 +185,7 @@ workflow {
     GLIMMER(SPADES.out.scaffolds, ch_icm_model)
 
     // -------------------------------------------------------------------------
-    // 07 - Functional annotation of predicted genes
-    // DIAMOND performs similarity search against protein databases using predicted ORFs.
+    // 08 - Functional annotation of predicted genes
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(GLIMMER.out.project)
 

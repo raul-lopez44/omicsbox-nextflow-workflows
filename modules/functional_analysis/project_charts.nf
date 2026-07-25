@@ -1,12 +1,11 @@
-// --- FILE: modules/project_charts.nf ---
+// --- FILE: modules/functional_analysis/project_charts.nf ---
 // Wraps: omicsbox statistics-project
-// Generates overall project statistics charts
+// Generates overall project statistics charts.
 
 process PROJECT_CHARTS {
 
     input:
-    // OmicsBox EC-mapped project (.box) emitted by the upstream EC_CODE_MAPPING step.
-    path validated_project
+    path validated_project   // Validated OmicsBox project (.box)
 
     output:
     path "${task.ext.outdir}/*.${params.chart_format}", emit: project_charts   // Final annotation charts (extension follows chart_format)

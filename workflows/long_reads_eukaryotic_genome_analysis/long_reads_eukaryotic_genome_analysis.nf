@@ -29,7 +29,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/long_reads_eukaryotic_genome_analysis/long_reads_eukaryotic_genome_analysis.config")
+        def sourceConfig = file("${moduleDir}/long_reads_eukaryotic_genome_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./long_reads_eukaryotic_genome_analysis.config")
@@ -122,7 +122,6 @@ workflow {
         ? channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
         : channel.value([])
 
-    // Optional AUGUSTUS evidence hints
     def ch_aug_est = params.augustus.est_hints
         ? channel.fromPath(params.augustus.est_hints, checkIfExists: true).collect()
         : channel.value([])
@@ -181,14 +180,12 @@ workflow {
     // -------------------------------------------------------------------------
     // 07 - Repeat masking for eukaryotic genome
     // Takes the polished assembly from Pilon.
-    // Produces soft-masked FASTA with repeats in lowercase.
     // -------------------------------------------------------------------------
     REPEATMASKER(PILON.out.polished_assembly, ch_repeat_db)
 
     // -------------------------------------------------------------------------
     // 08 - Eukaryotic gene finding with AUGUSTUS
     // Takes soft-masked FASTA from RepeatMasker.
-    // Optional evidence hints improve prediction accuracy.
     // -------------------------------------------------------------------------
     AUGUSTUS(
         REPEATMASKER.out.masked_fasta,
@@ -200,37 +197,31 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 09a-09b - Parallel functional annotation branching
+    // 09-10 - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
-    // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
-    // INTERPROSCAN: Domain/motif-based annotation via InterPro
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(AUGUSTUS.out.protein_project)
     INTERPROSCAN(AUGUSTUS.out.protein_project)
 
     // -------------------------------------------------------------------------
-    // 10 - Combine Diamond and InterProScan annotations
-    // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
-    // InterProScan project (with domain/motif annotations) and merges them
-    // into a single unified project.
+    // 11 - Combine Diamond and InterProScan annotations
+    // CRITICAL: Takes BOTH the Diamond and InterProScan projects and merges
+    // them into a single unified project.
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 11 - Gene Ontology mapping
-    // Takes the combined/unified project and maps functional terms to Gene Ontology.
+    // 12 - Gene Ontology mapping
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 12 - BLAST2GO functional annotation
-    // Applies BLAST2GO algorithm for comprehensive functional annotation.
+    // 13 - BLAST2GO functional annotation
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 13 - Final merge: InterProScan + GO-annotated genes
-    // Converges all annotation branches into a final unified project.
+    // 14 - Final merge: InterProScan + GO-annotated genes
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)
 

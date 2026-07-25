@@ -29,7 +29,7 @@ workflow {
     // -------------------------------------------------------------------------
     if (params.dump_config) {
         // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
-        def sourceConfig = file("${workflow.projectDir}/workflows/eukaryotic_genome_analysis/eukaryotic_genome_analysis.config")
+        def sourceConfig = file("${moduleDir}/eukaryotic_genome_analysis.config")
 
         // 2. Target: the current launch directory
         def targetConfig = file("./eukaryotic_genome_analysis.config")
@@ -67,7 +67,7 @@ workflow {
         exit 1, "ERROR: Provide either --input_paired_end or --input_single_end, not both."
     }
     // -------------------------------------------------------------------------
-    // STRICT VALIDATION: RepeatMasker File Logic 
+    // STRICT VALIDATION: RepeatMasker File Logic
     // -------------------------------------------------------------------------
     def rm_engine = params.repeatmasker.search_engine
     def rm_db_type = params.repeatmasker.database_type
@@ -80,7 +80,7 @@ workflow {
     }
 
     // -------------------------------------------------------------------------
-    // STRICT VALIDATION: Augustus Gene Finding Mode 
+    // STRICT VALIDATION: Augustus Gene Finding Mode
     // -------------------------------------------------------------------------
     if (params.augustus.gene_finding_mode == 'ee') {
         def has_any_hint = params.augustus.est_hints || params.augustus.protein_hints || params.augustus.isoseq_hints || params.augustus.rna_seq_se_hints || params.augustus.rna_seq_pe_hints
@@ -101,10 +101,9 @@ workflow {
     def ch_repeat_db = params.repeatmasker.database_file
         ? channel.fromPath(params.repeatmasker.database_file, checkIfExists: true)
         : channel.value([])
-    
+
     def ch_quast_ref = channel.fromPath(params.quast.reference_genome, checkIfExists: true).first()
 
-    // Optional file inputs for Trimmomatic
     def ch_trimmomatic_adapters = params.trimmomatic.adapters
         ? channel.fromPath(params.trimmomatic.adapters, checkIfExists: true)
         : channel.value([])
@@ -117,7 +116,6 @@ workflow {
         ? channel.fromPath(params.fastqc.contaminants, checkIfExists: true)
         : channel.value([])
 
-    // Optional ABYSS auxiliary data
     def ch_abyss_linked = params.abyss.linked_reads
         ? channel.fromPath(params.abyss.linked_reads, checkIfExists: true).collect()
         : channel.value([])
@@ -134,7 +132,6 @@ workflow {
         ? channel.fromPath(params.abyss.long_sequences, checkIfExists: true).collect()
         : channel.value([])
 
-    // Optional AUGUSTUS evidence hints
     def ch_aug_est = params.augustus.est_hints
         ? channel.fromPath(params.augustus.est_hints, checkIfExists: true).collect()
         : channel.value([])
@@ -173,7 +170,6 @@ workflow {
     // -------------------------------------------------------------------------
     // 04 - De novo eukaryotic genome assembly using ABySS
     // CRITICAL: ABySS takes trimmed reads from Trimmomatic.
-    // Optional auxiliary data (linked reads, mate-pairs, long sequences) can enhance assembly.
     // -------------------------------------------------------------------------
     ABYSS(
         TRIMMOMATIC.out.trimmed_reads,
@@ -184,26 +180,21 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 05a-05b - Parallel assembly evaluation
+    // 05-06 - Parallel assembly evaluation
     // Both QUAST and BUSCO take the scaffolds FASTA from ABySS.
-    // QUAST: Compares against reference genome (optional) for structural validation
-    // BUSCO: Assesses completeness using universal single-copy orthologs
     // -------------------------------------------------------------------------
     QUAST(ABYSS.out.scaffolds, ch_quast_ref)
     BUSCO(ABYSS.out.scaffolds)
 
     // -------------------------------------------------------------------------
-    // 06 - Repeat masking for eukaryotic genome
+    // 07 - Repeat masking for eukaryotic genome
     // CRITICAL: RepeatMasker takes ABySS assembly scaffolds.
-    // Produces soft-masked FASTA with repeats in lowercase.
     // -------------------------------------------------------------------------
     REPEATMASKER(ABYSS.out.scaffolds, ch_repeat_db)
 
     // -------------------------------------------------------------------------
-    // 07 - Eukaryotic gene finding with AUGUSTUS
+    // 08 - Eukaryotic gene finding with AUGUSTUS
     // CRITICAL: AUGUSTUS takes soft-masked FASTA from RepeatMasker.
-    // Optional evidence hints (EST, protein, RNA-Seq) improve prediction accuracy.
-    // Outputs OmicsBox project with predicted genes.
     // -------------------------------------------------------------------------
     AUGUSTUS(
         REPEATMASKER.out.masked_fasta,
@@ -215,37 +206,31 @@ workflow {
     )
 
     // -------------------------------------------------------------------------
-    // 08a-08b - Parallel functional annotation branching
+    // 09-10 - Parallel functional annotation branching
     // Both DIAMOND_BLAST and INTERPROSCAN run on Augustus project output.
-    // DIAMOND_BLAST: Similarity-based functional annotation via sequence comparison
-    // INTERPROSCAN: Domain/motif-based annotation via InterPro
     // -------------------------------------------------------------------------
     DIAMOND_BLAST(AUGUSTUS.out.protein_project)
     INTERPROSCAN(AUGUSTUS.out.protein_project)
 
     // -------------------------------------------------------------------------
-    // 09 - Combine Diamond and InterProScan annotations
-    // CRITICAL: Takes BOTH Diamond project (with BLAST results) and
-    // InterProScan project (with domain/motif annotations) and merges them
-    // into a single unified project.
+    // 11 - Combine Diamond and InterProScan annotations
+    // CRITICAL: Takes BOTH the Diamond and InterProScan projects and merges
+    // them into a single unified project.
     // -------------------------------------------------------------------------
     COMBINE_PROJECTS(DIAMOND_BLAST.out.blasted_project, INTERPROSCAN.out.ips_project)
 
     // -------------------------------------------------------------------------
-    // 10 - Gene Ontology mapping
-    // Takes the combined/unified project and maps functional terms to Gene Ontology.
+    // 12 - Gene Ontology mapping
     // -------------------------------------------------------------------------
     GO_MAPPING(COMBINE_PROJECTS.out.combined_project)
 
     // -------------------------------------------------------------------------
-    // 11 - BLAST2GO functional annotation
-    // Applies BLAST2GO algorithm for comprehensive functional annotation.
+    // 13 - BLAST2GO functional annotation
     // -------------------------------------------------------------------------
     GO_ANNOTATION(GO_MAPPING.out.mapped_project)
 
     // -------------------------------------------------------------------------
-    // 12 - Final merge: InterProScan + GO-annotated genes
-    // Converges all annotation branches into a final unified project.
+    // 14 - Final merge: InterProScan + GO-annotated genes
     // -------------------------------------------------------------------------
     MERGE_IPS_GOS_TO_ANNOTATION(GO_ANNOTATION.out.annotated_project)
 

@@ -1,12 +1,11 @@
-// --- FILE: modules/ips_charts.nf ---
+// --- FILE: modules/functional_analysis/ips_charts.nf ---
 // Wraps: omicsbox statistics-interpro
-// Generates InterProScan domain distribution charts
+// Generates InterProScan domain distribution charts.
 
 process IPS_CHARTS {
 
     input:
-    // OmicsBox IPS Project (.box) emitted by the upstream INTERPROSCAN step.
-    path ips_project
+    path ips_project   // OmicsBox IPS Project (.box)
 
     output:
     path "${task.ext.outdir}/interproscan-families-distribution.${params.chart_format}", emit: families_chart  // InterPro families distribution chart

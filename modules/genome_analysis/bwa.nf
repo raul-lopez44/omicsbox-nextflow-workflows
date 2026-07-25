@@ -1,15 +1,15 @@
-// --- FILE: modules/bwa.nf ---
+// --- FILE: modules/genome_analysis/bwa.nf ---
 // Wraps: omicsbox bwa
-// Aligns short reads to long-read assembly reference for hybrid polishing.
+// Aligns short reads to a genome assembly, producing coordinate-sorted BAM alignments.
 
 process BWA {
 
     input:
-    path reference              // Unpolished long-read assembly (FASTA from FLYE)
+    path reference              // Genome assembly FASTA file to align against
     path reads                  // Short reads (SE or PE, List of FASTQ files)
 
     output:
-    path "${task.ext.outdir}/*.bam", emit: sorted_bam                              // Coordinate-sorted BAM (consumed downstream)
+    path "${task.ext.outdir}/*.bam", emit: sorted_bam                              // Coordinate-sorted BAM alignment file
     path "${task.ext.outdir}/*report*.box", emit: report                          // BWA report
     path "${task.ext.outdir}/*chart_abs*.${params.chart_format}", emit: chart_abs  // Absolute-value chart
     path "${task.ext.outdir}/*chart_rel*.${params.chart_format}", emit: chart_rel  // Relative-value chart
@@ -19,10 +19,6 @@ process BWA {
     def args = task.ext.args ?: ''
     def is_single_end = params.input_single_end ? true : false
 
-    // =====================================================================
-    // DYNAMIC: Single-End vs Paired-End input flag
-    // Determines which CLI parameter to use based on input type
-    // =====================================================================
     def reads_list = reads instanceof List
         ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
@@ -31,9 +27,7 @@ process BWA {
         ? "--i-input-sequencing-data-single-end=${reads_list}"
         : "--i-input-sequencing-data-paired-end=${reads_list}"
 
-    // =====================================================================
-    // DYNAMIC: Paired-end pattern flags (only if paired-end input)
-    // =====================================================================
+    // Paired-end pattern flags tell OmicsBox how to pair up R1/R2 files by name
     def pattern_flags = ""
     if (!is_single_end) {
         def up_pat = params.getOrDefault('upstream_pattern', '_1')

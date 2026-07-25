@@ -5,10 +5,10 @@
 process PRODIGAL {
 
     input:
-    path contigs   // Assembled metagenome contigs FASTA (from MEGAHIT)
+    path contigs   // Assembled metagenome contigs FASTA
 
     output:
-    path "${task.ext.outdir}/faa.fasta", emit: proteins    // Predicted protein sequences (consumed downstream)
+    path "${task.ext.outdir}/faa.fasta", emit: proteins    // Predicted protein sequences
     path "${task.ext.outdir}/fna.fasta", emit: genes       // Predicted gene (nucleotide) sequences
     path "${task.ext.outdir}/gff.gff", emit: gff           // Gene coordinates (GFF)
     path "${task.ext.outdir}/*report*.box", emit: report   // Prodigal report
@@ -19,7 +19,6 @@ process PRODIGAL {
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // single input FASTA, absolute path enforced.
     """
     mkdir -p ${outdir}
     omicsbox prodigal \\

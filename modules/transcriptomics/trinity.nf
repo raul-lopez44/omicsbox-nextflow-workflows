@@ -1,33 +1,35 @@
-// --- FILE: modules/trinity.nf ---
+// --- FILE: modules/transcriptomics/trinity.nf ---
 // Wraps: omicsbox trinity
-// De-novo RNA-Seq assembly. 
+// De-novo RNA-Seq assembly.
 
 process TRINITY {
 
     input:
-    path reads
+    path reads   // Input FASTQ reads (single-end or paired-end)
 
     output:
-    path "${task.ext.outdir}/transcripts.fasta", emit: assembly                                   // Assembled transcripts FASTA (consumed downstream)
-    path "${task.ext.outdir}/save-map-file.txt", emit: gene_trans_map                             // Gene-to-transcript map (consumed downstream)
+    path "${task.ext.outdir}/transcripts.fasta", emit: assembly                                   // Assembled transcripts FASTA
+    path "${task.ext.outdir}/save-map-file.txt", emit: gene_trans_map                             // Gene-to-transcript map
     path "${task.ext.outdir}/*report*.box", emit: report                                          // Trinity report
     path "${task.ext.outdir}/supertranscripts.fasta", emit: supertranscripts, optional: true      // SuperTranscripts FASTA
     path "${task.ext.outdir}/read_content.box", emit: read_content, optional: true                // Read-content object
 
     script:
-    def outdir        = task.ext.outdir ?: task.process.toLowerCase()
-    def args          = task.ext.args   ?: ''
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
+    def args = task.ext.args ?: ''
     def is_single_end = params.input_single_end ? true : false
 
-    def reads_list = reads instanceof List 
-        ? reads.collect { file -> "\$PWD/${file}" }.join(',') 
+    // 'reads' is a single path for one file, or a List when the workflow .collect()s multiple samples.
+    def reads_list = reads instanceof List
+        ? reads.collect { file -> "\$PWD/${file}" }.join(',')
         : "\$PWD/${reads}"
-        
+
     def input_flag = is_single_end ? "--sequencing=Single" : "--sequencing=Paired"
 
     def pattern_flags = ""
 
-    // Check if the input is Paired-End 
+    // Only paired-end needs these: they tell OmicsBox how to pair up R1/R2 files by name
+    // (e.g. '_1'/'_2') when multiple sample pairs are collected into the same run.
     if (!is_single_end) {
         def up_pat = params.getOrDefault('upstream_pattern', '_1')
         def down_pat = params.getOrDefault('downstream_pattern', '_2')

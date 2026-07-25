@@ -5,10 +5,10 @@
 process MEGAHIT {
 
     input:
-    path reads                  // Contaminant-free reads (single-end or paired-end, List of FASTQ files)
+    path reads                  // Input reads (single-end or paired-end, List of FASTQ files)
 
     output:
-    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs                 // Assembled contigs FASTA (consumed downstream)
+    path "${task.ext.outdir}/*contigs*.fasta", emit: contigs                 // Assembled contigs FASTA
     path "${task.ext.outdir}/*report*.box", emit: report                     // MEGAHIT report
     path "${task.ext.outdir}/nx-plot.${params.chart_format}", emit: nx_plot  // Nx plot chart
 
@@ -17,21 +17,16 @@ process MEGAHIT {
     def args = task.ext.args ?: ''
     def is_single_end = params.input_single_end ? true : false
 
-    // =====================================================================
-    // DYNAMIC: input files + sequencing type
-    // OmicsBox megahit expects ONE --i-read-files flag PER file (repeated),
-    // plus --sequencing single|paired.
-    // =====================================================================
+    // OmicsBox megahit expects one --i-read-files flag per file, repeated (not comma-joined).
     def input_flag = reads instanceof List
         ? reads.collect { file -> "--i-read-files=\$PWD/${file}" }.join(' ')
         : "--i-read-files=\$PWD/${reads}"
 
     def seq_flag = is_single_end ? "--sequencing=single" : "--sequencing=paired"
 
-    // =====================================================================
-    // DYNAMIC: Paired-end pattern flags (only if paired-end input)
-    // =====================================================================
     def pattern_flags = ""
+    // Only paired-end needs these: they tell OmicsBox how to pair up R1/R2 files by name
+    // (e.g. '_1'/'_2') when multiple sample pairs are collected into the same run.
     if (!is_single_end) {
         def up_pat = params.getOrDefault('upstream_pattern', '_1')
         def down_pat = params.getOrDefault('downstream_pattern', '_2')

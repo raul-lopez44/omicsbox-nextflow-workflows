@@ -1,4 +1,4 @@
-// --- FILE: modules/longqc.nf ---
+// --- FILE: modules/general_tools/longqc.nf ---
 // Wraps: omicsbox longqc
 // Quality control and trimming for long-read sequencing data.
 

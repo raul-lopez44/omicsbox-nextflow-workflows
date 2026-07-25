@@ -1,12 +1,11 @@
-// --- FILE: modules/blast_charts.nf ---
+// --- FILE: modules/functional_analysis/blast_charts.nf ---
 // Wraps: omicsbox statistics-blast
-// Generates visualization charts for DIAMOND BLAST results
+// Generates visualization charts for BLAST hit statistics.
 
 process BLAST_CHARTS {
 
     input:
-    // OmicsBox project (.box) with BLAST hits emitted by the upstream DIAMOND_BLAST step.
-    path blasted_project
+    path blasted_project   // OmicsBox project (.box) with BLAST hits
 
     output:
     path "${task.ext.outdir}/e-value-distribution.${params.chart_format}", emit: evalue_chart          // E-value distribution chart

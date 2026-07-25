@@ -19,10 +19,14 @@ workflow {
     // the launch directory and exits, so the user can edit it and pass it via -c.
     // -------------------------------------------------------------------------
     if (params.dump_config) {
-        def sourceConfig = file("${workflow.projectDir}/workflows/long_reads_transcriptome_analysis/long_reads_transcriptome_analysis.config")
+        // 1. Source: this workflow's config template (sibling of the .nf; projectDir = workflow dir under -main-script)
+        def sourceConfig = file("${moduleDir}/long_reads_transcriptome_analysis.config")
+
+        // 2. Target: the current launch directory
         def targetConfig = file("./long_reads_transcriptome_analysis.config")
 
         if (sourceConfig.exists()) {
+            // 3. Physically copy the file to the user's environment
             sourceConfig.copyTo(targetConfig)
 
             log.info "========================================================================="
@@ -39,8 +43,10 @@ workflow {
             log.error "  [ERROR] Could not find the internal template at: ${sourceConfig}"
         }
 
+        // 4. Stop Nextflow safely with exit code 0 (success)
         exit 0
     }
+
 
     // -------------------------------------------------------------------------
     // Safety checks - critical inputs

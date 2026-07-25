@@ -1,4 +1,4 @@
-// --- FILE: modules/eggnog_mapper.nf ---
+// --- FILE: modules/metagenomics/eggnog_mapper.nf ---
 // Wraps: omicsbox eggnog-mapper
 // Functional annotation via EggNOG ortholog mapping.
 

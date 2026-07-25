@@ -1,33 +1,26 @@
 // --- FILE: modules/genetic_variation/gwas.nf ---
-// Wraps: omicsbox gwas  |  backend: LEGACY_SYNC
+// Wraps: omicsbox gwas
 // Genome-Wide Association Study (GWAS): tests association between genotypes (VCF) and phenotypic traits.
 
 process GWAS {
 
     input:
-    path vcf                // Input VCF with the SNPs to study (required)
-    path pheno              // Phenotype/traits table: first column = sample names matching the VCF, traits in following columns, header required (required)
-    path kinship            // Optional: precomputed kinship matrix (channel.value([]) when unused; requires --use-kinship=true)
-    path covariate_matrix   // Optional: covariate-matrix metadata (channel.value([]) when unused; requires --use-covariate-matrix=true)
+    path vcf                // Input VCF with SNPs to test for association
+    path pheno              // Phenotype/traits table (sample names in first column, header required)
+    path kinship            // Optional: precomputed kinship matrix (requires --use-kinship=true)
+    path covariate_matrix   // Optional: covariate matrix metadata (requires --use-covariate-matrix=true)
 
     output:
-    // Both outputs are mandatory (JSON: optional=false) and are OmicsBox objects (.box).
-    // Names are INFERRED (real output names unknown) using simple, tolerant globs.
-    path "${task.ext.outdir}/*results*.box", emit: gwas_results   // GWAS results object (gwas_results.box)
-    path "${task.ext.outdir}/*report*.box", emit: gwas_report     // GWAS summary report (gwas_report.box)
-    // Auxiliary: corrected/normalized phenotype table written under output/ (only when --normalize=true) -> optional.
-    path "${task.ext.outdir}/output/*corrected_phenotype*", emit: corrected_phenotype, optional: true
+    path "${task.ext.outdir}/*results*.box", emit: gwas_results   // GWAS association results
+    path "${task.ext.outdir}/*report*.box", emit: gwas_report     // GWAS summary report
+    path "${task.ext.outdir}/output/*corrected_phenotype*", emit: corrected_phenotype, optional: true   // Normalized phenotype table (when --normalize=true)
 
     script:
     def outdir = task.ext.outdir ?: task.process.toLowerCase()
     def args = task.ext.args ?: ''
 
-    // ---------------------------------------------------------------------
-    // DYNAMIC: optional file inputs. Inject the flag ONLY when a file is
-    // actually provided; an unused optional arrives as an empty list ([]).
-    // Coupling (documented in the config): --i-kinship needs --use-kinship=true,
-    // and --i-covariate-matrix needs --use-covariate-matrix=true.
-    // ---------------------------------------------------------------------
+    // Optional-input convention: when kinship/covariate files aren't wired in, the workflow passes
+    // an empty List (channel.value([])) instead of a real path - that's the "not provided" case to skip.
     def kinship_flag = (!(kinship instanceof List) || !kinship.isEmpty())
         ? "--i-kinship=\$PWD/${kinship}"
         : ""

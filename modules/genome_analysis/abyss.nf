@@ -1,4 +1,4 @@
-// --- FILE: modules/abyss.nf ---
+// --- FILE: modules/genome_analysis/abyss.nf ---
 // Wraps: omicsbox abyss
 // DNA-Seq de novo genome assembly for eukaryotic genomes using ABySS assembler.
 
@@ -12,7 +12,7 @@ process ABYSS {
     path opt_long_seqs       // Optional: Long sequence reads
 
     output:
-    path "${task.ext.outdir}/scaffolds-file.fasta", emit: scaffolds          // Scaffolds FASTA (consumed downstream)
+    path "${task.ext.outdir}/scaffolds-file.fasta", emit: scaffolds          // Scaffolds FASTA
     path "${task.ext.outdir}/contigs-file.fasta", emit: contigs              // Contigs FASTA
     path "${task.ext.outdir}/unitigs-file.fasta", emit: unitigs              // Unitigs FASTA
     path "${task.ext.outdir}/long-scaffolds-file.fasta", emit: long_scaffolds, optional: true  // Long scaffolds FASTA (only if long sequence libraries are provided)
@@ -22,8 +22,8 @@ process ABYSS {
     path "${task.ext.outdir}/*chart*.${params.chart_format}", emit: chart    // ABySS chart
 
     script:
-    def outdir        = task.ext.outdir ?: task.process.toLowerCase()
-    def args          = task.ext.args   ?: ''
+    def outdir = task.ext.outdir ?: task.process.toLowerCase()
+    def args = task.ext.args ?: ''
     def is_single_end = params.input_single_end ? true : false
 
     // Single-End vs Paired-End input flag
@@ -42,7 +42,8 @@ process ABYSS {
         pattern_flags = "--upstream-pattern=${up_pat} --downstream-pattern=${down_pat}"
     }
 
-    // DYNAMIC: Optional additional data (triggers --use-additional-data=true)
+    // Optional-input convention: unwired optional channels arrive as an empty
+    // List (channel.value([])); providing any of them enables --use-additional-data=true.
     def has_linked = opt_linked_reads ? opt_linked_reads.toString() != '[]' : false
     def has_add_pe = opt_add_paired_end ? opt_add_paired_end.toString() != '[]' : false
     def has_mp = opt_mate_pair ? opt_mate_pair.toString() != '[]' : false

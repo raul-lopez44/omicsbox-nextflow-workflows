@@ -1,12 +1,11 @@
-// --- FILE: modules/go_annotation_charts.nf ---
+// --- FILE: modules/functional_analysis/go_annotation_charts.nf ---
 // Wraps: omicsbox statistics-annotation
-// Generates GO annotation distribution charts
+// Generates GO annotation distribution charts.
 
 process GO_ANNOTATION_CHARTS {
 
     input:
-    // OmicsBox Annotated Project (.box) emitted by the upstream GO_ANNOTATION step.
-    path annotated_project
+    path annotated_project   // GO-annotated OmicsBox project (.box)
 
     output:
     path "${task.ext.outdir}/annotation-distribution.${params.chart_format}", emit: annotation_chart   // Annotation distribution chart

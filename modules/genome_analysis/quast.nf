@@ -1,12 +1,12 @@
-// --- FILE: modules/quast.nf ---
+// --- FILE: modules/genome_analysis/quast.nf ---
 // Wraps: omicsbox quast
 // Quality assessment of genome assemblies using QUAST.
 
 process QUAST {
 
     input:
-    path assembly              
-    path reference             
+    path assembly    // Assembled genome FASTA file(s) to evaluate
+    path reference   // Reference genome FASTA file
 
     output:
     path "${task.ext.outdir}/*results*.box", emit: results                 // QUAST results project
