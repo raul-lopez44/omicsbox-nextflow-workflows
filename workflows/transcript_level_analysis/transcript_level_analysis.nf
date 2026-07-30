@@ -64,6 +64,12 @@ workflow {
     if (!params.experimental_design) {
         exit 1, "ERROR: You must provide an experimental design file via --experimental_design."
     }
+    // Gene-level estimates are the sum of each gene's isoform estimates, so RSEM needs the map that
+    // says which isoform belongs to which gene. Without it every reference sequence is its own gene
+    // and the 'gene' table comes back identical to the transcript one - a silent no-op, so stop here.
+    if (params.rsem.gene_level && !params.rsem.gene_trans_map) {
+        exit 1, "ERROR: rsem.gene_level = true requires rsem.gene_trans_map, the transcript-to-gene map RSEM groups isoforms by."
+    }
 
     // -------------------------------------------------------------------------
     // Channel creation
@@ -119,9 +125,24 @@ workflow {
 
     // -------------------------------------------------------------------------
     // 05-06 - Parallel statistical analysis
-    // Both PCA and edgeR consume the count table from RSEM and the experimental design
+    // Both PCA and edgeR consume the count table from RSEM and the experimental design.
+    // Gene-level mode swaps WHICH table they read: RSEM's gene estimates are the sum of each gene's
+    // isoform estimates, so the statistics then test genes instead of individual transcripts.
     // -------------------------------------------------------------------------
-    COUNTS_PCA(RSEM.out.count_table_transcripts, ch_design)
-    EDGER(RSEM.out.count_table_transcripts, ch_design)
+    def ch_counts = params.rsem.gene_level
+        ? RSEM.out.count_table_genes
+        : RSEM.out.count_table_transcripts
+
+    // The design file is MANDATORY for edgeR - it is the model - but for the PCA it is only
+    // colouring. Feeding the same mandatory channel to both left the PCA unable to express
+    // "design available, but plot without it": counts_pca pairs --design=true with the file,
+    // so the file's presence alone forced design-aware plotting. params.counts_pca.use_design
+    // gives the optional consumer its own switch, wired the same way as params.rsem.gene_level.
+    def ch_pca_design = (params.counts_pca?.use_design == false)
+        ? channel.value([])
+        : ch_design
+
+    COUNTS_PCA(ch_counts, ch_pca_design)
+    EDGER(ch_counts, ch_design)
 
 }
